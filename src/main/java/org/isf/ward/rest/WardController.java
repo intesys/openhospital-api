@@ -2,7 +2,11 @@ package org.isf.ward.rest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.Authorization;
+
+import org.isf.disease.dto.DiseaseDTO;
+import org.isf.disease.model.Disease;
 import org.isf.shared.exceptions.OHAPIException;
+import org.isf.shared.rest.OHApiAbstractController;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
@@ -24,7 +28,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Api(value = "/wards", produces = MediaType.APPLICATION_JSON_VALUE, authorizations = {@Authorization(value = "basicAuth")})
-public class WardController {
+public class WardController extends OHApiAbstractController<Ward, WardDTO> {
 
     private final Logger logger = LoggerFactory.getLogger(WardController.class);
 
@@ -34,7 +38,8 @@ public class WardController {
     @Autowired
     protected ModelMapper modelMapper;
     
-    public WardController(WardBrowserManager wardManager) {
+    public WardController(WardBrowserManager wardManager, ModelMapper modelMapper) {
+    	super(modelMapper);
         this.wardManager = wardManager;
     }
 
@@ -173,5 +178,15 @@ public class WardController {
         boolean check = wardManager.maternityControl(createIfNotExits);
         return ResponseEntity.ok(check);
     }
+
+	@Override
+	protected Class<WardDTO> getDTOClass() {
+		return WardDTO.class;
+	}
+
+	@Override
+	protected Class<Ward> getModelClass() {
+		return Ward.class;
+	}
 
 }
