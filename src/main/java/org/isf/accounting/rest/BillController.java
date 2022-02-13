@@ -22,6 +22,8 @@
 package org.isf.accounting.rest;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import org.isf.accounting.dto.BillDTO;
@@ -203,8 +205,8 @@ public class BillController {
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/bills", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<BillDTO>> searchBills(@RequestParam(value = "datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateFrom,
-			@RequestParam(value = "dateto") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateTo,
+	public ResponseEntity<List<BillDTO>> searchBills(@RequestParam(value = "datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
+			@RequestParam(value = "dateto") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo,
 			@RequestParam(value = "patient_code", required = false, defaultValue = "") Integer code) throws OHServiceException {
 
 		LocalDateTime dateF = null;
@@ -250,8 +252,8 @@ public class BillController {
 	 */
 	@GetMapping(value = "/bills/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<BillPaymentsDTO>> searchBillsPayments(
-			@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateFrom,
-			@RequestParam(value="dateto")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateTo, @RequestParam(value="patient_code", required=false, defaultValue="") Integer code) throws OHServiceException {
+			@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
+			@RequestParam(value="dateto")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo, @RequestParam(value="patient_code", required=false, defaultValue="") Integer code) throws OHServiceException {
 		LOGGER.info("Get Payments datefrom: {}  dateTo: {} patient: {}", dateFrom, dateTo, code);
 
 		List<BillPayments> payments;
@@ -396,8 +398,8 @@ public class BillController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/bills/search/by/item", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<BillDTO>> searchBills(@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateFrom,
-			@RequestParam(value="dateto")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateTo,
+	public ResponseEntity<List<BillDTO>> searchBills(@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
+			@RequestParam(value="dateto")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo,
 			@RequestBody BillItemsDTO billItemDTO) throws OHServiceException {
         
 		LocalDateTime dateF = null;

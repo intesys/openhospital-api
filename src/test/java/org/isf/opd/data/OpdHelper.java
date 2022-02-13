@@ -6,6 +6,8 @@ import org.isf.opd.model.Opd;
 import org.isf.opd.test.TestOpd;
 import org.isf.patient.model.Patient;
 import org.isf.utils.exception.OHException;
+import org.isf.visits.model.Visit;
+import org.isf.ward.model.Ward;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,8 +18,10 @@ public class OpdHelper {
 	public static Opd setup() throws OHException {
 		Patient patient = new Patient() ;
 		Disease disease = new Disease();
+		Ward ward = new Ward();
+		Visit nextVisit = new Visit();
 		boolean usingSet = true;
-		return new TestOpd().setup( patient, disease, usingSet);
+		return new TestOpd().setup( patient, disease, ward, nextVisit, usingSet);
 	}
 
 

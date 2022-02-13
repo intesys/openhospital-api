@@ -27,6 +27,7 @@
 package org.isf.operation.dto;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -52,7 +53,7 @@ public class OperationRowDTO {
 
     //@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private LocalDateTime opDate;
+	private Date opDate;
 
     private String remarks;
 
@@ -93,7 +94,7 @@ public class OperationRowDTO {
 		return this.opResult;
 	}
 
-	public LocalDateTime getOpDate() {
+	public Date getOpDate() {
 		return this.opDate;
 	}
 
@@ -133,7 +134,7 @@ public class OperationRowDTO {
 		this.opResult = opResult;
 	}
 
-	public void setOpDate(LocalDateTime opDate) {
+	public void setOpDate(Date opDate) {
 		this.opDate = opDate;
 	}
 

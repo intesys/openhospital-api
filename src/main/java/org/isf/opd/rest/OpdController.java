@@ -23,18 +23,12 @@ package org.isf.opd.rest;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.isf.admission.dto.AdmissionDTO;
-import org.isf.admission.model.Admission;
 import org.isf.disease.manager.DiseaseBrowserManager;
 import org.isf.opd.dto.OpdDTO;
 import org.isf.opd.manager.OpdBrowserManager;
@@ -111,8 +105,6 @@ public class OpdController {
 		}
 		Opd opdToInsert = mapper.map2Model(opdDTO);
 		opdToInsert.setDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-		opdToInsert.setNextVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-		opdToInsert.setVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		Opd isCreated = opdManager.newOpd(opdToInsert);
 		if (isCreated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Opd is not created!", OHSeverityLevel.ERROR));
@@ -150,7 +142,7 @@ public class OpdController {
 
 		Opd opdToUpdate = mapper.map2Model(opdDTO);
 		opdToUpdate.setDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-		opdToUpdate.setVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+		//opdToUpdate.setVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		opdToUpdate.setLock(opdDTO.getLock());
 		Opd updatedOpd = opdManager.updateOpd(opdToUpdate);
 		
@@ -202,14 +194,14 @@ public class OpdController {
 		LOGGER.info("Get opd within specified dates");
 		LocalDate dateF = null;
 		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
+			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		}
 		
 		LocalDate dateT = null;
 		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
+			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1);
 		}
-		List<Opd> opds = opdManager.getOpd(diseaseTypeCode, diseaseCode, dateF, dateT, ageFrom,  ageTo, sex, newPatient, patientCode);
+		List<Opd> opds = opdManager.getOpd(null,diseaseTypeCode, diseaseCode, dateF, dateT, ageFrom,  ageTo, sex, newPatient, patientCode);
 		
 		List<OpdDTO> opdDTOs = opds.stream().map(opd -> {
 			OpdDTO opdDTO = mapper.map2DTO(opd);

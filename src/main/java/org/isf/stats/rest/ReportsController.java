@@ -43,7 +43,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.common.io.ByteStreams;
+//import com.google.common.io.ByteStreams;
 
 import io.swagger.annotations.Api;
 
@@ -87,17 +87,19 @@ public class ReportsController {
 			contentType = "application/octet-stream";
 		}
 		byte[] out;
+       /*
        try {
     	   out =ByteStreams.toByteArray( resource.getInputStream());
        }catch (IOException ex) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Failed to load the bytes", OHSeverityLevel.ERROR));
 		}
+		*/
 		
 		
 		return ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType(contentType))
 				.header(HttpHeaders.CONTENT_DISPOSITION,
 						"attachment; filename=\"" + resource.getFilename() + '"')
-				.body(out);
+				.body(null);//.body(out);
 	}
 }

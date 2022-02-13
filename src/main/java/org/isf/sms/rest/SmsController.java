@@ -21,16 +21,13 @@
  */
 package org.isf.sms.rest;
 
-<<<<<<< HEAD
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-=======
 import java.time.LocalDate;
-import java.time.LocalDateTime;
->>>>>>> upstream/develop
 import java.util.List;
 
 import javax.validation.Valid;
@@ -81,7 +78,6 @@ public class SmsController {
 			@RequestParam(required = true) String dateFrom,
 			@RequestParam(required = true) String dateTo) throws OHServiceException {
 		LOGGER.info("Fetching the list of sms");
-<<<<<<< HEAD
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		Date from, to;
 		LocalDateTime dateT = null;
@@ -102,11 +98,7 @@ public class SmsController {
 		}
 		
 		List<Sms> smsList = smsManager.getAll(dateF, dateT);
-=======
-		LocalDateTime from = LocalDate.parse(dateFrom).atStartOfDay();
-		LocalDateTime to = LocalDate.parse(dateTo).atStartOfDay();
-		List<Sms> smsList = smsManager.getAll(from, to);
->>>>>>> upstream/develop
+
 		List<SmsDTO> mappedSmsList = smsMapper.map2DTOList(smsList);
 		if (mappedSmsList.isEmpty()) {
 			LOGGER.info("No sms found");

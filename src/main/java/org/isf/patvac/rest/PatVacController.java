@@ -131,17 +131,17 @@ public class PatVacController {
 	 */
 	@GetMapping(value = "/patientvaccines/filter", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<PatientVaccineDTO>> getPatientVaccinesByDatesRanges(@RequestParam String vaccineTypeCode, @RequestParam String vaccineCode, 
-			@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo, @RequestParam char sex, @RequestParam int ageFrom, @RequestParam int ageTo) throws OHServiceException {
+			@RequestParam Date dateFrom, @RequestParam Date dateTo, @RequestParam char sex, @RequestParam int ageFrom, @RequestParam int ageTo) throws OHServiceException {
 		LOGGER.info("filter patient vaccine by dates ranges");
 		
 		LocalDateTime dateF = null;
 		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().atStartOfDay();
+			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
 		}
 		
 		LocalDateTime dateT = null;
 		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().plusDays(1).atStartOfDay();
+			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
 		}
         
 		List<PatientVaccine> patientVaccines = patVacManager.getPatientVaccine(vaccineTypeCode, vaccineCode, dateF, dateT, sex, ageFrom, ageTo);

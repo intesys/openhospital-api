@@ -22,6 +22,7 @@
 package org.isf.therapy.dto;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -40,7 +41,6 @@ public class TherapyRowDTO {
 	PatientDTO patID;
 
 	@NotNull(message="the start date is require")
-<<<<<<< HEAD
 	@ApiModelProperty(notes="The start date of therapy", example = "2020-07-16T14:25:30.002Z", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date startDate;
@@ -49,14 +49,7 @@ public class TherapyRowDTO {
 	@ApiModelProperty(notes="The end date of the therapy", example = "2020-07-30T14:25:30.002Z", position = 4)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date endDate;
-=======
-	@ApiModelProperty(notes="The start date of therapy", example = "2020-07-16", position = 3)
-	private LocalDateTime startDate;
 
-	@NotNull(message="the end date is required")
-	@ApiModelProperty(notes="The end date of the therapy", example = "2020-07-30", position = 4)
-	private LocalDateTime endDate;
->>>>>>> upstream/develop
 
 	@NotNull(message="the medical's ID is required")
 	@ApiModelProperty(notes="The ID of the medical concerned by the therapy", example = "1", position = 5)
@@ -92,7 +85,7 @@ public class TherapyRowDTO {
 	public TherapyRowDTO() {
 	}
 
-	public TherapyRowDTO(Integer therapyID, PatientDTO patID, LocalDateTime startDate, LocalDateTime endDate, Integer medicalId,
+	public TherapyRowDTO(Integer therapyID, PatientDTO patID, Date startDate, Date endDate, Integer medicalId,
 			Double qty, Integer unitID, Integer freqInDay, Integer freqInPeriod, String note, Integer notifyInt,
 			Integer smsInt) {
 		this.therapyID = therapyID;
@@ -117,11 +110,11 @@ public class TherapyRowDTO {
 		return this.patID;
 	}
 
-	public LocalDateTime getStartDate() {
+	public Date getStartDate() {
 		return this.startDate;
 	}
 
-	public LocalDateTime getEndDate() {
+	public Date getEndDate() {
 		return this.endDate;
 	}
 
@@ -165,11 +158,11 @@ public class TherapyRowDTO {
 		this.patID = patID;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 

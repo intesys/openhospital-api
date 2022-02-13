@@ -22,12 +22,7 @@
 package org.isf.admission.rest;
 
 import static org.hamcrest.Matchers.containsString;
-<<<<<<< HEAD
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-=======
 import static org.mockito.ArgumentMatchers.any;
->>>>>>> upstream/develop
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,15 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-<<<<<<< HEAD
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-=======
 import java.util.List;
->>>>>>> upstream/develop
 
 import org.isf.admission.data.AdmissionHelper;
 import org.isf.admission.dto.AdmissionDTO;
@@ -204,15 +195,11 @@ public class AdmissionControllerTest {
 		String request = "/admissions/allAdmittedPatients";
 		List<AdmittedPatient> admittedPatients = PatientHelper.setupAdmittedPatientList(2);
 
-<<<<<<< HEAD
 		//GregorianCalendar[] admissionRange = null;
 		//GregorianCalendar[] dischargeRange = null;
 		String searchTerms = "";
 		//when(admissionManagerMock.getAdmittedPatients(admissionRange, dischargeRange, searchTerms))
 		when(admissionManagerMock.getAdmittedPatients(any(LocalDateTime[].class), any(LocalDateTime[].class), any(String.class)))
-=======
-		when(admissionManagerMock.getAdmittedPatients())
->>>>>>> upstream/develop
 				.thenReturn(admittedPatients);
 
 		MvcResult result = this.mockMvc

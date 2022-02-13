@@ -21,13 +21,13 @@
  */
 package org.isf.opd.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isf.disease.dto.DiseaseDTO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -41,12 +41,12 @@ public class OpdDTO {
 
     @ApiModelProperty(notes = "the date of the admission", position = 2)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime date;
+	private Date date;
 
     @NotNull
     @ApiModelProperty(notes = "the visit date", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime visitDate;
+	private Date visitDate;
 
 
     @ApiModelProperty(notes = "the admitted patient code", position = 5)
@@ -176,11 +176,11 @@ public class OpdDTO {
 		return this.code;
 	}
 
-	public LocalDateTime getDate() {
+	public Date getDate() {
 		return this.date;
 	}
 
-	public LocalDate getVisitDate() {
+	public Date getVisitDate() {
 		return this.visitDate;
 	}
 
@@ -244,11 +244,11 @@ public class OpdDTO {
 		this.code = code;
 	}
 
-	public void setDate(LocalDateTime date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
-	public void setVisitDate(LocalDate visitDate) {
+	public void setVisitDate(Date visitDate) {
 		this.visitDate = visitDate;
 	}
 	public void setPatientCode(Integer patientCode) {

@@ -22,6 +22,7 @@
 package org.isf.admission.dto;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -67,7 +68,7 @@ public class AdmissionDTO {
 	@NotNull
 	@ApiModelProperty(notes = "admission date", example="2020-03-19T14:58:00.000Z", position = 7)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime admDate;
+	private Date admDate;
 
 	@ApiModelProperty(notes = "admission type", position = 8)
 	private AdmissionTypeDTO admType;
@@ -92,14 +93,14 @@ public class AdmissionDTO {
 
 	@ApiModelProperty(notes = "operation date", position = 15)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime opDate;
+	private Date opDate;
 
 	@ApiModelProperty(notes = "operation result value is 'P' or 'N' ", example = "N", position = 16)
 	private String opResult;
 
 	@ApiModelProperty(notes = "discharge date", position = 17)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime disDate;
+	private Date disDate;
 
 	@ApiModelProperty(notes = "disChargeType", position = 18)
 	private DischargeTypeDTO disType;
@@ -112,14 +113,14 @@ public class AdmissionDTO {
 
 	@ApiModelProperty(notes = "visit date", position = 21)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime visitDate;
+	private Date visitDate;
 
 	@ApiModelProperty(notes = "treatmentType ", position = 22)
 	private PregnantTreatmentTypeDTO pregTreatmentType;
 
 	@ApiModelProperty(notes = "delivery date", position = 23)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime deliveryDate;
+	private Date deliveryDate;
 
 	@ApiModelProperty(notes = "delivery type", position = 24)
 	private DeliveryTypeDTO deliveryType;
@@ -132,15 +133,15 @@ public class AdmissionDTO {
 
 	@ApiModelProperty(notes = "delivery date", position = 27)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime ctrlDate1;
+	private Date ctrlDate1;
 
 	@ApiModelProperty(notes = "delivery date", position = 28) 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime ctrlDate2;
+	private Date ctrlDate2;
 
 	@ApiModelProperty(notes = "delivery date", position = 29)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime abortDate;
+	private Date abortDate;
 
 	@ApiModelProperty(notes = "weight", position = 30)
 	private String userID;
@@ -177,7 +178,7 @@ public class AdmissionDTO {
 		return this.patient;
 	}
 
-	public LocalDateTime getAdmDate() {
+	public Date getAdmDate() {
 		return this.admDate;
 	}
 
@@ -209,7 +210,7 @@ public class AdmissionDTO {
 		return this.operation;
 	}
 
-	public LocalDateTime getOpDate() {
+	public Date getOpDate() {
 		return this.opDate;
 	}
 
@@ -217,7 +218,7 @@ public class AdmissionDTO {
 		return this.opResult;
 	}
 
-	public LocalDateTime getDisDate() {
+	public Date getDisDate() {
 		return this.disDate;
 	}
 
@@ -233,7 +234,7 @@ public class AdmissionDTO {
 		return this.transUnit;
 	}
 
-	public LocalDateTime getVisitDate() {
+	public Date getVisitDate() {
 		return this.visitDate;
 	}
 
@@ -241,7 +242,7 @@ public class AdmissionDTO {
 		return this.pregTreatmentType;
 	}
 
-	public LocalDateTime getDeliveryDate() {
+	public Date getDeliveryDate() {
 		return this.deliveryDate;
 	}
 
@@ -257,15 +258,15 @@ public class AdmissionDTO {
 		return this.weight;
 	}
 
-	public LocalDateTime getCtrlDate1() {
+	public Date getCtrlDate1() {
 		return this.ctrlDate1;
 	}
 
-	public LocalDateTime getCtrlDate2() {
+	public Date getCtrlDate2() {
 		return this.ctrlDate2;
 	}
 
-	public LocalDateTime getAbortDate() {
+	public Date getAbortDate() {
 		return this.abortDate;
 	}
 
@@ -306,7 +307,7 @@ public class AdmissionDTO {
 		this.patient = patient;
 	}
 
-	public void setAdmDate(LocalDateTime admDate) {
+	public void setAdmDate(Date admDate) {
 		this.admDate = admDate;
 	}
 
@@ -337,7 +338,7 @@ public class AdmissionDTO {
 		this.operation = operation;
 	}
 
-	public void setOpDate(LocalDateTime opDate) {
+	public void setOpDate(Date opDate) {
 		this.opDate = opDate;
 	}
 
@@ -345,7 +346,7 @@ public class AdmissionDTO {
 		this.opResult = opResult;
 	}
 
-	public void setDisDate(LocalDateTime disDate) {
+	public void setDisDate(Date disDate) {
 		this.disDate = disDate;
 	}
 
@@ -361,7 +362,7 @@ public class AdmissionDTO {
 		this.transUnit = transUnit;
 	}
 
-	public void setVisitDate(LocalDateTime visitDate) {
+	public void setVisitDate(Date visitDate) {
 		this.visitDate = visitDate;
 	}
 
@@ -369,7 +370,7 @@ public class AdmissionDTO {
 		this.pregTreatmentType = pregTreatmentType;
 	}
 
-	public void setDeliveryDate(LocalDateTime deliveryDate) {
+	public void setDeliveryDate(Date deliveryDate) {
 		this.deliveryDate = deliveryDate;
 	}
 
@@ -385,15 +386,15 @@ public class AdmissionDTO {
 		this.weight = weight;
 	}
 
-	public void setCtrlDate1(LocalDateTime ctrlDate1) {
+	public void setCtrlDate1(Date ctrlDate1) {
 		this.ctrlDate1 = ctrlDate1;
 	}
 
-	public void setCtrlDate2(LocalDateTime ctrlDate2) {
+	public void setCtrlDate2(Date ctrlDate2) {
 		this.ctrlDate2 = ctrlDate2;
 	}
 
-	public void setAbortDate(LocalDateTime abortDate) {
+	public void setAbortDate(Date abortDate) {
 		this.abortDate = abortDate;
 	}
 

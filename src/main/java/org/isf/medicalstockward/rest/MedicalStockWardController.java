@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -157,7 +158,7 @@ public class MedicalStockWardController {
 			@RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo) throws OHServiceException {
 		LocalDateTime dateF = null;
 		if(dateFrom != null) {
-			dateF = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().atStartOfDay();
+			dateF = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
 		}
 		
 		LocalDateTime dateT = null;
@@ -190,12 +191,12 @@ public class MedicalStockWardController {
 			@RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo) throws OHServiceException {
 		LocalDateTime dateF = null;
 		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().atStartOfDay();
+			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
 		}
 		
 		LocalDateTime dateT = null;
 		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().plusDays(1).atStartOfDay();
+			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
 		}
 		
 		List<MovementWard> movs = movWardBrowserManager.getWardMovementsToWard(idwardTo, dateF, dateT);

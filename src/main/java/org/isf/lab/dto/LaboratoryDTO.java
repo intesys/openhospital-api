@@ -21,11 +21,11 @@
  */
 package org.isf.lab.dto;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
-import com.drew.lang.annotations.NotNull;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isf.exam.dto.ExamDTO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -42,12 +42,12 @@ public class LaboratoryDTO {
 
     @ApiModelProperty(notes = "Laboratory Registration Date", position = 4)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime registrationDate;
-
-    @NotNull
+	private Date registrationDate;
+    
     @ApiModelProperty(notes = "Laboratory Exam Date", position = 5)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime examDate;
+	private Date examDate;
+
 
     @ApiModelProperty(notes = "Laboratory Result", position = 6)
     private String result;
@@ -93,12 +93,8 @@ public class LaboratoryDTO {
 		return this.exam;
 	}
 
-	public LocalDateTime getRegistrationDate() {
+	public Date getRegistrationDate() {
 		return this.registrationDate;
-	}
-
-	public LocalDateTime getExamDate() {
-		return this.examDate;
 	}
 
 	public String getResult() {
@@ -141,12 +137,8 @@ public class LaboratoryDTO {
 		this.exam = exam;
 	}
 
-	public void setRegistrationDate(LocalDateTime registrationDate) {
+	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
-	}
-
-	public void setExamDate(LocalDateTime examDate) {
-		this.examDate = examDate;
 	}
 
 	public void setResult(String result) {
@@ -176,4 +168,14 @@ public class LaboratoryDTO {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
+
+	public Date getExamDate() {
+		return examDate;
+	}
+
+	public void setExamDate(Date examDate) {
+		this.examDate = examDate;
+	}
+	
+	
 }

@@ -94,19 +94,12 @@ public class PregnantTreatmentTypeController {
 		PregnantTreatmentType pregTreatType = mapper.map2Model(pregnantTreatmentTypeDTO);
 		if (!pregTreatTypeManager.isCodePresent(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "pregnantTreatment Type not found!", OHSeverityLevel.ERROR));
-<<<<<<< HEAD
+		}
 		PregnantTreatmentType isUpdated = pregTreatTypeManager.updatePregnantTreatmentType(pregTreatType);
-		if (isUpdated == null)
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "pregnantTreatment Type is not updated!", OHSeverityLevel.ERROR));
+		}
 		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
-=======
-		}
-		boolean isUpdated = pregTreatTypeManager.updatePregnantTreatmentType(pregTreatType);
-		if (!isUpdated) {
-			throw new OHAPIException(new OHExceptionMessage(null, "pregnantTreatment Type is not updated!", OHSeverityLevel.ERROR));
-		}
-		return ResponseEntity.ok(pregTreatType.getCode());
->>>>>>> upstream/develop
 	}
 
 	/**

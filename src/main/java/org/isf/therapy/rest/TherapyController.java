@@ -21,11 +21,8 @@
  */
 package org.isf.therapy.rest;
 
-<<<<<<< HEAD
-import java.time.ZoneId;
+
 import java.util.ArrayList;
-=======
->>>>>>> upstream/develop
 import java.util.List;
 
 import javax.validation.Valid;
@@ -101,17 +98,10 @@ public class TherapyController {
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/therapies/replace", produces = MediaType.APPLICATION_JSON_VALUE)
-<<<<<<< HEAD
 	public ResponseEntity<TherapyRow> replaceTherapies(@RequestBody @Valid List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
 		ArrayList<TherapyRow> therapies = (ArrayList<TherapyRow>)therapyRowMapper.map2ModelList(thRowDTOs);
 		TherapyRow done = manager.newTherapy(therapies.get(0));
 		if(done != null) {
-=======
-	public ResponseEntity<Boolean> replaceTherapies(@RequestBody @Valid List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
-		List<TherapyRow> therapies = therapyRowMapper.map2ModelList(thRowDTOs);
-		boolean done = manager.newTherapies(therapies);
-		if (done) {
->>>>>>> upstream/develop
 			return ResponseEntity.status(HttpStatus.CREATED).body(done);
 		} else {
 			throw new OHAPIException(new OHExceptionMessage(null, "Therapies are not replaced!", OHSeverityLevel.ERROR));

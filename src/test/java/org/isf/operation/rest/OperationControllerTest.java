@@ -117,7 +117,7 @@ public class OperationControllerTest {
 	public void testGetOperation_200() throws Exception {
 		String request = "/operations";
 
-		ArrayList<Operation> results = OperationHelper.setupOperationList(3);
+		List<Operation> results = OperationHelper.setupOperationList(3);
 
 		List<OperationDTO> operationDTOs = operationMapper.map2DTOList(results);
 

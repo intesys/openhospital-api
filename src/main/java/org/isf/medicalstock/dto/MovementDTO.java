@@ -22,6 +22,7 @@
 package org.isf.medicalstock.dto;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -55,7 +56,7 @@ public class MovementDTO {
 	@NotNull(message="the movement's date is required")
 	@ApiModelProperty(notes="The movement date", example = "2020-06-24", position = 6)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime date;
+	private Date date;
 
 	@NotNull(message="the movement's medical quantity is required")
 	@ApiModelProperty(notes="The movement's medical quantity", example = "50", position = 7)
@@ -71,7 +72,7 @@ public class MovementDTO {
 	public MovementDTO() {
 	}
 	
-	public MovementDTO(int code, MedicalDTO medical, MovementTypeDTO type, WardDTO ward, LotDTO lot, LocalDate date,
+	public MovementDTO(int code, MedicalDTO medical, MovementTypeDTO type, WardDTO ward, LotDTO lot, Date date,
 			int quantity, SupplierDTO supplier, String refNo) {
 		this.code = code;
 		this.medical = medical;
@@ -104,7 +105,7 @@ public class MovementDTO {
 		return this.lot;
 	}
 
-	public LocalDate getDate() {
+	public Date getDate() {
 		return this.date;
 	}
 
@@ -140,7 +141,7 @@ public class MovementDTO {
 		this.lot = lot;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 

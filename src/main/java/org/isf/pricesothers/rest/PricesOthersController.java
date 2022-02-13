@@ -94,19 +94,12 @@ public class PricesOthersController {
 		List<PricesOthers> pricesOthersFounds = pricesOthersManager.getOthers().stream().filter(po -> po.getId() == pricesOthersDTO.getId()).collect(Collectors.toList());
 		if (pricesOthersFounds.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-<<<<<<< HEAD
+		}
 		PricesOthers isUpdated = pricesOthersManager.updateOther(pricesOthers);
-		if (isUpdated == null)
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "prices others is not updated!", OHSeverityLevel.ERROR));
+		}
 		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
-=======
-		}
-		boolean isUpdated = pricesOthersManager.updateOther(pricesOthers);
-		if (!isUpdated) {
-			throw new OHAPIException(new OHExceptionMessage(null, "prices others is not updated!", OHSeverityLevel.ERROR));
-		}
-		return ResponseEntity.ok(pricesOthers.getCode());
->>>>>>> upstream/develop
 	}
 
 	/**

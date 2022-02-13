@@ -47,7 +47,7 @@ public class VisitDTO {
     @NotNull
     @ApiModelProperty(notes = "Date of the visit", example="2020-03-19T14:58:00.000Z", position = 3)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    private LocalDateTime date;
+    private Date date;
 
     @ApiModelProperty(notes = "Note of the visit", position = 4)
     private String note;
@@ -117,7 +117,7 @@ public class VisitDTO {
 		this.patient = patient;
 	}
 
-	public void setDate(LocalDateTime date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 

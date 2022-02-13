@@ -49,6 +49,8 @@ public class WardDTO {
 
 	@NotNull
 	private boolean isPharmacy;
+	
+	private boolean isOpd;
 
 	@NotNull
 	private boolean isMale;
@@ -169,4 +171,18 @@ public class WardDTO {
 	public void setLock(Integer lock) {
 		this.lock = lock;
 	}
+
+	public boolean isOpd() {
+		return isOpd;
+	}
+
+	public void setOpd(boolean isOpd) {
+		this.isOpd = isOpd;
+	}
+
+	public void setVisitDuration(int visitDuration) {
+		this.visitDuration = visitDuration;
+	}
+	
+	
 }

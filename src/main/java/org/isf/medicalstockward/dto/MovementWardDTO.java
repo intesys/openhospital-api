@@ -22,6 +22,7 @@
 package org.isf.medicalstockward.dto;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -44,7 +45,7 @@ public class MovementWardDTO {
 	@NotNull
 	@ApiModelProperty(notes="The movement ward's date", example="2020-06-07T00:00:00.000Z", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private LocalDateTime date;
+	private Date date;
 	
 	@NotNull
 	@ApiModelProperty(notes="Indicates if the movement is associated to a patient or no ", example="false", position = 4)
@@ -83,7 +84,7 @@ public class MovementWardDTO {
 	public MovementWardDTO() {
 	}
 
-	public MovementWardDTO(int code, WardDTO ward, LocalDate date, boolean isPatient, PatientDTO patient, int age,
+	public MovementWardDTO(int code, WardDTO ward, Date date, boolean isPatient, PatientDTO patient, int age,
 			float weight, String description, MedicalDTO medical, Double quantity, String units, WardDTO wardTo,
 			WardDTO wardFrom) {
 		this.code = code;
@@ -109,7 +110,7 @@ public class MovementWardDTO {
 		return this.ward;
 	}
 
-	public LocalDate getDate() {
+	public Date getDate() {
 		return this.date;
 	}
 
@@ -161,7 +162,7 @@ public class MovementWardDTO {
 		this.ward = ward;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 

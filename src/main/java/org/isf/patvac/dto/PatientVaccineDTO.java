@@ -22,6 +22,7 @@
 package org.isf.patvac.dto;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -42,7 +43,7 @@ public class PatientVaccineDTO
 	@NotNull
 	@ApiModelProperty(notes = "the vaccine date", example="2021-05-01T00:00:00.000Z", position = 2)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private LocalDateTime vaccineDate;
+	private Date vaccineDate;
 
 	@NotNull
 	@ApiModelProperty(notes = "the patient to be vaccine", position = 3)
@@ -79,7 +80,7 @@ public class PatientVaccineDTO
 		return this.progr;
 	}
 
-	public LocalDateTime getVaccineDate() {
+	public Date getVaccineDate() {
 		return this.vaccineDate;
 	}
 
@@ -99,7 +100,7 @@ public class PatientVaccineDTO
 		this.progr = progr;
 	}
 
-	public void setVaccineDate(LocalDateTime vaccineDate) {
+	public void setVaccineDate(Date vaccineDate) {
 		this.vaccineDate = vaccineDate;
 	}
 

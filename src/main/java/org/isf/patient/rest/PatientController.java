@@ -92,7 +92,7 @@ public class PatientController {
         String name = StringUtils.isEmpty(newPatient.getName()) ? newPatient.getFirstName() + " " + newPatient.getSecondName() : newPatient.getName();
 		LOGGER.info("Create patient {}", name);
 		Patient patient = patientMapper.map2Model(newPatient);
-        Patient pat = patientManager.savePatient(patient);
+        Patient pat = patientManager.savePatients(patient);
         if(pat == null){
             throw new OHAPIException(new OHExceptionMessage(null, "Patient is not created!", OHSeverityLevel.ERROR));
         }
@@ -108,7 +108,7 @@ public class PatientController {
 		if (!updatePatient.getCode().equals(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient code mismatch", OHSeverityLevel.ERROR));
 		}
-		Patient patientRead = patientManager.getPatientById(code);
+		Patient patientRead = patientManager.getPatientById(Integer.valueOf(code));
 		if (patientRead == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
 		}
@@ -147,18 +147,19 @@ public class PatientController {
 	@GetMapping(value = "/patients/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PatientDTO> getPatient(@PathVariable("code") int code) throws OHServiceException {
 		LOGGER.info("Get patient code: {}", code);
-		Patient patient = patientManager.getPatientById(code);
+		Patient patient = patientManager.getPatientById(Integer.valueOf(code));
+		Admission admission = new Admission();
 		if (patient == null) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		Admission admission = admissionBrowserManager.getCurrentAdmission(patient);
+		admission = admissionBrowserManager.getCurrentAdmission(patient);
 		Boolean status = admission != null ? true : false;
 		PatientDTO patientDTO = patientMapper.map2DTOWS(patient, status);
 		if(patient.getBirthDate()!=null) {
 			 Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
 		     patientDTO.setBirthDate(date); 
 		}
-		return ResponseEntity.ok(patientDTO);
+		return ResponseEntity.ok( patientMapper.map2DTO(patient));
 	}
 
 	@GetMapping(value = "/patients/search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -200,8 +201,8 @@ public class PatientController {
 			Admission admission =null ;
 			try {
 				admission = admissionBrowserManager.getCurrentAdmission(patient);
-			} catch (OHServiceException e) {
-				// TODO Auto-generated catch block
+				
+			} catch(OHServiceException e) {
 				 new OHExceptionMessage(null, "the Patients exist but have problems with their admissions", OHSeverityLevel.ERROR);
 			}
 			Boolean status = admission != null ? true : false;

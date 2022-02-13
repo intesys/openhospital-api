@@ -98,18 +98,11 @@ public class PriceListController {
 			throws OHServiceException {
 		LOGGER.info("Update pricelists code: {}", priceListDTO.getCode());
 		PriceList priceList = mapper.map2Model(priceListDTO);
-<<<<<<< HEAD
 		PriceList isUpdated = priceListManager.updateList(priceList);
-		if (isUpdated == null)
-			throw new OHAPIException(new OHExceptionMessage(null, "price list is not updated!", OHSeverityLevel.ERROR));
-		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
-=======
-		boolean isUpdated = priceListManager.updateList(priceList);
-		if (!isUpdated) {
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "price list is not updated!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.ok(priceList.getCode());
->>>>>>> upstream/develop
+		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
 	}
 
 	/**
