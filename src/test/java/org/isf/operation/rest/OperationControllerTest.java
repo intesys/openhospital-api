@@ -71,9 +71,7 @@ public class OperationControllerTest {
 		when(operationBrowserManagerMock.descriptionControl(body.getDescription(), body.getType().getCode()))
 				.thenReturn(false);
 
-		boolean isCreated = true;
-		when(operationBrowserManagerMock.newOperation(operationMapper.map2Model(body)))
-				.thenReturn(isCreated);
+		when(operationBrowserManagerMock.newOperation(operationMapper.map2Model(body)));
 		when(operationBrowserManagerMock.getOperationByCode(code))
 		    .thenReturn(operation);
 		MvcResult result = this.mockMvc
@@ -100,9 +98,7 @@ public class OperationControllerTest {
 		when(operationBrowserManagerMock.isCodePresent(code))
 				.thenReturn(true);
 
-		boolean isUpdated = true;
-		when(operationBrowserManagerMock.updateOperation(operation))
-				.thenReturn(isUpdated);
+		when(operationBrowserManagerMock.updateOperation(operation));
 
 		MvcResult result = this.mockMvc
 				.perform(put(request, code)
