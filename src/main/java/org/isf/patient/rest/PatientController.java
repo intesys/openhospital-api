@@ -23,6 +23,7 @@ package org.isf.patient.rest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,18 +86,19 @@ public class PatientController {
      * @throws OHServiceException
      */
 	@PostMapping(value = "/patients", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Integer> newPatient(@RequestBody PatientDTO newPatient) throws OHServiceException {
+    ResponseEntity<PatientDTO> newPatient(@RequestBody PatientDTO newPatient) throws OHServiceException {
         String name = StringUtils.isEmpty(newPatient.getName()) ? newPatient.getFirstName() + " " + newPatient.getSecondName() : newPatient.getName();
 		LOGGER.info("Create patient {}", name);
-        Patient patient = patientManager.savePatient(patientMapper.map2Model(newPatient));
-        if(patient == null){
+		Patient patient = patientMapper.map2Model(newPatient);
+        Patient pat = patientManager.savePatient(patient);
+        if(pat == null){
             throw new OHAPIException(new OHExceptionMessage(null, "Patient is not created!", OHSeverityLevel.ERROR));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(patient.getCode());
+        return ResponseEntity.status(HttpStatus.CREATED).body(patientMapper.map2DTO(patient));
 	}
 
 	@PutMapping(value = "/patients/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Integer> updatePatient(@PathVariable int code, @RequestBody PatientDTO updatePatient) throws OHServiceException {
+    ResponseEntity<PatientDTO> updatePatient(@PathVariable int code, @RequestBody PatientDTO updatePatient) throws OHServiceException {
 		LOGGER.info("Update patient code: {}", code);
 		if (!updatePatient.getCode().equals(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient code mismatch", OHSeverityLevel.ERROR));
@@ -111,7 +113,7 @@ public class PatientController {
 		if (patient == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Patient is not updated!", OHSeverityLevel.ERROR));
         }
-        return ResponseEntity.ok(patient.getCode());
+        return ResponseEntity.ok(patientMapper.map2DTO(patient));
 	}
 
 	@GetMapping(value = "/patients", produces = MediaType.APPLICATION_JSON_VALUE)
