@@ -22,8 +22,8 @@
 package org.isf.admission.rest;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,8 +32,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.isf.admission.data.AdmissionHelper;
 import org.isf.admission.dto.AdmissionDTO;
@@ -197,7 +200,7 @@ public class AdmissionControllerTest {
 		//GregorianCalendar[] dischargeRange = null;
 		String searchTerms = "";
 		//when(admissionManagerMock.getAdmittedPatients(admissionRange, dischargeRange, searchTerms))
-		when(admissionManagerMock.getAdmittedPatients(any(GregorianCalendar[].class), any(GregorianCalendar[].class), any(String.class)))
+		when(admissionManagerMock.getAdmittedPatients(any(LocalDateTime[].class), any(LocalDateTime[].class), any(String.class)))
 				.thenReturn(admittedPatients);
 
 		MvcResult result = this.mockMvc
@@ -330,13 +333,16 @@ public class AdmissionControllerTest {
 			String code = "B";
 			DischargeType dischargeType = DischargeTypeHelper.setup(code);
 			admission.setAdmitted(0);
-			admission.setDisDate(new GregorianCalendar());
+			Calendar cal = Calendar.getInstance();
+	        Date input = cal.getTime();
+	        LocalDateTime la = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			admission.setDisDate(la);
 			admission.setDiseaseOut1(disease1);
 			admission.setDiseaseOut1(disease2);
 			admission.setDiseaseOut1(disease3);
 			admission.setDisType(dischargeType);
 			
-			when(admissionManagerMock.updateAdmission(admission)).thenReturn(true);
+			when(admissionManagerMock.updateAdmission(admission));
 			
 			AdmissionDTO admDTO = admissionMapper.map2DTO(admission);	
 			this.mockMvc
@@ -450,10 +456,8 @@ public class AdmissionControllerTest {
 		when(pregTraitTypeManagerMock.getPregnantTreatmentType())
 				.thenReturn(pregTTypes);
 
-		boolean isUpdated = true;
 
-		when(admissionManagerMock.updateAdmission(update))
-				.thenReturn(isUpdated);
+		when(admissionManagerMock.updateAdmission(update));
 
 		MvcResult result = this.mockMvc
 				.perform(put(request)

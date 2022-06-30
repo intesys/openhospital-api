@@ -21,7 +21,12 @@
  */
 package org.isf.lab.rest;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -45,6 +50,8 @@ import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
+import org.isf.visits.dto.VisitDTO;
+import org.isf.visits.model.Visit;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -119,8 +126,13 @@ public class LaboratoryController {
         if (labRow != null) {
             labRows = new ArrayList<String>(labRow);
         }
-        if (labToInsert.getDate() == null)
-        	labToInsert.setDate(new GregorianCalendar());
+        if (labToInsert.getDate() == null) {
+        	Calendar cal = Calendar.getInstance();
+            Date input = cal.getTime();
+            LocalDateTime la = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            labToInsert.setDate(la);
+        }
+        	
         
         boolean inserted = laboratoryManager.newLaboratory(labToInsert, labRows);
 
@@ -131,11 +143,11 @@ public class LaboratoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
     }
 
-    @PostMapping(value = "/laboratories/insertList", produces = MediaType.APPLICATION_JSON_VALUE)
+    /*@PostMapping(value = "/laboratories/insertList", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> newLaboratory2(@RequestBody List<LabWithRowsDTO> labsWithRows) throws OHServiceException {
 
-        List<Laboratory> labsToInsert = new ArrayList<>();
-        ArrayList<ArrayList<LaboratoryRow>> labsRowsToInsert = new ArrayList<>();
+    	LaboratoryRow labsToInsert = new LaboratoryRow();
+        List<LaboratoryRow> labsRowsToInsert = new ArrayList<>();
 
         for (LabWithRowsDTO labWithRowsDTO : labsWithRows) {
             LaboratoryDTO laboratoryDTO = labWithRowsDTO.getLaboratoryDTO();
@@ -152,8 +164,6 @@ public class LaboratoryController {
             Laboratory labToInsert = laboratoryMapper.map2Model(laboratoryDTO);
             labToInsert.setExam(exam);
             labToInsert.setPatient(patient);
-
-            labsToInsert.add(labToInsert);
 
             if (labWithRowsDTO.getLaboratoryRowList() != null) {
                 ArrayList<LaboratoryRow> labRowToInsert = new ArrayList<>();
@@ -172,7 +182,7 @@ public class LaboratoryController {
             throw new OHAPIException(new OHExceptionMessage(null, "Laboratory is not created!", OHSeverityLevel.ERROR));
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
-    }
+    }*/
 
     @PutMapping(value = "/laboratories/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> updateLaboratory(@PathVariable Integer code, @RequestBody LabWithRowsDTO labWithRowsDTO) throws OHServiceException {
@@ -203,6 +213,12 @@ public class LaboratoryController {
         ArrayList<String> labRows = new ArrayList<>();
         if (labRow != null) {
             labRows = new ArrayList<>(labRow);
+        }
+        if (labToInsert.getDate() == null) {
+        	Calendar cal = Calendar.getInstance();
+            Date input = cal.getTime();
+            LocalDateTime la = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            labToInsert.setDate(la);
         }
         labToInsert.setLock(0);
 
@@ -244,10 +260,20 @@ public class LaboratoryController {
         }
 
         List<Laboratory> labList = laboratoryManager.getLaboratory(patient);
+        List<LaboratoryDTO> listLab = new ArrayList<LaboratoryDTO>();
         if (labList == null || labList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
-            return ResponseEntity.ok(laboratoryMapper.map2DTOList(labList));
+        	
+             for(Laboratory lab : labList) {	
+            	 LaboratoryDTO labDTO =  laboratoryMapper.map2DTO(lab);
+         		Instant instant = lab.getDate().atZone(ZoneId.systemDefault()).toInstant();
+             	Date date = (Date) Date.from(instant);
+             	labDTO.setExamDate(date);
+             	listLab.add(labDTO);
+         			
+         	}
+            return ResponseEntity.ok(listLab);
         }
     }
 
@@ -263,13 +289,17 @@ public class LaboratoryController {
 
     @GetMapping(value = "/laboratories/exams", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<LaboratoryForPrintDTO>> getLaboratoryForPrint(@RequestParam String examName, @RequestParam(value = "dateFrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom, @RequestParam(value = "dateTo") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo) throws OHServiceException {
-        GregorianCalendar datefrom = new GregorianCalendar();
-        datefrom.setTime(dateFrom);
+    	LocalDateTime dateF = null;
+		if(dateFrom != null) {
+			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
+		
+		LocalDateTime dateT = null;
+		if(dateTo != null) {
+			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
 
-        GregorianCalendar dateto = new GregorianCalendar();
-        dateto.setTime(dateTo);
-
-        List<LaboratoryForPrint> laboratoryForPrintList = laboratoryManager.getLaboratoryForPrint(examName, datefrom, dateto);
+        List<LaboratoryForPrint> laboratoryForPrintList = laboratoryManager.getLaboratoryForPrint(examName, dateF, dateT);
         if (laboratoryForPrintList == null || laboratoryForPrintList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
