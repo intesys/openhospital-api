@@ -28,8 +28,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -469,7 +470,7 @@ public class BillControllerTest extends ControllerBaseTest {
 		//TODO add test(s) with incorrect formatted dates returning an exception
 		//TODO add test(s) with specific dates returning an empty list and asserting  HttpStatus.NO_CONTENT
 		//TODO add test(s) with different BillItem returning an empty list and asserting  HttpStatus.NO_CONTENT
-		when(billManagerMock.getBills(any(GregorianCalendar.class), any(GregorianCalendar.class), eq(billItem))).thenReturn(billList);
+		when(billManagerMock.getBills(any(LocalDateTime.class), any(LocalDateTime.class), eq(billItem))).thenReturn(billList);
 
 		this.mockMvc
 				.perform(
@@ -500,7 +501,7 @@ public class BillControllerTest extends ControllerBaseTest {
 		//TODO add test(s) with incorrect formatted dates returning an exception
 		//TODO add test(s) with specific dates returning an empty list and asserting  HttpStatus.NO_CONTENT
 		//TODO add test(s) with a different patient returning an empty list and asserting  HttpStatus.NO_CONTENT
-		when(billManagerMock.getBills(any(GregorianCalendar.class), any(GregorianCalendar.class), eq(patient))).thenReturn(billList);
+		when(billManagerMock.getBills(any(LocalDateTime.class), any(LocalDateTime.class), eq(patient))).thenReturn(billList);
 
 		this.mockMvc
 				.perform(
