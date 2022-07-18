@@ -45,9 +45,9 @@ public class LoginApi {
     /**
      * Implemented by Spring Security
      */
-    @ApiOperation(value = "Login", notes = "Login with the given credentials.")
-    @ApiResponses({@ApiResponse(code = 200, message = "", response = LoginResponse.class)})
-    @PostMapping(value = "/auth/login")
+    //@ApiOperation(value = "Login", notes = "Login with the given credentials.")
+    //@ApiResponses({@ApiResponse(code = 200, message = "", response = LoginResponse.class)})
+    //@PostMapping(value = "/auth/login")
     void login(@Valid @RequestParam String username,  @RequestParam String password) {
     	 throw new IllegalStateException("Add Spring Security to handle authentication");
     }

@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 public class OpdControllerTest {
 	
-	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DeliveryTypeControllerTest.class);
+	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(OpdControllerTest.class);
 
 	@Mock
 	protected OpdBrowserManager opdBrowserManagerMock;
@@ -57,9 +57,7 @@ public class OpdControllerTest {
 		Opd opd = OpdHelper.setup();
 		OpdDTO body = opdMapper.map2DTO(opd);
 
-		boolean isCreated = true;
-		when(opdBrowserManagerMock.newOpd(opdMapper.map2Model(body)))
-				.thenReturn(isCreated);
+		when(opdBrowserManagerMock.newOpd(opdMapper.map2Model(body)));
 		MvcResult result = this.mockMvc
 				.perform(post(request)
 						.contentType(MediaType.APPLICATION_JSON)

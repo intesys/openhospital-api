@@ -30,6 +30,10 @@ public class LaboratoryForPrintDTO {
     private String result;
 
     private Integer code;
+    
+    private String patName;
+    
+    private Integer patientCode;
 
 	public String getExam() {
 		return this.exam;
@@ -62,4 +66,22 @@ public class LaboratoryForPrintDTO {
 	public void setCode(Integer code) {
 		this.code = code;
 	}
+
+	public String getPatName() {
+		return patName;
+	}
+
+	public void setPatName(String patName) {
+		this.patName = patName;
+	}
+
+	public Integer getPatientCode() {
+		return patientCode;
+	}
+
+	public void setPatientCode(Integer patientCode) {
+		this.patientCode = patientCode;
+	}
+	
+	
 }
