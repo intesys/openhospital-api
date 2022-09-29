@@ -67,7 +67,7 @@ public class OpdDTO {
     @NotNull
     @ApiModelProperty(notes = "the admission note", example = "this is out patient", position = 8)
     private String note; // ADDED: Alex
-
+  
    // @NotNull
     @ApiModelProperty(notes = "a progr. in year for each ward", example = "18", position = 9)
     private int prog_year;
@@ -99,7 +99,7 @@ public class OpdDTO {
 	
 	private int hashCode = 0;
     
-    @ApiModelProperty(notes = "reasons for entry", position = 18)
+  /*  @ApiModelProperty(notes = "reasons for entry", position = 18)
     private String reason; // ADDED: Arnaud
     
     @ApiModelProperty(notes = "history of a medical or psychiatric patient", position = 19)
@@ -109,42 +109,11 @@ public class OpdDTO {
     private String allergies; // ADDED: Arnaud
     
     @ApiModelProperty(notes = "Current therapies", position = 21)
-    private String therapies; // ADDED: Arnaud
-    
+    private String therapies; // ADDED: Arnaud*/
+   
+    @NotNull
     @ApiModelProperty(notes = "prescription", position = 22)
     private String prescription; // ADDED: Arnaud
-    
-    public String getReason() {
-		return reason;
-	}
-
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
-
-	public String getAnamnesis() {
-		return anamnesis;
-	}
-
-	public void setAnamnesis(String anamnesis) {
-		this.anamnesis = anamnesis;
-	}
-
-	public String getAllergies() {
-		return allergies;
-	}
-
-	public void setAllergies(String allergies) {
-		this.allergies = allergies;
-	}
-
-	public String getTherapies() {
-		return therapies;
-	}
-
-	public void setTherapies(String therapies) {
-		this.therapies = therapies;
-	}
 
 	public String getPrescription() {
 		return prescription;
