@@ -123,7 +123,7 @@ public class VisitsController {
     @PostMapping(value = "/visits", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> newVisits(@RequestBody List<VisitDTO> newVisits) throws OHServiceException {
         LOGGER.info("Create Visits");
-        ArrayList<Visit> listVisits = (ArrayList<Visit>) mapper.map2ModelList(newVisits);
+        List<Visit> listVisits = mapper.map2ModelList(newVisits);
         boolean areCreated = visitManager.newVisits(listVisits);
         if (!areCreated) {
             throw new OHAPIException(new OHExceptionMessage(null, "Visits are not created!", OHSeverityLevel.ERROR));

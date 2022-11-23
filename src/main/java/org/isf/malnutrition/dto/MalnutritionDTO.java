@@ -21,7 +21,7 @@
  */
 package org.isf.malnutrition.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
@@ -38,11 +38,11 @@ public class MalnutritionDTO {
 	@NotNull(message="The date of control is required")
 	@ApiModelProperty(notes="The date of this malnutrition control", example = "1979-05-01T11:20:33.000Z", position = 2)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date dateSupp;
+	private LocalDateTime dateSupp;
 
 	@ApiModelProperty(notes="The date of the next malnutrition control", example = "1979-05-01T11:20:33.000Z", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date dateConf;
+	private LocalDateTime dateConf;
 
 	@NotNull(message="The admission is required")
 	@ApiModelProperty(notes="The admission requesting the control", position = 4)
@@ -62,8 +62,8 @@ public class MalnutritionDTO {
 	
 	public MalnutritionDTO() { }
 	
-	public MalnutritionDTO(int aCode, Date aDateSupp,
-			Date aDateConf, AdmissionDTO anAdmission, float aHeight,
+	public MalnutritionDTO(int aCode, LocalDateTime aDateSupp,
+			LocalDateTime aDateConf, AdmissionDTO anAdmission, float aHeight,
 			float aWeight) {
 		code = aCode;
 		dateSupp = aDateSupp;
@@ -85,11 +85,11 @@ public class MalnutritionDTO {
 		return this.code;
 	}
 
-	public Date getDateSupp() {
+	public LocalDateTime getDateSupp() {
 		return this.dateSupp;
 	}
 
-	public Date getDateConf() {
+	public LocalDateTime getDateConf() {
 		return this.dateConf;
 	}
 
@@ -109,11 +109,11 @@ public class MalnutritionDTO {
 		this.code = code;
 	}
 
-	public void setDateSupp(Date dateSupp) {
+	public void setDateSupp(LocalDateTime dateSupp) {
 		this.dateSupp = dateSupp;
 	}
 
-	public void setDateConf(Date dateConf) {
+	public void setDateConf(LocalDateTime dateConf) {
 		this.dateConf = dateConf;
 	}
 
@@ -128,4 +128,5 @@ public class MalnutritionDTO {
 	public void setWeight(float weight) {
 		this.weight = weight;
 	}
+
 }

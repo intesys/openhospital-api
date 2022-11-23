@@ -67,7 +67,7 @@ public class OperationTypeController {
 	/**
 	 * Create a new {@link OperationType}.
 	 * @param operationTypeDTO
-	 * @return <code>true</code> if the operation type has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the operation type has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/operationtypes", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,7 +84,7 @@ public class OperationTypeController {
 	/**
 	 * Updates the specified {@link OperationType}.
 	 * @param operationTypeDTO
-	 * @return <code>true</code> if the operation type has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the operation type has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/operationtypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -92,11 +92,14 @@ public class OperationTypeController {
 			throws OHServiceException {
 		LOGGER.info("Update operationtypes code: {}", operationTypeDTO.getCode());
 		OperationType opeType = mapper.map2Model(operationTypeDTO);
-		if (!opeTypeManager.isCodePresent(code))
+		if (!opeTypeManager.isCodePresent(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation Type not found!", OHSeverityLevel.ERROR));
+		}
 		OperationType isUpdated = opeTypeManager.updateOperationType(opeType);
-		if (isUpdated == null)
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation Type is not updated!", OHSeverityLevel.ERROR));
+		}
+		
 		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
 	}
 
@@ -120,7 +123,7 @@ public class OperationTypeController {
 	/**
 	 * Delete {@link OperationType} with the specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link OperationType} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link OperationType} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/operationtypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -229,6 +229,7 @@ public class ExaminationController {
             }
             return ResponseEntity.ok(patientExaminationDTO);
         }
+        return ResponseEntity.ok(patientExaminationDTO);
     }
 
     @GetMapping(value = "/examinations/fromLastPatientExamination/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

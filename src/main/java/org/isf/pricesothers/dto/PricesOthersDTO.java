@@ -53,7 +53,7 @@ public class PricesOthersDTO
 	
 	private boolean undefined;
     
-	private int hashCode = 0;
+	private int hashCode;
 
 	@ApiModelProperty(hidden= true)
 	public int getHashCode() {

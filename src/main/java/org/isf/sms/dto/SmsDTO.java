@@ -21,7 +21,7 @@
  */
 package org.isf.sms.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
@@ -36,12 +36,12 @@ public class SmsDTO {
 	@NotNull
 	@ApiModelProperty(notes = "SMS Date", example="2021-05-01T00:00:00.000Z", position = 2)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date smsDate;
+	private LocalDateTime smsDate;
 	
 	@NotNull
 	@ApiModelProperty(notes = "SMS scheduled date", example="2021-05-01T00:00:00.000Z", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date smsDateSched;
+	private LocalDateTime smsDateSched;
 	
 	@NotNull
 	@ApiModelProperty(notes = "SMS target phone number", example="+237671302313", position = 4)
@@ -53,7 +53,7 @@ public class SmsDTO {
 	
 	@ApiModelProperty(notes = "SMS sent date", example="2021-05-01T00:00:00.000Z", position = 6)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date smsDateSent;
+	private LocalDateTime smsDateSent;
 	
 	@NotNull
 	@ApiModelProperty(notes = "SMS user", example="Rosi", position = 7)
@@ -69,7 +69,7 @@ public class SmsDTO {
 	public SmsDTO() {
 	}
 
-	public SmsDTO(Integer smsId, Date smsDate, Date smsDateSched, String smsNumber, String smsText, Date smsDateSent,
+	public SmsDTO(Integer smsId, LocalDateTime smsDate, LocalDateTime smsDateSched, String smsNumber, String smsText, LocalDateTime smsDateSent,
 			String smsUser, String module, String moduleID) {
 		this.smsId = smsId;
 		this.smsDate = smsDate;
@@ -86,11 +86,11 @@ public class SmsDTO {
 		return this.smsId;
 	}
 
-	public Date getSmsDate() {
+	public LocalDateTime getSmsDate() {
 		return this.smsDate;
 	}
 
-	public Date getSmsDateSched() {
+	public LocalDateTime getSmsDateSched() {
 		return this.smsDateSched;
 	}
 
@@ -102,7 +102,7 @@ public class SmsDTO {
 		return this.smsText;
 	}
 
-	public Date getSmsDateSent() {
+	public LocalDateTime getSmsDateSent() {
 		return this.smsDateSent;
 	}
 
@@ -122,11 +122,11 @@ public class SmsDTO {
 		this.smsId = smsId;
 	}
 
-	public void setSmsDate(Date smsDate) {
+	public void setSmsDate(LocalDateTime smsDate) {
 		this.smsDate = smsDate;
 	}
 
-	public void setSmsDateSched(Date smsDateSched) {
+	public void setSmsDateSched(LocalDateTime smsDateSched) {
 		this.smsDateSched = smsDateSched;
 	}
 
@@ -138,7 +138,7 @@ public class SmsDTO {
 		this.smsText = smsText;
 	}
 
-	public void setSmsDateSent(Date smsDateSent) {
+	public void setSmsDateSent(LocalDateTime smsDateSent) {
 		this.smsDateSent = smsDateSent;
 	}
 
@@ -153,4 +153,5 @@ public class SmsDTO {
 	public void setModuleID(String moduleID) {
 		this.moduleID = moduleID;
 	}
+
 }

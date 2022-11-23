@@ -21,11 +21,16 @@
  */
 package org.isf.sms.rest;
 
+<<<<<<< HEAD
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+=======
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+>>>>>>> upstream/develop
 import java.util.List;
 
 import javax.validation.Valid;
@@ -73,9 +78,10 @@ public class SmsController {
 	 */
 	@GetMapping(value = "/sms", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<SmsDTO>> getAll(
-			@RequestParam(required=true) String dateFrom, 
-			@RequestParam(required=true) String dateTo) throws OHServiceException {
+			@RequestParam(required = true) String dateFrom,
+			@RequestParam(required = true) String dateTo) throws OHServiceException {
 		LOGGER.info("Fetching the list of sms");
+<<<<<<< HEAD
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		Date from, to;
 		LocalDateTime dateT = null;
@@ -96,20 +102,25 @@ public class SmsController {
 		}
 		
 		List<Sms> smsList = smsManager.getAll(dateF, dateT);
+=======
+		LocalDateTime from = LocalDate.parse(dateFrom).atStartOfDay();
+		LocalDateTime to = LocalDate.parse(dateTo).atStartOfDay();
+		List<Sms> smsList = smsManager.getAll(from, to);
+>>>>>>> upstream/develop
 		List<SmsDTO> mappedSmsList = smsMapper.map2DTOList(smsList);
-		if(mappedSmsList.isEmpty()){
+		if (mappedSmsList.isEmpty()) {
 			LOGGER.info("No sms found");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedSmsList);
-        }else{
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedSmsList);
+		} else {
 			LOGGER.info("Found {} sms", mappedSmsList.size());
-            return ResponseEntity.ok(mappedSmsList);
-        }
+			return ResponseEntity.ok(mappedSmsList);
+		}
 	}
 	
 	/**
 	 * Save the specified {@link Sms}.
 	 * @param smsDTO
-	 * @return <code>true</code> if the sms is saved
+	 * @return {@code true} if the sms is saved
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/sms", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -123,13 +134,13 @@ public class SmsController {
 	/**
 	 * Deletes the specified {@link Sms}.
 	 * @param smsDTOList
-	 * @return <code>true</code> if the sms is deleted
+	 * @return {@code true} if the sms is deleted
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/sms/delete", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> deleteSms(@RequestBody @Valid List<SmsDTO> smsDTOList) throws OHServiceException {
 		List<Sms> smsList = smsMapper.map2ModelList(smsDTOList);
-		if(smsList.stream().anyMatch(sms -> sms.getSmsId() <= 0)) {
+		if (smsList.stream().anyMatch(sms -> sms.getSmsId() <= 0)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Some Sms are not found!", OHSeverityLevel.ERROR));
 		}
 		smsManager.delete(smsList);

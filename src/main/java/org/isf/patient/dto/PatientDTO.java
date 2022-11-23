@@ -21,7 +21,7 @@
  */
 package org.isf.patient.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
@@ -45,9 +45,10 @@ public class PatientDTO {
 	private String secondName;
 
 	private String name;
+	
 	@ApiModelProperty(notes = "Birth date", example="1979-05-01T14:20:55.000Z", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date birthDate;
+	private LocalDate birthDate;
 
 	@NotNull
 	@ApiModelProperty(notes = "Age", example="40", position = 5)
@@ -122,7 +123,7 @@ public class PatientDTO {
 	@ApiModelProperty(notes = "Current anamnesis", position = 23)
 	private String anamnesis; // ADDED: Arnaud
 	
-	private int hashCode = 0;
+	private int hashCode;
 	
 	@ApiModelProperty(notes = "status", example="I", position = 24)
 	private PatientSTATUS status;
@@ -179,7 +180,7 @@ public class PatientDTO {
 		return this.secondName;
 	}
 
-	public Date getBirthDate() {
+	public LocalDate getBirthDate() {
 		return this.birthDate;
 	}
 
@@ -271,7 +272,7 @@ public class PatientDTO {
 		this.name = name;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 

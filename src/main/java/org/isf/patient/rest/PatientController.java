@@ -140,9 +140,8 @@ public class PatientController {
         }).collect(Collectors.toList());
         if(patientDTOS.isEmpty()){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(patientDTOS);
-        }else{
-            return ResponseEntity.ok(patientDTOS);
         }
+		return ResponseEntity.ok(patientDTOS);
 	}
 
 	@GetMapping(value = "/patients/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -242,7 +241,7 @@ public class PatientController {
 	public ResponseEntity<Boolean> deletePatient(@PathVariable int code) throws OHServiceException {
 		LOGGER.info("Delete patient code: {}", code);
         Patient patient = patientManager.getPatientById(code);
-        boolean isDeleted = false;
+        boolean isDeleted;
         if (patient != null) {
             isDeleted = patientManager.deletePatient(patient);
         } else {
@@ -259,11 +258,11 @@ public class PatientController {
 		LOGGER.info("merge patient for code {} in patient for code {}", code2, mergedcode);
         Patient mergedPatient = patientManager.getPatientById(mergedcode);
         Patient patient2 = patientManager.getPatientById(code2);
-        if(mergedPatient == null || patient2 == null) {
+        if (mergedPatient == null || patient2 == null) {
         	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         boolean merged = patientManager.mergePatient(mergedPatient, patient2);
-        if(!merged) {
+        if (!merged) {
         	throw new OHAPIException(new OHExceptionMessage(null, "Patients are not merged!", OHSeverityLevel.ERROR));
         }
         return ResponseEntity.ok(merged);

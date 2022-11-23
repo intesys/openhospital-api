@@ -26,7 +26,7 @@
  */
 package org.isf.operation.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
@@ -52,7 +52,7 @@ public class OperationRowDTO {
 
     //@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date opDate;
+	private LocalDateTime opDate;
 
     private String remarks;
 
@@ -65,7 +65,7 @@ public class OperationRowDTO {
 
     private Float transUnit;
     
-    private int hashCode = 0;
+    private int hashCode;
 
     @ApiModelProperty(hidden= true)
 	public int getHashCode() {
@@ -74,7 +74,7 @@ public class OperationRowDTO {
 
 	@Override
 	public String toString() {
-        return this.operation.getDescription() + " " + this.admission.getUserID();
+        return this.operation.getDescription() + ' ' + this.admission.getUserID();
     }
 
 	public int getId() {
@@ -93,7 +93,7 @@ public class OperationRowDTO {
 		return this.opResult;
 	}
 
-	public Date getOpDate() {
+	public LocalDateTime getOpDate() {
 		return this.opDate;
 	}
 
@@ -133,7 +133,7 @@ public class OperationRowDTO {
 		this.opResult = opResult;
 	}
 
-	public void setOpDate(Date opDate) {
+	public void setOpDate(LocalDateTime opDate) {
 		this.opDate = opDate;
 	}
 

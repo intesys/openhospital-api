@@ -100,14 +100,14 @@ public class OperationController {
 	/**
 	 * Create a new {@link Operation}.
 	 * @param operationDTO
-	 * @return <code>true</code> if the operation has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the operation has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/operations", produces = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<OperationDTO> newOperation(@RequestBody OperationDTO operationDTO) throws OHServiceException {
 		String code = operationDTO.getCode();
 		LOGGER.info("Create operation {}", code);
-		if(operationManager.descriptionControl(operationDTO.getDescription(), operationDTO.getType().getCode())) {
+		if (operationManager.descriptionControl(operationDTO.getDescription(), operationDTO.getType().getCode())) {
 			throw new OHAPIException(new OHExceptionMessage(null, "another operation has already been created with provided description and types!", OHSeverityLevel.ERROR));
 		}
 		Operation operation = mapper.map2Model(operationDTO);
@@ -121,7 +121,7 @@ public class OperationController {
 	/**
 	 * Updates the specified {@link Operation}.
 	 * @param operationDTO
-	 * @return <code>true</code> if the operation has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the operation has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/operations/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -129,12 +129,15 @@ public class OperationController {
 			throws OHServiceException {
 		LOGGER.info("Update operations code: {}", operationDTO.getCode());
 		Operation operation = mapper.map2Model(operationDTO);
-		if (!operationManager.isCodePresent(code))
+		if (!operationManager.isCodePresent(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation not found!", OHSeverityLevel.ERROR));
+		}
 		operation.setLock(operationDTO.getLock());
 		Operation isUpdated = operationManager.updateOperation(operation);
-		if (isUpdated == null)
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation is not updated!", OHSeverityLevel.ERROR));
+		}
+		
 		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
 	}
 
@@ -191,13 +194,13 @@ public class OperationController {
 	/**
 	 * Delete {@link Operation} for specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link Operation} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link Operation} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/operations/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> deleteOperation(@PathVariable("code") String code) throws OHServiceException {
 		LOGGER.info("Delete operation code: {}", code);
-		boolean isDeleted = false;
+		boolean isDeleted;
 		Operation operation = operationManager.getOperationByCode(code);
 		if (operation != null) {
 			isDeleted = operationManager.deleteOperation(operation);
@@ -211,7 +214,7 @@ public class OperationController {
 	/**
 	 * Create a new {@link OperationRow}.
 	 * @param operationRowDTO
-	 * @return <code>true</code> if the operation has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the operation has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/operations/rows", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -247,7 +250,7 @@ public class OperationController {
 	/**
 	 * Updates the specified {@link OperationRow}.
 	 * @param operationRowDTO
-	 * @return <code>true</code> if the operation row has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the operation row has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/operations/rows", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -262,11 +265,13 @@ public class OperationController {
 		
 		List<OperationRow> opRowFounds = operationRowManager.getOperationRowByAdmission(opRow.getAdmission()).stream().filter(op -> op.getId() == opRow.getId())
 				.collect(Collectors.toList());
-		if (opRowFounds.isEmpty())
+		if (opRowFounds.isEmpty()) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation row not found!", OHSeverityLevel.ERROR));
+		}
 		boolean isUpdated = operationRowManager.updateOperationRow(opRow);
-		if (!isUpdated)
+		if (!isUpdated) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation is not updated!", OHSeverityLevel.ERROR));
+		}
 		return ResponseEntity.ok(opRow.getId());
 	}
 	
@@ -352,7 +357,7 @@ public class OperationController {
 	/**
 	 * Delete the {@link OperationRow} with the specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link OperationRow} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link OperationRow} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/operations/rows/{code}", produces = MediaType.APPLICATION_JSON_VALUE)

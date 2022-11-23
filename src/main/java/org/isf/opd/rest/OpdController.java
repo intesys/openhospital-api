@@ -29,6 +29,7 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -172,7 +173,7 @@ public class OpdController {
 	@GetMapping(value = "/opds/weekly", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OpdDTO>> getOpdToDayOrWeek(@RequestParam(name="oneWeek", required=false) Boolean oneWeek) throws OHServiceException {
 		LOGGER.info("Get all today or since one week opd");
-		if(oneWeek == null) {
+		if (oneWeek == null) {
 			oneWeek = false;
 		}		
 		List<Opd> opds = opdManager.getOpd(oneWeek);
@@ -201,12 +202,12 @@ public class OpdController {
 		LOGGER.info("Get opd within specified dates");
 		LocalDate dateF = null;
 		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
 		}
 		
 		LocalDate dateT = null;
 		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
 		}
 		List<Opd> opds = opdManager.getOpd(diseaseTypeCode, diseaseCode, dateF, dateT, ageFrom,  ageTo, sex, newPatient, patientCode);
 		
@@ -257,7 +258,7 @@ public class OpdController {
 	/**
 	 * Delete {@link Opd} for specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link Opd} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link Opd} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/opds/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -273,7 +274,7 @@ public class OpdController {
 	}
 	
 	/**
-	 * Get the maximum progressive number within specified year or within current year if <code>0</code>.
+	 * Get the maximum progressive number within specified year or within current year if {@code 0}.
 	 * @return the max progressive number
 	 * @throws OHServiceException
 	 */
@@ -286,7 +287,7 @@ public class OpdController {
 	
 	/**
 	 * Get the last {@link Opd} in time associated with specified patient ID.
-	 * @return last Opd associated with specified patient ID or <code>null</code>
+	 * @return last Opd associated with specified patient ID or {@code null}
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/opds/last/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -302,8 +303,8 @@ public class OpdController {
 	}
 	
 	/**
-	 * Check if the given <code>opdNum</code> does already exist for the given <code>year</code>.
-	 * @return <code>true</code> if the given number exists in year, <code>false</code> otherwise
+	 * Check if the given {@code opdNum} does already exist for the given {@code year}.
+	 * @return {@code true} if the given number exists in year, {@code false} otherwise
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/opds/check/progyear", produces = MediaType.APPLICATION_JSON_VALUE)

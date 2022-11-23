@@ -75,7 +75,7 @@ public class ReportsController {
 			throw new OHAPIException(new OHExceptionMessage(null, "File not found", OHSeverityLevel.ERROR));
 		}
 
-		String contentType = null;
+		String contentType;
 		try {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
@@ -97,7 +97,7 @@ public class ReportsController {
 		return ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType(contentType))
 				.header(HttpHeaders.CONTENT_DISPOSITION,
-						"attachment; filename=\"" + resource.getFilename() + "\"")
+						"attachment; filename=\"" + resource.getFilename() + '"')
 				.body(out);
 	}
 }

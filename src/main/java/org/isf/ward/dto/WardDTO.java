@@ -56,13 +56,11 @@ public class WardDTO {
 	@NotNull
 	private boolean isFemale;
 
+	@NotNull
+	private int visitDuration;
+
 	@ApiModelProperty(notes = "lock", example = "0")
 	private int lock;
-	
-	
-	public int getLock() {
-		return lock;
-	}
 
 	public void setLock(int lock) {
 		this.lock = lock;
@@ -112,6 +110,13 @@ public class WardDTO {
 		return this.isFemale;
 	}
 
+	public Integer getVisitDuration() {
+		return this.visitDuration;
+	}
+
+	public Integer getLock() {
+		return this.lock;
+	}
 
 	public void setCode(String code) {
 		this.code = code;
@@ -157,4 +162,11 @@ public class WardDTO {
 		this.isFemale = isFemale;
 	}
 
+	public void setVisitDuration(Integer visitDuration) {
+		this.visitDuration = visitDuration;
+	}
+
+	public void setLock(Integer lock) {
+		this.lock = lock;
+	}
 }

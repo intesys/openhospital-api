@@ -21,8 +21,11 @@
  */
 package org.isf.therapy.rest;
 
+<<<<<<< HEAD
 import java.time.ZoneId;
 import java.util.ArrayList;
+=======
+>>>>>>> upstream/develop
 import java.util.List;
 
 import javax.validation.Valid;
@@ -94,14 +97,21 @@ public class TherapyController {
 	/**
 	 * Replaces all therapies for related Patient.
 	 * @param thRowDTOs - the list of therapies
-	 * @return <code>true</code> if the rows has been inserted, <code>false</code> otherwise
+	 * @return {@code true} if the rows has been inserted, {@code false} otherwise
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/therapies/replace", produces = MediaType.APPLICATION_JSON_VALUE)
+<<<<<<< HEAD
 	public ResponseEntity<TherapyRow> replaceTherapies(@RequestBody @Valid List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
 		ArrayList<TherapyRow> therapies = (ArrayList<TherapyRow>)therapyRowMapper.map2ModelList(thRowDTOs);
 		TherapyRow done = manager.newTherapy(therapies.get(0));
 		if(done != null) {
+=======
+	public ResponseEntity<Boolean> replaceTherapies(@RequestBody @Valid List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
+		List<TherapyRow> therapies = therapyRowMapper.map2ModelList(thRowDTOs);
+		boolean done = manager.newTherapies(therapies);
+		if (done) {
+>>>>>>> upstream/develop
 			return ResponseEntity.status(HttpStatus.CREATED).body(done);
 		} else {
 			throw new OHAPIException(new OHExceptionMessage(null, "Therapies are not replaced!", OHSeverityLevel.ERROR));
@@ -111,13 +121,13 @@ public class TherapyController {
 	/**
 	 * Deletes all therapies for specified Patient Code.
 	 * @param code - the Patient Code
-	 * @return <code>true</code> if the therapies have been deleted, <code>false</code> otherwise
+	 * @return {@code true} if the therapies have been deleted, {@code false} otherwise
 	 * @throws OHServiceException 
 	 */
 	@DeleteMapping(value = "/therapies/{code_patient}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> deleteAllTherapies(@PathVariable("code_patient") Integer code) throws OHServiceException {
 		boolean done = manager.deleteAllTherapies(code);
-		if(done) {
+		if (done) {
 			return ResponseEntity.ok(done);
 		} else {
 			throw new OHAPIException(new OHExceptionMessage(null, "Therapies are not deleted!", OHSeverityLevel.ERROR));
@@ -132,10 +142,10 @@ public class TherapyController {
 	 */
 	@PostMapping(value = "/therapies/meds-out-of-stock", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<MedicalDTO>> getMedicalsOutOfStock(@RequestBody List<TherapyDTO> therapyDTOs) throws OHServiceException {
-		ArrayList<Therapy> therapyRows = (ArrayList<Therapy>) therapyMapper.map2ModelList(therapyDTOs);
+		List<Therapy> therapyRows = therapyMapper.map2ModelList(therapyDTOs);
 		List<Medical> meds = manager.getMedicalsOutOfStock(therapyRows);
 		List<MedicalDTO> mappedMeds = medicalMapper.map2DTOList(meds);
-		if(mappedMeds.isEmpty()) {
+		if (mappedMeds.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMeds);
 		} else {
 			LOGGER.info("Found {} medicals", mappedMeds.size());
@@ -146,14 +156,14 @@ public class TherapyController {
 	/**
 	 * Gets the list of therapies for specified Patient ID.
 	 * @param patientID - the Patient ID
-	 * @return the list of therapies of the patient or all the therapies if <code>0</code> is passed
+	 * @return the list of therapies of the patient or all the therapies if {@code 0} is passed
 	 * @throws OHServiceException 
 	 */
 	@GetMapping(value = "/therapies/{code_patient}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<TherapyRowDTO>> getTherapyRows(@PathVariable("code_patient") Integer patientID) throws OHServiceException {
 		List<TherapyRow> thRows = manager.getTherapyRows(patientID);
 		List<TherapyRowDTO> mappedThRows = therapyRowMapper.map2DTOList(thRows);
-		if(mappedThRows.isEmpty()) {
+		if (mappedThRows.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedThRows);
 		} else {
 			LOGGER.info("Found {} therapies", mappedThRows.size());
@@ -169,10 +179,10 @@ public class TherapyController {
 	 */
 	@PostMapping(value = "/therapies/from-rows", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<TherapyDTO>> getTherapies(@RequestBody @Valid List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
-		ArrayList<TherapyRow> thRows = (ArrayList<TherapyRow>) therapyRowMapper.map2ModelList(thRowDTOs);
+		List<TherapyRow> thRows = therapyRowMapper.map2ModelList(thRowDTOs);
 		List<Therapy> therapies = manager.getTherapies(thRows);
 		List<TherapyDTO> mappedTherapies = therapies != null? therapyMapper.map2DTOList(therapies) : null;
-		if(mappedTherapies == null || mappedTherapies.isEmpty()) {
+		if (mappedTherapies == null || mappedTherapies.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedTherapies);
 		} else {
 			LOGGER.info("Found {} therapies", mappedTherapies.size());

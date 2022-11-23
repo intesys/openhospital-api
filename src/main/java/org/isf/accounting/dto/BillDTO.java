@@ -21,7 +21,7 @@
  */
 package org.isf.accounting.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
@@ -43,12 +43,12 @@ public class BillDTO {
 	@NotNull
 	@ApiModelProperty(notes = "Date of bill creation", example="2020-03-19T14:58:00.000Z", position = 1)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date date;
+	private LocalDateTime date;
 	
 	@NotNull
 	@ApiModelProperty(notes = "Date of bill updated", example="2020-03-19T14:58:00.000Z", position = 2)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date update;
+	private LocalDateTime update;
 	
 	@NotNull
 	@ApiModelProperty(notes = "boolean which tells if a price list is applied", example="true", position = 3)
@@ -94,11 +94,11 @@ public class BillDTO {
 		return this.listId;
 	}
 
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return this.date;
 	}
 
-	public Date getUpdate() {
+	public LocalDateTime getUpdate() {
 		return this.update;
 	}
 
@@ -142,11 +142,11 @@ public class BillDTO {
 		this.listId = listId;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 
-	public void setUpdate(Date update) {
+	public void setUpdate(LocalDateTime update) {
 		this.update = update;
 	}
 
