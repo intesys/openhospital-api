@@ -329,7 +329,6 @@ public class AdmissionController {
 		if(patientCode == 0) {
 			 admittedPatients = admissionManager.getAdmittedPatients(admissionR, dischargeR,"");
 		}else {
-			String term = Integer.toString(patientCode);
 			admittedPatients = admissionManager.getAdmittedPatients(admissionR, dischargeR,
 					Integer.toString(patientCode));
 		}
@@ -694,6 +693,7 @@ public class AdmissionController {
 				? newAdmission.getPatient().getFirstName() + ' ' + newAdmission.getPatient().getSecondName()
 				: newAdmission.getPatient().getName();
 		LOGGER.info("Create admission for patient {}", name);
+		newAdmission.setAdmitted(1);
 		Admission ad = admissionManager.newAdmission(newAdmission);
 		if (ad == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Admission is not created!", OHSeverityLevel.ERROR));
