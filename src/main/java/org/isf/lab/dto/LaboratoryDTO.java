@@ -40,9 +40,9 @@ public class LaboratoryDTO {
     @ApiModelProperty(notes = "Laboratory Exam", position = 3)
     private ExamDTO exam;
 
-    @ApiModelProperty(notes = "Laboratory Registration Date", position = 4)
+  /*  @ApiModelProperty(notes = "Laboratory Registration Date", position = 4)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date registrationDate;
+	private Date registrationDate;*/
     
     @ApiModelProperty(notes = "Laboratory Exam Date", position = 5)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -93,9 +93,9 @@ public class LaboratoryDTO {
 		return this.exam;
 	}
 
-	public Date getRegistrationDate() {
+	/*public Date getRegistrationDate() {
 		return this.registrationDate;
-	}
+	}*/
 
 	public String getResult() {
 		return this.result;
@@ -137,9 +137,9 @@ public class LaboratoryDTO {
 		this.exam = exam;
 	}
 
-	public void setRegistrationDate(Date registrationDate) {
+	/*public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
-	}
+	}*/
 
 	public void setResult(String result) {
 		this.result = result;

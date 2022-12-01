@@ -121,10 +121,10 @@ public class LaboratoryController {
         if (labRow != null) {
             labRows = new ArrayList<String>(labRow);
         }
-        if(laboratoryDTO.getRegistrationDate() == null) {
+        if(laboratoryDTO.getExamDate() == null) {
         	labToInsert.setDate(LocalDateTime.now());
         } else {
-        	 labToInsert.setDate(laboratoryDTO.getRegistrationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        	 labToInsert.setDate(laboratoryDTO.getExamDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         }
         boolean inserted = laboratoryManager.newLaboratory(labToInsert, labRows);
 
@@ -219,7 +219,11 @@ public class LaboratoryController {
         Laboratory labToInsert = laboratoryMapper.map2Model(laboratoryDTO);
         labToInsert.setExam(labToInsert.getExam());
         labToInsert.setPatient(patient);
-        labToInsert.setDate(LocalDateTime.now());
+        if(laboratoryDTO.getExamDate() == null) {
+        	labToInsert.setDate(LocalDateTime.now());
+        } else {
+        	 labToInsert.setDate(laboratoryDTO.getExamDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        }
         ArrayList<String> labRows = new ArrayList<String>();
         if (labRow != null) {
             labRows = new ArrayList<String>(labRow);
@@ -258,7 +262,6 @@ public class LaboratoryController {
         		if(lab.getDate()!= null) {
         			Instant instant2 = lab.getDate().atZone(ZoneId.systemDefault()).toInstant();
             	    Date date2 = Date.from(instant2); 
-            	    labDTO.setRegistrationDate(date2);
             	    labDTO.setExamDate(date2);
        		     } 
         		return labDTO;
@@ -280,8 +283,7 @@ public class LaboratoryController {
         		LaboratoryDTO labDTO =  laboratoryMapper.map2DTO(lab);
             	if(lab.getDate()!= null) {
             		Instant instant2 = lab.getDate().atZone(ZoneId.systemDefault()).toInstant();
-            		Date date2 = Date.from(instant2); 
-            		labDTO.setRegistrationDate(date2);
+            		Date date2 = Date.from(instant2);
             		labDTO.setExamDate(date2);
       		     }  
             	return labDTO;
@@ -343,7 +345,6 @@ public class LaboratoryController {
         if(lab.getDate()!= null) {
         	Instant instant1 = lab.getDate().atZone(ZoneId.systemDefault()).toInstant();
          	Date date1 = (Date) Date.from(instant1);
-            laboratoryDTO.setRegistrationDate(date1);
             laboratoryDTO.setExamDate(date1);
         }
         return ResponseEntity.ok(laboratoryDTO);
@@ -364,8 +365,7 @@ public class LaboratoryController {
         LaboratoryDTO labDTO = laboratoryMapper.map2DTO(laboratory);
         if(laboratory.getDate()!=null) {
         	Instant instant1 = laboratory.getDate().atZone(ZoneId.systemDefault()).toInstant();
-          	Date date1 = (Date) Date.from(instant1);	
-          	labDTO.setRegistrationDate(date1);
+          	Date date1 = (Date) Date.from(instant1);
           	labDTO.setExamDate(date1);
         }
         lab.setLaboratoryDTO(labDTO);

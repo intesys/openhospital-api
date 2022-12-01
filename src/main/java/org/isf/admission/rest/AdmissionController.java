@@ -302,11 +302,11 @@ public class AdmissionController {
 	 */
 	@GetMapping(value = "/admissions", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AdmissionDTO>> getAdmissions(
-			@RequestParam(name = "patientCode", defaultValue = "0", required = false) int patientCode,
+			@RequestParam(name = "patientcode", defaultValue = "0", required = false) int patientcode,
 			@RequestParam(name = "admissionrange", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date[] admissionrange,
 			@RequestParam(name = "dischargerange", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date[] dischargerange)
 			throws OHServiceException {
-		LOGGER.info("Get admissions of patients by  id: {}", patientCode);
+		LOGGER.info("Get admissions of patients by  id: {}", patientcode);
 		LocalDateTime[] admissionR= new LocalDateTime[2];	
 		LocalDateTime[] dischargeR = new LocalDateTime[2];
 		
@@ -326,11 +326,11 @@ public class AdmissionController {
 			}
 		}
 		List<AdmittedPatient> admittedPatients = new ArrayList<AdmittedPatient>();
-		if(patientCode == 0) {
+		if(patientcode == 0) {
 			 admittedPatients = admissionManager.getAdmittedPatients(admissionR, dischargeR,"");
 		}else {
 			admittedPatients = admissionManager.getAdmittedPatients(admissionR, dischargeR,
-					Integer.toString(patientCode));
+					Integer.toString(patientcode));
 		}
 		List<AdmissionDTO> adms = admittedPatients.stream().map(admP->{
 			
