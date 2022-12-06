@@ -92,7 +92,7 @@ public class PatientController {
         String name = StringUtils.isEmpty(newPatient.getName()) ? newPatient.getFirstName() + " " + newPatient.getSecondName() : newPatient.getName();
 		LOGGER.info("Create patient {}", name);
 		Patient patient = patientMapper.map2Model(newPatient);
-        Patient pat = patientManager.savePatients(patient);
+        Patient pat = patientManager.savePatient(patient);
         if(pat == null){
             throw new OHAPIException(new OHExceptionMessage(null, "Patient is not created!", OHSeverityLevel.ERROR));
         }

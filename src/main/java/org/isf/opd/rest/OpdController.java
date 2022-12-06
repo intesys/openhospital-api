@@ -40,6 +40,7 @@ import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
+import org.isf.ward.manager.WardBrowserManager;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -77,6 +78,9 @@ public class OpdController {
 	
 	@Autowired
 	protected PatientBrowserManager patientBrowserManager;
+	
+	 @Autowired
+	 protected WardBrowserManager wardManager;
 
 	public OpdController(OpdBrowserManager opdManager, OpdMapper opdmapper) {
 		this.opdManager = opdManager;
@@ -105,6 +109,7 @@ public class OpdController {
 		}
 		Opd opdToInsert = mapper.map2Model(opdDTO);
 		opdToInsert.setDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+		opdToInsert.setWard(wardManager.findWard("OPD"));
 		Opd isCreated = opdManager.newOpd(opdToInsert);
 		if (isCreated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Opd is not created!", OHSeverityLevel.ERROR));
