@@ -149,6 +149,7 @@ public class OpdController {
 		opdToUpdate.setDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		//opdToUpdate.setVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		opdToUpdate.setLock(opdDTO.getLock());
+		opdToUpdate.setWard(wardManager.findWard("OPD"));
 		Opd updatedOpd = opdManager.updateOpd(opdToUpdate);
 		
 		if(updatedOpd == null)

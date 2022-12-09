@@ -28,9 +28,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -43,8 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -69,6 +64,7 @@ import org.isf.accounting.model.Bill;
 import org.isf.accounting.model.BillItems;
 import org.isf.accounting.model.BillPayments;
 import org.isf.accounting.test.TestBillItems;
+import org.isf.patient.data.PatientHelper;
 import org.isf.patient.manager.PatientBrowserManager;
 import org.isf.patient.mapper.PatientMapper;
 import org.isf.patient.model.Patient;
@@ -88,6 +84,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.module.jsr310.Jsr310Module;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -120,6 +117,7 @@ public class BillControllerTest extends ControllerBaseTest {
 
 	private PatientMapper patientMapper = new PatientMapper();
 
+	@Autowired
 	private MockMvc mockMvc;
 
 	@BeforeEach
@@ -156,8 +154,8 @@ public class BillControllerTest extends ControllerBaseTest {
 
 		Optional<HttpMediaTypeNotSupportedException> exception = Optional.ofNullable((HttpMediaTypeNotSupportedException) result.getResolvedException());
 		LOGGER.debug("exception: {}", exception);
-		//exception.ifPresent(se -> assertThat(se, notNullValue()));
-		//exception.ifPresent(se -> assertThat(se, instanceOf(HttpMediaTypeNotSupportedException.class)));
+		exception.ifPresent(se -> assertThat(se, notNullValue()));
+		exception.ifPresent(se -> assertThat(se, instanceOf(HttpMediaTypeNotSupportedException.class)));
 
 	}
 
@@ -180,8 +178,8 @@ public class BillControllerTest extends ControllerBaseTest {
 
 		Optional<HttpMessageNotReadableException> exception = Optional.ofNullable((HttpMessageNotReadableException) result.getResolvedException());
 		LOGGER.debug("exception: {}", exception);
-		//exception.ifPresent(se -> assertThat(se, notNullValue()));
-		//exception.ifPresent(se -> assertThat(se, instanceOf(HttpMessageNotReadableException.class)));
+		exception.ifPresent(se -> assertThat(se, notNullValue()));
+		exception.ifPresent(se -> assertThat(se, instanceOf(HttpMessageNotReadableException.class)));
 	}
 
 	@Test
@@ -212,8 +210,8 @@ public class BillControllerTest extends ControllerBaseTest {
 		//TODO Create OHCreateAPIException
 		Optional<OHAPIException> oHAPIException = Optional.ofNullable((OHAPIException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", oHAPIException);
-		//oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
-		//oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
+		oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
+		oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
 	}
 
 	@Test
@@ -224,10 +222,11 @@ public class BillControllerTest extends ControllerBaseTest {
 		FullBillDTO newFullBillDTO = FullBillDTOHelper.setup(patientMapper, billItemsMapper, billPaymentsMapper);
 		newFullBillDTO.getBill().setId(id);
 		Integer code = 111;
+		Patient patient = PatientHelper.setup();
 		newFullBillDTO.getBill().getPatient().setCode(code);
 		newFullBillDTO.getBill().setPatient(true);
 		Bill bill = BillHelper.setup();
-		when(patientManagerMock.getPatientByName(bill.getPatName())).thenReturn(null); //FIXME: why we were searching by name?
+		when(patientManagerMock.getPatientById(bill.getBillPatient().getCode())).thenReturn(patient); //FIXME: why we were searching by name?
 		when(billManagerMock.getBill(id)).thenReturn(bill);
 		when(billManagerMock.deleteBill(bill)).thenReturn(true);
 
@@ -246,8 +245,8 @@ public class BillControllerTest extends ControllerBaseTest {
 		//TODO Create OHCreateAPIException
 		Optional<OHAPIException> oHAPIException = Optional.ofNullable((OHAPIException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", oHAPIException);
-		//oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
-		//oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
+		oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
+		oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
 	}
 
 	@Test

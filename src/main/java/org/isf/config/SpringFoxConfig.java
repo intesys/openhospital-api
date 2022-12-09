@@ -31,6 +31,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.google.common.base.Predicate;
+
+import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -69,9 +72,9 @@ public class SpringFoxConfig {
                 .host(host)
                 .protocols(protocols)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("org.isf"))
+                .apis((Predicate<RequestHandler>) RequestHandlerSelectors.basePackage("org.isf"))
                 //.apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
+                .paths((Predicate<String>) PathSelectors.any())
                 .build()
                 .securityContexts(Arrays.asList(jwtSecurityContext()))
                 .securitySchemes(securitySchemes);
@@ -81,7 +84,7 @@ public class SpringFoxConfig {
         return SecurityContext
                 .builder()
                 .securityReferences(defaultAuth())
-                .forPaths(PathSelectors.regex("^(?!(\\/auth\\/login)).*$"))
+                .forPaths((Predicate<String>) PathSelectors.regex("^(?!(\\/auth\\/login)).*$"))
                 .build();
     }
 

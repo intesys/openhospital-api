@@ -86,14 +86,12 @@ public class WardControllerTest {
 		when(wardBrowserManagerMock.getWards())
 				.thenReturn(wardList);
 
-		List<WardDTO> expectedWardDTOs = wardMapper.map2DTOList(wardList);
-
 		MvcResult result = this.mockMvc
 				.perform(get(request))
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(status().isOk())
-				.andExpect(content().string(containsString(WardHelper.getObjectMapper().writeValueAsString(expectedWardDTOs))))
+				.andExpect(content().string(containsString(WardHelper.getObjectMapper().writeValueAsString(wardMapper.map2DTOList(wardList)))))
 				.andReturn();
 
 		LOGGER.debug("result: {}", result);
@@ -108,14 +106,13 @@ public class WardControllerTest {
 		when(wardBrowserManagerMock.getWardsNoMaternity()) //TODO OP-6 BUG (CORE) on WardIoOperationRepository.java line 15 about method name
 				.thenReturn(wardList);
 
-		List<WardDTO> expectedWardDTOs = wardMapper.map2DTOList(wardList);
 
 		MvcResult result = this.mockMvc
 				.perform(get(request))
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(status().isOk())
-				.andExpect(content().string(containsString(WardHelper.getObjectMapper().writeValueAsString(expectedWardDTOs))))
+				.andExpect(content().string(containsString(WardHelper.getObjectMapper().writeValueAsString(wardMapper.map2DTOList(wardList)))))
 				// TODO assert that all wards on list are WRD_ID_A <> M
 				.andReturn();
 
@@ -154,15 +151,14 @@ public class WardControllerTest {
 		String request = "/wards";
 		int code = 1;
 		Ward ward = WardHelper.setup(code);
-		WardDTO body = wardMapper.map2DTO(ward);
 
-		when(wardBrowserManagerMock.newWard(wardMapper.map2Model(body)))
+		when(wardBrowserManagerMock.newWard(wardMapper.map2Model(wardMapper.map2DTO(ward))))
 				.thenReturn(ward);
 
 		MvcResult result = this.mockMvc
 				.perform(post(request)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(WardHelper.asJsonString(body))
+						.content(WardHelper.asJsonString(wardMapper.map2DTO(ward)))
 				)
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
@@ -177,16 +173,14 @@ public class WardControllerTest {
 		String request = "/wards";
 		int code = 1;
 		Ward ward = WardHelper.setup(code);
-		WardDTO body = wardMapper.map2DTO(ward);
-
-		boolean isUpdated = true;
-		when(wardBrowserManagerMock.updateWard(wardMapper.map2Model(body)))
+		WardDTO wardDTO = wardMapper.map2DTO(ward);
+		when(wardBrowserManagerMock.updateWard(wardMapper.map2Model(wardDTO)))
 				.thenReturn(ward);
 
 		MvcResult result = this.mockMvc
 				.perform(put(request)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(WardHelper.asJsonString(body))
+						.content(WardHelper.asJsonString(wardMapper.map2DTO(ward)))
 				)
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())

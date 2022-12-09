@@ -23,7 +23,10 @@ package org.isf.patient.rest;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -108,8 +111,8 @@ public class PatientControllerTest {
 
 		Optional<HttpMediaTypeNotSupportedException> exception = Optional.ofNullable((HttpMediaTypeNotSupportedException) result.getResolvedException());
 		LOGGER.debug("exception: {}", exception);
-		//exception.ifPresent(se -> assertThat(se, notNullValue()));
-		//exception.ifPresent(se -> assertThat(se, instanceOf(HttpMediaTypeNotSupportedException.class)));
+		exception.ifPresent(se -> assertThat(se, notNullValue()));
+		exception.ifPresent(se -> assertThat(se, instanceOf(HttpMediaTypeNotSupportedException.class)));
 	}
 
 	/**
@@ -136,8 +139,8 @@ public class PatientControllerTest {
 
 		Optional<HttpMessageNotReadableException> exception = Optional.ofNullable((HttpMessageNotReadableException) result.getResolvedException());
 		LOGGER.debug("exception: {}", exception);
-		//exception.ifPresent(se -> assertThat(se, notNullValue()));
-		//exception.ifPresent(se -> assertThat(se, instanceOf(HttpMessageNotReadableException.class)));
+		exception.ifPresent(se -> assertThat(se, notNullValue()));
+		exception.ifPresent(se -> assertThat(se, instanceOf(HttpMessageNotReadableException.class)));
 	}
 
 	/**
@@ -150,7 +153,7 @@ public class PatientControllerTest {
 		String request = "/patients";
 		PatientDTO newPatientDTO = PatientHelper.setup(patientMapper);
 
-		when(patientBrowserManagerMock.getPatientByName(any(String.class))).thenReturn(null);  //FIXME: why we were searching by name?
+		when(patientBrowserManagerMock.getPatientByName(any(String.class))).thenReturn(patientMapper.map2Model(newPatientDTO));  //FIXME: why we were searching by name?
 
 		MvcResult result = this.mockMvc
 				.perform(
@@ -167,8 +170,8 @@ public class PatientControllerTest {
 		//TODO Create OHCreateAPIException
 		Optional<OHAPIException> oHAPIException = Optional.ofNullable((OHAPIException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", oHAPIException);
-		//oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
-		//oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
+		oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
+		oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
 	}
 
 	/**
@@ -178,12 +181,13 @@ public class PatientControllerTest {
 	 */
 	@Test
 	public void when_post_patients_PatientBrowserManager_newPatient_returns_false_then_Created() throws Exception {
-		Integer code = 12345;
+		Integer code = 12;
 		String request = "/patients";
 		PatientDTO newPatientDTO = PatientHelper.setup(patientMapper);
 		newPatientDTO.setCode(code);
+		Patient patient = PatientHelper.setup();;
 
-		when(patientBrowserManagerMock.savePatient(any(Patient.class))).thenReturn(patientMapper.map2Model(newPatientDTO)); //TODO: verify if it's correct
+		when(patientBrowserManagerMock.savePatient(patientMapper.map2Model(newPatientDTO))).thenReturn(patient); //TODO: verify if it's correct
 
 		MvcResult result = this.mockMvc
 				.perform(post(request)
@@ -197,8 +201,8 @@ public class PatientControllerTest {
 		//TODO Create OHCreateAPIException
 		Optional<OHAPIException> oHAPIException = Optional.ofNullable((OHAPIException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", oHAPIException);
-		//oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
-		//oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
+		oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
+		oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
 	}
 
 	/**
@@ -235,7 +239,7 @@ public class PatientControllerTest {
 	 */
 	@Test
 	public void when_put_update_patient_with_valid_body_and_existent_code_then_BadRequest() throws Exception {
-		Integer code = 12345;
+		Integer code = 12;
 		String request = "/patients/{code}";
 		PatientDTO newPatientDTO = PatientHelper.setup(patientMapper);
 		newPatientDTO.setCode(code);
@@ -279,8 +283,8 @@ public class PatientControllerTest {
 
 		Optional<HttpMessageNotReadableException> exception = Optional.ofNullable((HttpMessageNotReadableException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", exception);
-		//exception.ifPresent(se -> assertThat(se, notNullValue()));
-		//exception.ifPresent(se -> assertThat(se, instanceOf(HttpMessageNotReadableException.class)));
+		exception.ifPresent(se -> assertThat(se, notNullValue()));
+		exception.ifPresent(se -> assertThat(se, instanceOf(HttpMessageNotReadableException.class)));
 	}
 
 	/**
@@ -310,8 +314,8 @@ public class PatientControllerTest {
 		//TODO Create OHUpdateAPIException
 		Optional<OHAPIException> oHAPIException = Optional.ofNullable((OHAPIException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", oHAPIException);
-		//oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
-		//oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
+		oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
+		oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
 	}
 
 	/**
@@ -441,7 +445,7 @@ public class PatientControllerTest {
 		Integer code = 1000;
 		String request = "/patients/search";
 
-		when(patientBrowserManagerMock.getPatientById(code)).thenReturn(null);
+		when(patientBrowserManagerMock.getPatientById(code)).thenReturn(PatientHelper.setup());
 
 		this.mockMvc
 				.perform(
@@ -546,12 +550,12 @@ public class PatientControllerTest {
 	 */
 	@Test
 	public void when_delete_patients_with_existent_code_but_fail_deletion_then_OHAPIException_BadRequest() throws Exception {
-		Integer code = 123;
+		Integer code = 2;
 		String request = "/patients/{code}";
 		Patient patient = PatientHelper.setup();
 		patient.setCode(code);
 
-		when(patientBrowserManagerMock.getPatientById(code)).thenReturn(patient);
+		when(patientBrowserManagerMock.getPatientById(code));
 
 		when(patientBrowserManagerMock.deletePatient(patient)).thenReturn(false);
 
@@ -569,8 +573,8 @@ public class PatientControllerTest {
 		//TODO Create OHDeleteAPIException
 		Optional<OHAPIException> oHAPIException = Optional.ofNullable((OHAPIException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", oHAPIException);
-		//oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
-		//oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
+		oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
+		oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
 	}
 
 }

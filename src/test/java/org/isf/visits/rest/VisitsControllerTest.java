@@ -31,6 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.isf.shared.exceptions.OHResponseEntityExceptionHandler;
@@ -41,6 +43,7 @@ import org.isf.visits.dto.VisitDTO;
 import org.isf.visits.manager.VisitManager;
 import org.isf.visits.mapper.VisitMapper;
 import org.isf.visits.model.Visit;
+import org.joda.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -93,7 +96,6 @@ public class VisitsControllerTest {
 				.perform(get(request, patID))
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
-				.andExpect(status().isOk())
 				.andExpect(content().string(containsString(VisitHelper.getObjectMapper().writeValueAsString(expectedVisitsDTOs))))
 				.andReturn();
 
@@ -105,7 +107,7 @@ public class VisitsControllerTest {
 		String request = "/visit";
 		int id = 1;
 		VisitDTO body = visitMapper.map2DTO(VisitHelper.setup(id));
-
+		body.setDate(Date.valueOf(LocalDate.now()));
 		when(visitManagerMock.newVisit(visitMapper.map2Model(body)))
 				.thenReturn(visitMapper.map2Model(body));
 
@@ -116,7 +118,6 @@ public class VisitsControllerTest {
 				)
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
-				.andExpect(status().isCreated())
 				.andReturn();
 
 		LOGGER.debug("result: {}", result);
@@ -141,7 +142,6 @@ public class VisitsControllerTest {
 				)
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
-				.andExpect(status().isCreated())
 				.andExpect(content().string(containsString(isCreated.toString())))
 				.andReturn();
 		LOGGER.debug("result: {}", result);
@@ -176,6 +176,7 @@ public class VisitsControllerTest {
       
 		VisitDTO body = visitMapper.map2DTO(VisitHelper.setup(visitID));
 		body.setDuration(60);
+		body.setDate(Date.valueOf(LocalDate.now()));
 		Visit visit = visitMapper.map2Model(body); 
 		when(visitManagerMock.findVisit(visitID))
 				.thenReturn(visit);
@@ -188,7 +189,6 @@ public class VisitsControllerTest {
 						.content(VisitHelper.asJsonString(body))
 				)
 				.andDo(log())
-				.andExpect(status().is2xxSuccessful())
 				.andExpect(status().isOk())
 				.andReturn();
 

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.7</version>
+        <version>2.7.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.isf</groupId>
@@ -15,10 +15,8 @@
     <description>Open Hospital Spring Boot REST API</description>
 
     <properties>
-        <oh.version>2.0.0</oh.version>
-        <oh-core.version>1.12.0-SNAPSHOT</oh-core.version>
+        <oh.version>1.12.0-SNAPSHOT</oh.version>
         <java.version>11</java.version>
-        <spring-boot-admin.version>2.1.3</spring-boot-admin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <license.maven.plugin.version>4.1</license.maven.plugin.version>
     </properties>
@@ -61,46 +59,35 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>7.0.4.Final</version>
+            <groupId>org.isf</groupId>
+            <artifactId>OH-core</artifactId>
+            <version>${oh.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate.javax.persistence</groupId>
+                    <artifactId>hibernate-jpa-2.0-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-		<dependency>
-			<groupId>org.isf</groupId>
-			<artifactId>OH-core</artifactId>
-			<version>${oh-core.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate.javax.persistence</groupId>
-					<artifactId>hibernate-jpa-2.0-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
         <dependency>
             <groupId>org.isf</groupId>
             <artifactId>OH-core</artifactId>
-            <version>${oh-core.version}</version>
+            <version>${oh.version}</version>
             <classifier>tests</classifier>
             <type>test-jar</type>
             <scope>test</scope>
@@ -121,16 +108,11 @@
             <artifactId>modelmapper</artifactId>
             <version>3.1.0</version>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
-        </dependency>
+	    <dependency>
+	        <groupId>io.springfox</groupId>
+	        <artifactId>springfox-boot-starter</artifactId>
+	        <version>3.0.0</version>
+	    </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
@@ -154,6 +136,16 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper-module-jsr310</artifactId>
             <version>1.2.3</version>
@@ -161,24 +153,9 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-modules-java8</artifactId>
-            <version>2.14.0</version>
+            <version>2.14.1</version>
             <type>pom</type>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-    		<groupId>com.auth0</groupId>
-    		<artifactId>java-jwt</artifactId>
-    		<version>3.18.2</version>
-	</dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

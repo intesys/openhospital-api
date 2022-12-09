@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +27,13 @@ import org.isf.patient.model.Patient;
 import org.isf.shared.exceptions.OHResponseEntityExceptionHandler;
 import org.isf.shared.mapper.converter.BlobToByteArrayConverter;
 import org.isf.shared.mapper.converter.ByteArrayToBlobConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -64,9 +66,10 @@ public class LaboratoryControllerTest {
 	
 	protected LaboratoryMapper labMapper = new LaboratoryMapper();
 
+	@Autowired
 	private MockMvc mockMvc;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders
@@ -110,9 +113,9 @@ public class LaboratoryControllerTest {
 		ArrayList<String> labRows =new ArrayList<String>();
 		labRows.add("lab");
 		labRows.add("material");
-		lab.setCode(code);
+		lab.setDate(LocalDateTime.now());
 		LaboratoryDTO body = laboratoryMapper.map2DTO(lab);
-		when(laboratoryManager.updateLaboratory(laboratoryMapper.map2Model(body), labRows));
+		when(laboratoryManager.updateLaboratory(laboratoryMapper.map2Model(body), labRows)).thenReturn(true);
 		MvcResult result = this.mockMvc
 				.perform(put(request, code)
 						.contentType(MediaType.APPLICATION_JSON)

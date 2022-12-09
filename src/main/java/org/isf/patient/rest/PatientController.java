@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 
 import org.isf.admission.manager.AdmissionBrowserManager;
 import org.isf.admission.model.Admission;
+import org.isf.agetype.manager.AgeTypeBrowserManager;
+import org.isf.agetype.model.AgeType;
 import org.isf.patient.dto.PatientDTO;
 import org.isf.patient.manager.PatientBrowserManager;
 import org.isf.patient.mapper.PatientMapper;
@@ -75,6 +77,9 @@ public class PatientController {
 
 	@Autowired
 	protected PatientMapper patientMapper;
+	
+	@Autowired
+	private AgeTypeBrowserManager ageTypeManager;
 
 	public PatientController(PatientBrowserManager patientManager, PatientMapper patientMapper) {
 		this.patientManager = patientManager;
@@ -92,6 +97,42 @@ public class PatientController {
         String name = StringUtils.isEmpty(newPatient.getName()) ? newPatient.getFirstName() + " " + newPatient.getSecondName() : newPatient.getName();
 		LOGGER.info("Create patient {}", name);
 		Patient patient = patientMapper.map2Model(newPatient);
+		LocalDate birthDate = patient.getBirthDate();
+		
+		if (patient.getAge() > 0 || patient.getAge() < 200) {
+			LocalDate date = LocalDate.now().minusYears(patient.getAge());
+			patient.setBirthDate(date);
+			if (patient.getAge() == 0 ) {
+				patient.setAgetype("d0");
+			}
+			if (patient.getAge() > 0 && patient.getAge() <= 5) {
+				patient.setAgetype("d1");
+			}
+			if (patient.getAge() > 5 && patient.getAge() <= 12) {
+				patient.setAgetype("d2");
+			}
+			if (patient.getAge() > 12 && patient.getAge() <= 24) {
+				patient.setAgetype("d3");
+			}
+			if (patient.getAge() > 24 && patient.getAge() <= 59) {
+				patient.setAgetype("d4");
+			}
+			if (patient.getAge() > 59 && patient.getAge() < 200) {
+				patient.setAgetype("d5");
+			}
+		}
+		if (patient.getAgetype()!= null) {
+			AgeType ageType = ageTypeManager.getTypeByCode(patient.getAgetype());
+			int years = ageType.getFrom();
+				
+			if (years == 0) {
+				int months = LocalDate.now().getMonthValue();
+				birthDate = LocalDate.now().minusYears(years).minusMonths(months-1);
+			} else {
+				birthDate = LocalDate.now().minusYears(years);
+			}
+		}
+		patient.setBirthDate(birthDate);
         Patient pat = patientManager.savePatient(patient);
         if(pat == null){
             throw new OHAPIException(new OHExceptionMessage(null, "Patient is not created!", OHSeverityLevel.ERROR));
@@ -112,7 +153,44 @@ public class PatientController {
 		if (patientRead == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
 		}
+		
 		Patient updatePatientModel = patientMapper.map2Model(updatePatient);
+		 LocalDate birthDate = updatePatientModel.getBirthDate();
+			
+			if (updatePatientModel.getAge() > 0 || updatePatientModel.getAge() < 200) {
+				LocalDate date = LocalDate.now().minusYears(updatePatientModel.getAge());
+				updatePatientModel.setBirthDate(date);
+				if (updatePatientModel.getAge() == 0 ) {
+					updatePatientModel.setAgetype("d0");
+				}
+				if (updatePatientModel.getAge() > 0 && updatePatientModel.getAge() <= 5) {
+					updatePatientModel.setAgetype("d1");
+				}
+				if (updatePatientModel.getAge() > 5 && updatePatientModel.getAge() <= 12) {
+					updatePatientModel.setAgetype("d2");
+				}
+				if (updatePatientModel.getAge() > 12 && updatePatientModel.getAge() <= 24) {
+					updatePatientModel.setAgetype("d3");
+				}
+				if (updatePatientModel.getAge() > 24 && updatePatientModel.getAge() <= 59) {
+					updatePatientModel.setAgetype("d4");
+				}
+				if (updatePatientModel.getAge() > 59 && updatePatientModel.getAge() < 200) {
+					updatePatientModel.setAgetype("d5");
+				}
+			}
+			if (updatePatientModel.getAgetype()!= null) {
+				AgeType ageType = ageTypeManager.getTypeByCode(updatePatientModel.getAgetype());
+				int years = ageType.getFrom();
+					
+				if (years == 0) {
+					int months = LocalDate.now().getMonthValue();
+					birthDate = LocalDate.now().minusYears(years).minusMonths(months-1);
+				} else {
+					birthDate = LocalDate.now().minusYears(years);
+				}
+			}
+		updatePatientModel.setBirthDate(birthDate);
 		updatePatientModel.setLock(patientRead.getLock());
 		Patient patient = patientManager.savePatient(updatePatientModel);
 		if (patient == null) {

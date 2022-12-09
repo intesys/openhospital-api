@@ -105,7 +105,7 @@ public class VaccineTypeControllerTest {
 		String code = "ZZ";
 		VaccineTypeDTO body = vaccineTypeMapper.map2DTO(VaccineTypeHelper.setup(code));
 
-		when(vaccineTypeBrowserManagerMock.newVaccineType(vaccineTypeMapper.map2Model(body)));
+		when(vaccineTypeBrowserManagerMock.newVaccineType(vaccineTypeMapper.map2Model(body))).thenReturn(VaccineTypeHelper.setup(code));
 
 		MvcResult result = this.mockMvc
 				.perform(post(request)
@@ -127,7 +127,7 @@ public class VaccineTypeControllerTest {
 		VaccineTypeDTO body = vaccineTypeMapper.map2DTO(VaccineTypeHelper.setup(code));
 
 		
-		when(vaccineTypeBrowserManagerMock.updateVaccineType(vaccineTypeMapper.map2Model(body)));
+		when(vaccineTypeBrowserManagerMock.updateVaccineType(vaccineTypeMapper.map2Model(body))).thenReturn(VaccineTypeHelper.setup(code));
 
 		MvcResult result = this.mockMvc
 				.perform(put(request)

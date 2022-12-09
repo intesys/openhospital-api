@@ -167,8 +167,7 @@ public class VisitsController {
         
         Visit visitUp = mapper.map2Model(updateVisit);
         visitUp.setDate(updateVisit.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-        //Visit visitUpdate = visitManager.updateVisit(visitUp);
-        Visit visitUpdate = visitManager.newVisit(visitUp);
+        Visit visitUpdate = visitManager.updateVisit(visitUp);
         if(visitUpdate == null)
         	throw new OHAPIException( new OHExceptionMessage(null, "visit is not update !", OHSeverityLevel.ERROR));
         
