@@ -46,9 +46,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 
 @RestController
-@Api(value = "/examtypes", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(value = "/examtypes", produces = MediaType.APPLICATION_JSON_VALUE, authorizations = {@Authorization(value="apiKey")})
 public class ExamTypeController {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ExamTypeController.class);
@@ -68,17 +69,16 @@ public class ExamTypeController {
     public ResponseEntity<ExamTypeDTO> newExamType(@RequestBody ExamTypeDTO newExamType) throws OHServiceException {
 
         ExamType examType = examTypeMapper.map2Model(newExamType);
-        ExamType created = examTypeBrowserManager.newExamType(examType);
-
-        if (created  == null) {
+        ExamType createdExamType = examTypeBrowserManager.newExamType(examType);
+        if (createdExamType == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "ExamType type not created!", OHSeverityLevel.ERROR));
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(examTypeMapper.map2DTO(created));
+        return ResponseEntity.status(HttpStatus.CREATED).body(examTypeMapper.map2DTO(createdExamType));
     }
 
     @PutMapping(value = "/examtypes/{code:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ExamTypeDTO> updateExamType(@PathVariable String code, @RequestBody ExamTypeDTO updateExamType) throws OHServiceException {
+    public ResponseEntity<ExamTypeDTO> updateExamType(@PathVariable String code, @RequestBody ExamTypeDTO updateExamType) throws OHServiceException {
 
         if (!updateExamType.getCode().equals(code)) {
             throw new OHAPIException(new OHExceptionMessage(null, "ExamType code mismatch", OHSeverityLevel.ERROR));

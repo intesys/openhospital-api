@@ -28,6 +28,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.isf.security.jwt.TokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -47,36 +51,46 @@ public class OHSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthentica
 		this.tokenProvider = tokenProvider;
 	}
 
-	@Override
-	public void onAuthenticationSuccess(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			Authentication authentication)
-			throws ServletException, IOException {
+	private final Logger logger = LoggerFactory.getLogger(OHSimpleUrlAuthenticationSuccessHandler.class);
 
-		SavedRequest savedRequest
-				= requestCache.getRequest(request, response);
+    @Override
+    public void onAuthenticationSuccess(
+      HttpServletRequest request,
+      HttpServletResponse response, 
+      Authentication authentication) 
+      throws ServletException, IOException {
+  
+        SavedRequest savedRequest
+          = requestCache.getRequest(request, response);
 
-		LoginResponse loginResponse = new LoginResponse();
-		loginResponse.setToken(this.tokenProvider.createToken(authentication, true));
-		loginResponse.setDisplayName(authentication.getName());
-		ObjectMapper mapper = new ObjectMapper();
 
-		response.getWriter().append(mapper.writeValueAsString(loginResponse));
-		response.setStatus(200);
+        //response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + ";SameSite=none; Secure");
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setToken(this.tokenProvider.createToken(authentication, true));
+        loginResponse.setDisplayName(authentication.getName());
+        ObjectMapper mapper = new ObjectMapper();
 
-		if (savedRequest == null) {
-			clearAuthenticationAttributes(request);
-			return;
-		}
-		String targetUrlParam = getTargetUrlParameter();
-		if (isAlwaysUseDefaultTargetUrl()
-				|| (targetUrlParam != null
-				&& StringUtils.hasText(request.getParameter(targetUrlParam)))) {
-			requestCache.removeRequest(request, response);
-			clearAuthenticationAttributes(request);
-			return;
-		}
-		clearAuthenticationAttributes(request);
-	}
+        response.getWriter().append(mapper.writeValueAsString(loginResponse));
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(200);
+
+        if (savedRequest == null) {
+            clearAuthenticationAttributes(request);
+            return;
+        }
+        String targetUrlParam = getTargetUrlParameter();
+        if (isAlwaysUseDefaultTargetUrl()
+          || (targetUrlParam != null
+          && StringUtils.hasText(request.getParameter(targetUrlParam)))) {
+            requestCache.removeRequest(request, response);
+            clearAuthenticationAttributes(request);
+            return;
+        }
+        clearAuthenticationAttributes(request);
+
+        authentication.getDetails();
+
+
+    }
+
 }

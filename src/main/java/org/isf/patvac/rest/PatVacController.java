@@ -21,9 +21,6 @@
  */
 package org.isf.patvac.rest;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -78,11 +75,11 @@ public class PatVacController {
 	ResponseEntity<PatientVaccineDTO> newPatientVaccine(@RequestBody PatientVaccineDTO patientVaccineDTO) throws OHServiceException {
 		int code = patientVaccineDTO.getCode();
 		LOGGER.info("Create patient vaccine {}", code);
-		PatientVaccine isCreated = patVacManager.newPatientVaccine(mapper.map2Model(patientVaccineDTO));
-		if (isCreated == null) {
+		PatientVaccine isCreatedPatientVaccine = patVacManager.newPatientVaccine(mapper.map2Model(patientVaccineDTO));
+		if (isCreatedPatientVaccine == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "patient vaccine is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedPatientVaccine));
 	}
 
 	/**
@@ -92,16 +89,16 @@ public class PatVacController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/patientvaccines/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<PatientVaccineDTO> updatePatientVaccine(@PathVariable Integer code, @RequestBody PatientVaccineDTO patientVaccineDTO)
+	ResponseEntity<PatientVaccineDTO> updatePatientVaccinet(@PathVariable Integer code, @RequestBody PatientVaccineDTO patientVaccineDTO)
 			throws OHServiceException {
 		LOGGER.info("Update patientvaccines code: {}", patientVaccineDTO.getCode());
 		PatientVaccine patvac = mapper.map2Model(patientVaccineDTO);
 		patvac.setLock(patientVaccineDTO.getLock());
-		PatientVaccine isUpdated = patVacManager.updatePatientVaccine(patvac);
-		if (isUpdated == null) {
+		PatientVaccine isUpdatedPatientVaccine = patVacManager.updatePatientVaccine(mapper.map2Model(patientVaccineDTO));
+		if (isUpdatedPatientVaccine == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "patient vaccine is not updated!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
+		return ResponseEntity.ok(mapper.map2DTO(isUpdatedPatientVaccine));
 	}
 
 	/**
@@ -131,20 +128,10 @@ public class PatVacController {
 	 */
 	@GetMapping(value = "/patientvaccines/filter", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<PatientVaccineDTO>> getPatientVaccinesByDatesRanges(@RequestParam String vaccineTypeCode, @RequestParam String vaccineCode, 
-			@RequestParam Date dateFrom, @RequestParam Date dateTo, @RequestParam char sex, @RequestParam int ageFrom, @RequestParam int ageTo) throws OHServiceException {
+			@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo, @RequestParam char sex, @RequestParam int ageFrom, @RequestParam int ageTo) throws OHServiceException {
 		LOGGER.info("filter patient vaccine by dates ranges");
-		
-		LocalDateTime dateF = null;
-		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
-		}
-		
-		LocalDateTime dateT = null;
-		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
-		}
-        
-		List<PatientVaccine> patientVaccines = patVacManager.getPatientVaccine(vaccineTypeCode, vaccineCode, dateF, dateT, sex, ageFrom, ageTo);
+
+		List<PatientVaccine> patientVaccines = patVacManager.getPatientVaccine(vaccineTypeCode, vaccineCode, dateFrom.atStartOfDay(), dateTo.atStartOfDay(), sex, ageFrom, ageTo);
 		List<PatientVaccineDTO> patientVaccineDTOs = mapper.map2DTOList(patientVaccines);
 		if (patientVaccineDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(patientVaccineDTOs);

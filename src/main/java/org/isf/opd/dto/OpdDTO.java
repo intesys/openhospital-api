@@ -21,13 +21,12 @@
  */
 package org.isf.opd.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
 import org.isf.disease.dto.DiseaseDTO;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -40,14 +39,17 @@ public class OpdDTO {
     private int code;
 
     @ApiModelProperty(notes = "the date of the admission", position = 2)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date date;
+    private LocalDateTime date;
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
     @NotNull
     @ApiModelProperty(notes = "the visit date", position = 3)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date visitDate;
+    private LocalDate visitDate;
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
+    @ApiModelProperty(notes = "the next visit date", position = 4)
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime nextVisitDate;
 
     @ApiModelProperty(notes = "the admitted patient code", position = 5)
     private Integer patientCode;
@@ -97,11 +99,11 @@ public class OpdDTO {
 
     @ApiModelProperty(notes = "user id", position = 18)
     private String userID;
-    
+
     @ApiModelProperty(notes = "lock", example = "0")
 	private int lock;
-	
-	private int hashCode;
+    
+    private int hashCode;
     
     @ApiModelProperty(notes = "reasons for entry", position = 19)
     private String reason; // ADDED: Arnaud
@@ -122,7 +124,7 @@ public class OpdDTO {
 		return reason;
 	}
 
-	public void setReason(String reason) {
+    public void setReason(String reason) {
 		this.reason = reason;
 	}
 
@@ -158,15 +160,15 @@ public class OpdDTO {
 		this.prescription = prescription;
 	}
 
-	
-    @ApiModelProperty(hidden = true)
-    public int getHashCode() {
-        return hashCode;
-    }
-
+	@ApiModelProperty(hidden=true)
 	public int getLock() {
 		return lock;
 	}
+
+    @ApiModelProperty(hidden=true)
+    public int getHashCode() {
+        return hashCode;
+    }
 
 	public void setLock(int lock) {
 		this.lock = lock;
@@ -176,11 +178,11 @@ public class OpdDTO {
 		return this.code;
 	}
 
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return this.date;
 	}
 
-	public Date getVisitDate() {
+	public LocalDate getVisitDate() {
 		return this.visitDate;
 	}
 
@@ -190,6 +192,10 @@ public class OpdDTO {
 
 	public void setPatientName(String patientName) {
 		this.patientName = patientName;
+	}
+
+	public LocalDateTime getNextVisitDate() {
+		return this.nextVisitDate;
 	}
 
 	public Integer getPatientCode() {
@@ -244,13 +250,18 @@ public class OpdDTO {
 		this.code = code;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 
-	public void setVisitDate(Date visitDate) {
+	public void setVisitDate(LocalDate visitDate) {
 		this.visitDate = visitDate;
 	}
+
+	public void setNextVisitDate(LocalDateTime nextVisitDate) {
+		this.nextVisitDate = nextVisitDate;
+	}
+
 	public void setPatientCode(Integer patientCode) {
 		this.patientCode = patientCode;
 	}

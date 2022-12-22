@@ -47,8 +47,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 
 @Configuration
@@ -56,47 +56,46 @@ import org.springframework.web.filter.CorsFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@Autowired
+    @Autowired
     private UserDetailsService userDetailsService;
-	
-	@Autowired
+
+    private final TokenProvider tokenProvider;
+
+    @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-	private TokenProvider tokenProvider;
+    public SecurityConfig(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
 
-	public SecurityConfig(TokenProvider tokenProvider) {
-		this.tokenProvider = tokenProvider;
-	}
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth)
-	  throws Exception {
-	    auth.authenticationProvider(authenticationProvider());
-	}
-	
-	@Bean
-	public DaoAuthenticationProvider authenticationProvider() {
-	    DaoAuthenticationProvider authProvider
-	      = new DaoAuthenticationProvider();
-	    authProvider.setUserDetailsService(userDetailsService);
-	    authProvider.setPasswordEncoder(encoder());
-	    return authProvider;
-	}
-	
-	@Bean
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth)
+            throws Exception {
+        auth.authenticationProvider(authenticationProvider());
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider
+                = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(encoder());
+        return authProvider;
+    }
+
+    @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
-
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
+    
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedHeader("*");
@@ -106,14 +105,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //config.setAllowCredentials(true);
         config.setAllowedOrigins(Arrays.asList("*"));
         config.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+
+        return source;
     }
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.sessionManagement()
-		    .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        http
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.cors()
 			.and()
 			.csrf()
@@ -281,17 +284,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll();
     }
 
-	private JWTConfigurer securityConfigurerAdapter() {
-		return new JWTConfigurer(tokenProvider);
-	}
-    
-    @Bean
-	public SimpleUrlAuthenticationFailureHandler failureHandler() {
-    	return new SimpleUrlAuthenticationFailureHandler();
+    private JWTConfigurer securityConfigurerAdapter() {
+        return new JWTConfigurer(tokenProvider);
     }
-    
+
     @Bean
-	public SimpleUrlAuthenticationSuccessHandler successHandler() {
-    	return new OHSimpleUrlAuthenticationSuccessHandler(tokenProvider);
+    public SimpleUrlAuthenticationFailureHandler failureHandler() {
+        return new SimpleUrlAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public SimpleUrlAuthenticationSuccessHandler successHandler() {
+        return new OHSimpleUrlAuthenticationSuccessHandler(tokenProvider);
     }
 }

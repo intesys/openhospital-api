@@ -61,9 +61,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 
 @RestController
-@Api(value="/bills",produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(value="/bills",produces = MediaType.APPLICATION_JSON_VALUE, authorizations = {@Authorization(value="apiKey")})
 public class BillController {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BillController.class);
@@ -252,8 +253,14 @@ public class BillController {
 	 */
 	@GetMapping(value = "/bills/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<BillPaymentsDTO>> searchBillsPayments(
+<<<<<<< HEAD
 			@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
 			@RequestParam(value="dateto")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo, @RequestParam(value="patient_code", required=false, defaultValue="") Integer code) throws OHServiceException {
+=======
+			@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateFrom,
+			@RequestParam(value="dateto") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateTo, 
+			@RequestParam(value="patient_code", required=false, defaultValue="") Integer code) throws OHServiceException {
+>>>>>>> upstream/staging3Test
 		LOGGER.info("Get Payments datefrom: {}  dateTo: {} patient: {}", dateFrom, dateTo, code);
 
 		List<BillPayments> payments;

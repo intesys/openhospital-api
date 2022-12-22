@@ -48,9 +48,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 
 @RestController
-@Api(value = "/exams", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(value = "/exams", produces = MediaType.APPLICATION_JSON_VALUE, authorizations = {@Authorization(value="apiKey")})
 public class ExamController {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ExamController.class);
@@ -88,8 +89,7 @@ public class ExamController {
     }
 
     @PutMapping(value = "/exams/{code:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ExamDTO> updateExams(@PathVariable String code, @RequestBody ExamDTO updateExam) throws OHServiceException {
-
+    public ResponseEntity<ExamDTO> updateExams(@PathVariable String code, @RequestBody ExamDTO updateExam) throws OHServiceException {
 
         if (!updateExam.getCode().equals(code)) {
             throw new OHAPIException(new OHExceptionMessage(null, "Exam code mismatch", OHSeverityLevel.ERROR));
@@ -106,12 +106,12 @@ public class ExamController {
         Exam exam = examMapper.map2Model(updateExam);
         exam.setExamtype(examType);
         exam.setLock(updateExam.getLock());
-        Exam ex = examManager.updateExam(exam);
-        if (ex == null) {
+        Exam examUpdated = examManager.updateExam(exam);
+        if (examUpdated == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Exam is not updated!", OHSeverityLevel.ERROR));
         }
 
-        return ResponseEntity.ok(examMapper.map2DTO(ex));
+        return ResponseEntity.ok(examMapper.map2DTO(examUpdated));
     }
 
 

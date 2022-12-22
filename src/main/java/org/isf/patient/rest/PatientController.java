@@ -21,7 +21,6 @@
  */
 package org.isf.patient.rest;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -58,9 +57,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 
 @RestController
-@Api(value="/patients",produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(value="/patients",produces = MediaType.APPLICATION_JSON_VALUE, authorizations = {@Authorization(value="apiKey")})
 public class PatientController {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PatientController.class);
@@ -71,13 +71,14 @@ public class PatientController {
 	protected PatientBrowserManager patientManager;
 	
 	@Autowired
-	protected  AdmissionBrowserManager admissionBrowserManager = new AdmissionBrowserManager();
+	protected  AdmissionBrowserManager admissionManager;
 
 	@Autowired
 	protected PatientMapper patientMapper;
 
-	public PatientController(PatientBrowserManager patientManager, PatientMapper patientMapper) {
+	public PatientController(PatientBrowserManager patientManager, AdmissionBrowserManager admissionManager, PatientMapper patientMapper) {
 		this.patientManager = patientManager;
+		this.admissionManager = admissionManager;
 		this.patientMapper = patientMapper;
 	}
 
@@ -89,16 +90,15 @@ public class PatientController {
      */
 	@PostMapping(value = "/patients", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<PatientDTO> newPatient(@RequestBody PatientDTO newPatient) throws OHServiceException {
-        String name = StringUtils.isEmpty(newPatient.getName()) ? newPatient.getFirstName() + " " + newPatient.getSecondName() : newPatient.getName();
+        String name = StringUtils.hasLength(newPatient.getName()) ? newPatient.getFirstName() + " " + newPatient.getSecondName() : newPatient.getName();
 		LOGGER.info("Create patient {}", name);
-		Patient patient = patientMapper.map2Model(newPatient);
-        Patient pat = patientManager.savePatients(patient);
-        if(pat == null){
+        Patient patient = patientManager.savePatient(patientMapper.map2Model(newPatient));
+        if (patient == null){
             throw new OHAPIException(new OHExceptionMessage(null, "Patient is not created!", OHSeverityLevel.ERROR));
         }
-        PatientDTO patientDTO = patientMapper.map2DTO(patient);
-        Date date = Date.from(pat.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        patientDTO.setBirthDate(date);
+//        PatientDTO patientDTO = patientMapper.map2DTO(patient);
+//        Date date = Date.from(pat.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+//        patientDTO.setBirthDate(date);
         return ResponseEntity.status(HttpStatus.CREATED).body(patientMapper.map2DTO(patient));
 	}
 
@@ -108,19 +108,18 @@ public class PatientController {
 		if (!updatePatient.getCode().equals(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient code mismatch", OHSeverityLevel.ERROR));
 		}
-		Patient patientRead = patientManager.getPatientById(Integer.valueOf(code));
+		Patient patientRead = patientManager.getPatientById(code);
 		if (patientRead == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
 		}
 		Patient updatePatientModel = patientMapper.map2Model(updatePatient);
-		updatePatientModel.setLock(patientRead.getLock());
 		Patient patient = patientManager.savePatient(updatePatientModel);
 		if (patient == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Patient is not updated!", OHSeverityLevel.ERROR));
         }
 		PatientDTO patientDTO = patientMapper.map2DTO(patient);
-        Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        patientDTO.setBirthDate(date); 
+//        Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+//        patientDTO.setBirthDate(date); 
         return ResponseEntity.ok(patientDTO);
 	}
 
@@ -130,14 +129,14 @@ public class PatientController {
 			@RequestParam(value="size", required=false, defaultValue=DEFAULT_PAGE_SIZE) Integer size) throws OHServiceException {
 		LOGGER.info("Get patients page: {}  size: {}", page, size);
 		List<Patient> patients = patientManager.getPatient(page, size);
-        List<PatientDTO> patientDTOS = patients.stream().map(pat-> {
-        	PatientDTO patientDTO = patientMapper.map2DTO(pat);
-        	if(pat.getBirthDate()!=null) {
-   			 Date date = Date.from(pat.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-   		     patientDTO.setBirthDate(date); 
-   		    }
-            return patientDTO;
-        }).collect(Collectors.toList());
+		List<PatientDTO> patientDTOS = patients.stream().map(pat -> {
+			PatientDTO patientDTO = patientMapper.map2DTO(pat);
+//			if (pat.getBirthDate() != null) {
+//				Date date = Date.from(pat.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+//				patientDTO.setBirthDate(date);
+//			}
+			return patientDTO;
+		}).collect(Collectors.toList());
         if(patientDTOS.isEmpty()){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(patientDTOS);
         }
@@ -147,19 +146,22 @@ public class PatientController {
 	@GetMapping(value = "/patients/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PatientDTO> getPatient(@PathVariable("code") int code) throws OHServiceException {
 		LOGGER.info("Get patient code: {}", code);
-		Patient patient = patientManager.getPatientById(Integer.valueOf(code));
-		Admission admission = new Admission();
+		Patient patient = patientManager.getPatientById(code);
+		LOGGER.info("Patient retrieved: {}", patient);
 		if (patient == null) {
+			
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		admission = admissionBrowserManager.getCurrentAdmission(patient);
+		LOGGER.info("admissionBrowserManager injected: {}", admissionManager);
+		Admission admission = admissionManager.getCurrentAdmission(patient);
+		LOGGER.info("admission retrieved: {}", admission);
 		Boolean status = admission != null ? true : false;
 		PatientDTO patientDTO = patientMapper.map2DTOWS(patient, status);
-		if(patient.getBirthDate()!=null) {
-			 Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-		     patientDTO.setBirthDate(date); 
-		}
-		return ResponseEntity.ok( patientMapper.map2DTO(patient));
+//		if (patient.getBirthDate() != null) {
+//			Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+//			patientDTO.setBirthDate(date);
+//		}
+		return ResponseEntity.ok(patientDTO);
 	}
 
 	@GetMapping(value = "/patients/search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -197,20 +199,20 @@ public class PatientController {
 		if (patientList == null) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		patientListDTO = patientList.stream().map(patient->{
-			Admission admission =null ;
+		patientListDTO = patientList.stream().map(patient -> {
+			Admission admission = null;
 			try {
-				admission = admissionBrowserManager.getCurrentAdmission(patient);
-				
-			} catch(OHServiceException e) {
+				admission = admissionManager.getCurrentAdmission(patient);
+			} catch (OHServiceException e) {
+				// TODO Auto-generated catch block
 				 new OHExceptionMessage(null, "the Patients exist but have problems with their admissions", OHSeverityLevel.ERROR);
 			}
 			Boolean status = admission != null ? true : false;
 			PatientDTO patientDTO = patientMapper.map2DTOWS(patient, status);
-			if(patient.getBirthDate()!= null) {
-				Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-		        patientDTO.setBirthDate(date); 
-			}
+//			if (patient.getBirthDate() != null) {
+//				Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+//				patientDTO.setBirthDate(date);
+//			}
 			return patientDTO;
 		}).collect(Collectors.toList());
 		return ResponseEntity.ok(patientListDTO);
@@ -224,10 +226,10 @@ public class PatientController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
         PatientDTO patientDTO = patientMapper.map2DTO(patient);
-        if(patient.getBirthDate() != null) {
-        	 Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-             patientDTO.setBirthDate(date); 
-        }
+//        if(patient.getBirthDate() != null) {
+//        	 Date date = Date.from(patient.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+//             patientDTO.setBirthDate(date); 
+//        }
         return ResponseEntity.ok(patientDTO);
 	}
 	

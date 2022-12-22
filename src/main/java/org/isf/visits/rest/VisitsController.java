@@ -22,14 +22,9 @@
 package org.isf.visits.rest;
 
 
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.isf.examination.dto.PatientExaminationDTO;
-import org.isf.examination.model.PatientExamination;
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
@@ -52,9 +47,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 
 @RestController
-@Api(value = "/visit", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(value = "/visit", produces = MediaType.APPLICATION_JSON_VALUE, authorizations = {@Authorization(value="apiKey")})
 public class VisitsController {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(VisitsController.class);
@@ -84,9 +80,9 @@ public class VisitsController {
         List<VisitDTO> listVisit = new ArrayList<VisitDTO>();
         for(Visit visitP : visit) {	
 			VisitDTO visitDTO =  mapper.map2DTO(visitP);
-    		Instant instant = visitP.getDate().atZone(ZoneId.systemDefault()).toInstant();
-        	Date date = (Date) Date.from(instant);
-        	visitDTO.setDate(date);
+//    		Instant instant = visitP.getDate().atZone(ZoneId.systemDefault()).toInstant();
+//        	Date date = (Date) Date.from(instant);
+//        	visitDTO.setDate(date);
         	listVisit.add(visitDTO);
     			
     	}
@@ -108,7 +104,7 @@ public class VisitsController {
     public ResponseEntity<VisitDTO> newVisit(@RequestBody VisitDTO newVisit) throws OHServiceException {
 	    LOGGER.info("Create Visit: {}", newVisit);
 	    Visit visitD = mapper.map2Model(newVisit);
-	    visitD.setDate(newVisit.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+	    //visitD.setDate(newVisit.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         Visit visit = visitManager.newVisit(visitD);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(visit)); //TODO: verify if it's correct
     }
@@ -166,7 +162,7 @@ public class VisitsController {
         	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         
         Visit visitUp = mapper.map2Model(updateVisit);
-        visitUp.setDate(updateVisit.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        //visitUp.setDate(updateVisit.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         //Visit visitUpdate = visitManager.updateVisit(visitUp);
         Visit visitUpdate = visitManager.newVisit(visitUp);
         if(visitUpdate == null)

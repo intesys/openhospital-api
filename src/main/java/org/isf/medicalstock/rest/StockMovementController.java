@@ -22,9 +22,7 @@
 package org.isf.medicalstock.rest;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.isf.medicals.manager.MedicalBrowsingManager;
@@ -43,7 +41,6 @@ import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
 import org.isf.ward.model.Ward;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -132,18 +129,9 @@ public class StockMovementController {
 	@GetMapping(value = "/stockmovements/filter/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<MovementDTO>> getMovements(
 			@RequestParam("ward_id") String wardId,
-			@RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
-			@RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo) throws OHServiceException {
-		LocalDateTime dateF = null;
-		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime dateT = null;
-		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		List<Movement> movements = movManager.getMovements(wardId, dateF, dateT);
+			@RequestParam("from") LocalDateTime dateFrom,
+			@RequestParam("to") LocalDateTime dateTo) throws OHServiceException {
+		List<Movement> movements = movManager.getMovements(wardId, dateFrom, dateTo);
 		return collectResults(movements);
 	}
 	
@@ -180,44 +168,15 @@ public class StockMovementController {
 			@RequestParam(name="med_type", required=false) String medicalType,
 			@RequestParam(name="ward_id", required=false) String wardId,
 			@RequestParam(name="mov_type", required=false) String movType,
-			@RequestParam(name="mov_from", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date movFrom,
-			@RequestParam(name="mov_to", required=false)  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date movTo,
-			@RequestParam(name="lot_prep_from", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date lotPrepFrom,
-			@RequestParam(name="lot_prep_to", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date lotPrepTo,
-			@RequestParam(name="lot_due_from", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date lotDueFrom,
-			@RequestParam(name="lot_due_to", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date lotDueTo) throws OHServiceException {
-		LocalDateTime movF = null;
-		if(movFrom != null) {
-			movF  = movFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime movT = null;
-		if(movTo != null) {
-			movT  = movTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime lotPrepF = null;
-		if(lotPrepFrom != null) {
-			lotPrepF  = lotPrepFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime lotPrepT = null;
-		if(lotPrepTo != null) {
-			lotPrepT  = lotPrepTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime lotDueF = null;
-		if(lotDueFrom != null) {
-			lotDueF  = lotDueFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime lotDueT = null;
-		if(lotDueTo != null) {
-			lotDueT  = lotDueTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		List<Movement> movements = movManager.getMovements(medicalCode, medicalType, wardId, movType, movF, movT, lotPrepF, lotPrepT, lotDueF, lotDueT);
+			@RequestParam(name="mov_from", required=false) LocalDateTime movFrom,
+			@RequestParam(name="mov_to", required=false) LocalDateTime movTo,
+			@RequestParam(name="lot_prep_from", required=false) LocalDateTime lotPrepFrom,
+			@RequestParam(name="lot_prep_to", required=false) LocalDateTime lotPrepTo,
+			@RequestParam(name="lot_due_from", required=false) LocalDateTime lotDueFrom,
+			@RequestParam(name="lot_due_to", required=false) LocalDateTime lotDueTo) throws OHServiceException {
 
+		List<Movement> movements = movManager.getMovements(medicalCode, medicalType, wardId, movType, movFrom, movTo, lotPrepFrom, lotPrepTo, lotDueFrom,
+				lotDueTo);
 		return collectResults(movements);
 	}
 	

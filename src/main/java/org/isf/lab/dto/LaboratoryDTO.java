@@ -21,11 +21,11 @@
  */
 package org.isf.lab.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.isf.exam.dto.ExamDTO;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.drew.lang.annotations.NotNull;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -41,14 +41,15 @@ public class LaboratoryDTO {
     private ExamDTO exam;
 
     @ApiModelProperty(notes = "Laboratory Registration Date", position = 4)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date registrationDate;
-    
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime registrationDate;
+
+    @NotNull
     @ApiModelProperty(notes = "Laboratory Exam Date", position = 5)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date examDate;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-
+    private LocalDateTime examDate;
+	
     @ApiModelProperty(notes = "Laboratory Result", position = 6)
     private String result;
     
@@ -93,8 +94,12 @@ public class LaboratoryDTO {
 		return this.exam;
 	}
 
-	public Date getRegistrationDate() {
+	public LocalDateTime getRegistrationDate() {
 		return this.registrationDate;
+	}
+
+	public LocalDateTime getExamDate() {
+		return this.examDate;
 	}
 
 	public String getResult() {
@@ -137,8 +142,12 @@ public class LaboratoryDTO {
 		this.exam = exam;
 	}
 
-	public void setRegistrationDate(Date registrationDate) {
+	public void setRegistrationDate(LocalDateTime registrationDate) {
 		this.registrationDate = registrationDate;
+	}
+
+	public void setExamDate(LocalDateTime examDate) {
+		this.examDate = examDate;
 	}
 
 	public void setResult(String result) {
@@ -168,14 +177,4 @@ public class LaboratoryDTO {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-
-	public Date getExamDate() {
-		return examDate;
-	}
-
-	public void setExamDate(Date examDate) {
-		this.examDate = examDate;
-	}
-	
-	
 }

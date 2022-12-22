@@ -73,11 +73,11 @@ public class PricesOthersController {
 	@PostMapping(value = "/pricesothers", produces = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<PricesOthersDTO> newPricesOthers(@RequestBody PricesOthersDTO pricesOthersDTO) throws OHServiceException {
 		LOGGER.info("Create prices others {}", pricesOthersDTO.getCode());
-		PricesOthers isCreated = pricesOthersManager.newOther(mapper.map2Model(pricesOthersDTO));
-		if (isCreated == null) {
+		PricesOthers isCreatedPricesOthers = pricesOthersManager.newOther(mapper.map2Model(pricesOthersDTO));
+		if (isCreatedPricesOthers == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "prices others is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedPricesOthers));
 	}
 
 	/**
@@ -95,11 +95,11 @@ public class PricesOthersController {
 		if (pricesOthersFounds.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		PricesOthers isUpdated = pricesOthersManager.updateOther(pricesOthers);
-		if (isUpdated == null) {
+		PricesOthers isUpdatedPricesOthers = pricesOthersManager.updateOther(pricesOthers);
+		if (isUpdatedPricesOthers == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "prices others is not updated!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
+		return ResponseEntity.ok(mapper.map2DTO(isUpdatedPricesOthers));
 	}
 
 	/**

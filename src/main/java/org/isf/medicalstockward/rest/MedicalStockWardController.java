@@ -23,9 +23,7 @@ package org.isf.medicalstockward.rest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +46,6 @@ import org.isf.ward.manager.WardBrowserManager;
 import org.isf.ward.model.Ward;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -153,20 +150,21 @@ public class MedicalStockWardController {
 	 */
 	@GetMapping(value = "/medicalstockward/movements/{ward_code}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<MovementWardDTO>> getMovementWard(
-			@PathVariable("ward_code") String wardId, 
-			@RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom, 
-			@RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo) throws OHServiceException {
-		LocalDateTime dateF = null;
-		if(dateFrom != null) {
-			dateF = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
+			@PathVariable("ward_code") String wardId,
+			@RequestParam("from") LocalDate dateFrom,
+			@RequestParam("to") LocalDate dateTo) throws OHServiceException {
+
+		LocalDateTime dateFromTime = null;
+		if (dateFrom != null) {
+			dateFromTime = dateFrom.atStartOfDay();
 		}
-		
-		LocalDateTime dateT = null;
-		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
+
+		LocalDateTime dateToTime = null;
+		if (dateTo != null) {
+			dateToTime = dateTo.atStartOfDay();
 		}
-		
-		List<MovementWard> movs = movWardBrowserManager.getMovementWard(wardId, dateF, dateT);
+
+		List<MovementWard> movs = movWardBrowserManager.getMovementWard(wardId, dateFromTime, dateToTime);
 		List<MovementWardDTO> mappedMovs = movementWardMapper.map2DTOList(movs);
 		if (mappedMovs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMovs);
@@ -186,20 +184,11 @@ public class MedicalStockWardController {
 	 */
 	@GetMapping(value = "/medicalstockward/movements/to/{target_ward_code}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<MovementWardDTO>> getWardMovementsToWard(
-			@PathVariable("target_ward_code") String idwardTo, 
-			@RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom, 
-			@RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo) throws OHServiceException {
-		LocalDateTime dateF = null;
-		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
-		}
-		
-		LocalDateTime dateT = null;
-		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
-		}
-		
-		List<MovementWard> movs = movWardBrowserManager.getWardMovementsToWard(idwardTo, dateF, dateT);
+			@PathVariable("target_ward_code") String idwardTo,
+			@RequestParam("from") LocalDateTime dateFrom,
+			@RequestParam("to") LocalDateTime dateTo) throws OHServiceException {
+
+		List<MovementWard> movs = movWardBrowserManager.getWardMovementsToWard(idwardTo, dateFrom, dateTo);
 		List<MovementWardDTO> mappedMovs = movementWardMapper.map2DTOList(movs);
 		if (mappedMovs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMovs);

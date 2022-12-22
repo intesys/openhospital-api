@@ -23,9 +23,7 @@ package org.isf.security;
 
 import javax.validation.Valid;
 
-import org.isf.menu.dto.UserDTO;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 

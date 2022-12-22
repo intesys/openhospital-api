@@ -11,11 +11,14 @@ import org.isf.opd.dto.OpdDTO;
 import org.isf.opd.manager.OpdBrowserManager;
 import org.isf.opd.mapper.OpdMapper;
 import org.isf.opd.model.Opd;
+import org.isf.patient.data.PatientHelper;
+import org.isf.patient.manager.PatientBrowserManager;
+import org.isf.patient.model.Patient;
 import org.isf.shared.exceptions.OHResponseEntityExceptionHandler;
 import org.isf.shared.mapper.converter.BlobToByteArrayConverter;
 import org.isf.shared.mapper.converter.ByteArrayToBlobConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
@@ -32,16 +35,19 @@ public class OpdControllerTest {
 
 	@Mock
 	protected OpdBrowserManager opdBrowserManagerMock;
+	
+	@Mock
+	protected PatientBrowserManager patientBrowserManagerMock;
 
 	protected OpdMapper opdMapper = new OpdMapper();
 
 	private MockMvc mockMvc;
 
-	@Before
+	@BeforeEach
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(new OpdController(opdBrowserManagerMock, opdMapper))
+				.standaloneSetup(new OpdController(opdBrowserManagerMock, opdMapper, patientBrowserManagerMock))
 				.setControllerAdvice(new OHResponseEntityExceptionHandler())
 				.build();
 		ModelMapper modelMapper = new ModelMapper();
@@ -51,16 +57,25 @@ public class OpdControllerTest {
 	}
 
 	@Test
-	public void testNewOperation_201() throws Exception {
+	public void testNewOpd_201() throws Exception {
 		String request = "/opds";
+		Patient patient = PatientHelper.setup();
+		Integer patientCode = 1;
+		patient.setCode(patientCode);
 		
 		Opd opd = OpdHelper.setup();
+		opd.setPatient(patient);
+		
 		OpdDTO body = opdMapper.map2DTO(opd);
+		
+		when(patientBrowserManagerMock.getPatientById(patientCode)).thenReturn(patient);
 
-		when(opdBrowserManagerMock.newOpd(opdMapper.map2Model(body)));
+		when(opdBrowserManagerMock.newOpd(opdMapper.map2Model(body))).thenReturn(opd);
+		
 		MvcResult result = this.mockMvc
 				.perform(post(request)
 						.contentType(MediaType.APPLICATION_JSON)
+						.content(OpdHelper.asJsonString(body))
 				)
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
@@ -71,4 +86,3 @@ public class OpdControllerTest {
 	}
 
 }
-

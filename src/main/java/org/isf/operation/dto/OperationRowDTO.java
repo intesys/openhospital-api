@@ -27,11 +27,9 @@
 package org.isf.operation.dto;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isf.accounting.dto.BillDTO;
 import org.isf.admission.dto.AdmissionDTO;
 import org.isf.opd.dto.OpdDTO;
@@ -51,13 +49,12 @@ public class OperationRowDTO {
     //@NotNull
     private String opResult;
 
-    //@NotNull
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date opDate;
+    @NotNull
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private LocalDateTime opDate;
 
     private String remarks;
 
-  
     private AdmissionDTO admission;
 
     private OpdDTO opd;
@@ -68,7 +65,7 @@ public class OperationRowDTO {
     
     private int hashCode;
 
-    @ApiModelProperty(hidden= true)
+    @ApiModelProperty(hidden=true)
 	public int getHashCode() {
 		return hashCode;
 	}
@@ -94,7 +91,7 @@ public class OperationRowDTO {
 		return this.opResult;
 	}
 
-	public Date getOpDate() {
+	public LocalDateTime getOpDate() {
 		return this.opDate;
 	}
 
@@ -134,7 +131,7 @@ public class OperationRowDTO {
 		this.opResult = opResult;
 	}
 
-	public void setOpDate(Date opDate) {
+	public void setOpDate(LocalDateTime opDate) {
 		this.opDate = opDate;
 	}
 

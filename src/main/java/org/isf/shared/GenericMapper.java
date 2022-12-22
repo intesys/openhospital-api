@@ -37,7 +37,7 @@ public class GenericMapper<SourceType, DestType> implements Mapper<SourceType, D
 	protected ModelMapper modelMapper;
 	private Type sourceClass;
 	private Type destClass;
-
+	
 	public GenericMapper(Class<SourceType> sourceClass, Class<DestType> destClass) {
 		this.sourceClass = sourceClass;
 		this.destClass = destClass;

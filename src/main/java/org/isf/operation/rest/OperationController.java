@@ -21,14 +21,9 @@
  */
 package org.isf.operation.rest;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.isf.admission.dto.AdmissionDTO;
 import org.isf.admission.manager.AdmissionBrowserManager;
 import org.isf.admission.model.Admission;
 import org.isf.opd.dto.OpdDTO;
@@ -42,7 +37,6 @@ import org.isf.operation.mapper.OperationRowMapper;
 import org.isf.operation.model.Operation;
 import org.isf.operation.model.OperationRow;
 import org.isf.opetype.model.OperationType;
-import org.isf.patient.dto.PatientSTATUS;
 import org.isf.patient.manager.PatientBrowserManager;
 import org.isf.patient.model.Patient;
 import org.isf.shared.exceptions.OHAPIException;
@@ -110,12 +104,11 @@ public class OperationController {
 		if (operationManager.descriptionControl(operationDTO.getDescription(), operationDTO.getType().getCode())) {
 			throw new OHAPIException(new OHExceptionMessage(null, "another operation has already been created with provided description and types!", OHSeverityLevel.ERROR));
 		}
-		Operation operation = mapper.map2Model(operationDTO);
-		Operation isCreated = operationManager.newOperation(mapper.map2Model(operationDTO));
-		if (isCreated == null) {
+		Operation isCreatedOperation = operationManager.newOperation(mapper.map2Model(operationDTO));
+		if (isCreatedOperation == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedOperation));
 	}
 
 	/**
@@ -133,12 +126,11 @@ public class OperationController {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation not found!", OHSeverityLevel.ERROR));
 		}
 		operation.setLock(operationDTO.getLock());
-		Operation isUpdated = operationManager.updateOperation(operation);
-		if (isUpdated == null) {
+		Operation isUpdatedOperation = operationManager.updateOperation(operation);
+		if (isUpdatedOperation == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation is not updated!", OHSeverityLevel.ERROR));
 		}
-		
-		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
+		return ResponseEntity.ok(mapper.map2DTO(isUpdatedOperation));
 	}
 
 	/**
@@ -225,7 +217,7 @@ public class OperationController {
 			   throw new OHAPIException(new OHExceptionMessage(null, "At least one field between admission and Opd is required!", OHSeverityLevel.ERROR));
 		}
 		OperationRow opRow = opRowMapper.map2Model(operationRowDTO);
-		opRow.setOpDate(operationRowDTO.getOpDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+		//opRow.setOpDate(operationRowDTO.getOpDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		
 		boolean isCreated = operationRowManager.newOperationRow(opRow);
 		List<OperationRow> opRowFounds = operationRowManager.getOperationRowByAdmission(opRow.getAdmission()).stream().filter(op -> op.getAdmission().getId() == code)
@@ -238,12 +230,11 @@ public class OperationController {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation row is not created!", OHSeverityLevel.ERROR));
 		}
 		OperationRowDTO opR =  opRowMapper.map2DTO(opCreated);
-		if( opCreated.getOpDate()!= null) {
-			Instant instant = opCreated.getOpDate().atZone(ZoneId.systemDefault()).toInstant();
-	        Date date = (Date) Date.from(instant);
-	        opR.setOpDate(date);
-		}
-		 
+//		if (opCreated.getOpDate() != null) {
+//			Instant instant = opCreated.getOpDate().atZone(ZoneId.systemDefault()).toInstant();
+//			Date date = (Date) Date.from(instant);
+//			opR.setOpDate(date);
+//		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(opR);
 	}
 	
@@ -261,7 +252,7 @@ public class OperationController {
 		   throw new OHAPIException(new OHExceptionMessage(null, "At least one field between admission and Opd is required!", OHSeverityLevel.ERROR));
 	    }
 		OperationRow opRow = opRowMapper.map2Model(operationRowDTO);
-		opRow.setOpDate(operationRowDTO.getOpDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+		//opRow.setOpDate(operationRowDTO.getOpDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		
 		List<OperationRow> opRowFounds = operationRowManager.getOperationRowByAdmission(opRow.getAdmission()).stream().filter(op -> op.getId() == opRow.getId())
 				.collect(Collectors.toList());
@@ -285,16 +276,15 @@ public class OperationController {
 		LOGGER.info("Get operations row for provided admission");
 		Admission adm = admissionManager.getAdmission(id);
 		List<OperationRow> operationRows = operationRowManager.getOperationRowByAdmission(adm);
-		List<OperationRowDTO> operationRowDTOs = operationRows.stream().map(operation->{
-			 OperationRowDTO opR =  opRowMapper.map2DTO(operation);
-			 if(operation.getOpDate() != null) {
-		    	 Instant instant = operation.getOpDate().atZone(ZoneId.systemDefault()).toInstant();
-		         Date date = (Date) Date.from(instant);
-		         opR.setOpDate(date); 
-			 }
-			 return opR;
+		List<OperationRowDTO> operationRowDTOs = operationRows.stream().map(operation -> {
+			OperationRowDTO opR = opRowMapper.map2DTO(operation);
+//			if (operation.getOpDate() != null) {
+//				Instant instant = operation.getOpDate().atZone(ZoneId.systemDefault()).toInstant();
+//				Date date = (Date) Date.from(instant);
+//				opR.setOpDate(date);
+//			}
+			return opR;
 		}).collect(Collectors.toList());
-		
 		if (operationRowDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationRowDTOs);
 		} else {
@@ -312,14 +302,14 @@ public class OperationController {
 		LOGGER.info("Get operations row for provided patient");
 		Patient patient = patientBrowserManager.getPatientById(patientCode);
 		List<OperationRow> operationRows = operationRowManager.getOperationRowByPatientCode(patient);
-		List<OperationRowDTO> operationRowDTOs =  operationRows.stream().map(operation->{
-			 OperationRowDTO opR =  opRowMapper.map2DTO(operation);
-			 if(operation.getOpDate() != null) {
-		    	 Instant instant = operation.getOpDate().atZone(ZoneId.systemDefault()).toInstant();
-		         Date date = (Date) Date.from(instant);
-		         opR.setOpDate(date); 
-			 }
-			 return opR;
+		List<OperationRowDTO> operationRowDTOs = operationRows.stream().map(operation -> {
+			OperationRowDTO opR = opRowMapper.map2DTO(operation);
+//			if (operation.getOpDate() != null) {
+//				Instant instant = operation.getOpDate().atZone(ZoneId.systemDefault()).toInstant();
+//				Date date = (Date) Date.from(instant);
+//				opR.setOpDate(date);
+//			}
+			return opR;
 		}).collect(Collectors.toList());
 		if (operationRowDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationRowDTOs);
@@ -337,14 +327,14 @@ public class OperationController {
 	public ResponseEntity<List<OperationRowDTO>> getOperationRowsByOpd(@RequestBody OpdDTO opdDTO) throws OHServiceException {
 		LOGGER.info("Get operations row for provided opd");
 		List<OperationRow> operationRows = operationRowManager.getOperationRowByOpd(opdMapper.map2Model(opdDTO));
-		List<OperationRowDTO> operationRowDTOs = operationRows.stream().map(operation->{
-			 OperationRowDTO opR =  opRowMapper.map2DTO(operation);
-			 if(operation.getOpDate() != null) {
-		    	 Instant instant = operation.getOpDate().atZone(ZoneId.systemDefault()).toInstant();
-		         Date date = (Date) Date.from(instant);
-		         opR.setOpDate(date); 
-			 }
-			 return opR;
+		List<OperationRowDTO> operationRowDTOs = operationRows.stream().map(operation -> {
+			OperationRowDTO opR = opRowMapper.map2DTO(operation);
+//			if (operation.getOpDate() != null) {
+//				Instant instant = operation.getOpDate().atZone(ZoneId.systemDefault()).toInstant();
+//				Date date = (Date) Date.from(instant);
+//				opR.setOpDate(date);
+//			}
+			return opR;
 		}).collect(Collectors.toList());
 		
 		if (operationRowDTOs.isEmpty()) {

@@ -88,11 +88,11 @@ public class MedicalTypeController {
 	 */
 	@PostMapping(value = "/medicaltypes", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MedicalTypeDTO> createMedicalType(@RequestBody @Valid MedicalTypeDTO medicalTypeDTO) throws OHServiceException {
-		MedicalType isCreated = medicalTypeBrowserManager.newMedicalType(medicalTypeMapper.map2Model(medicalTypeDTO));
-		if (isCreated == null) {
+		MedicalType isCreatedMedicalType = medicalTypeBrowserManager.newMedicalType(medicalTypeMapper.map2Model(medicalTypeDTO));
+		if (isCreatedMedicalType == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Medical type is not created!", OHSeverityLevel.ERROR));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(medicalTypeMapper.map2DTO(isCreated));
+        return ResponseEntity.status(HttpStatus.CREATED).body(medicalTypeMapper.map2DTO(isCreatedMedicalType));
 	}
 	
 	/**
@@ -107,11 +107,11 @@ public class MedicalTypeController {
 		if (!medicalTypeBrowserManager.isCodePresent(medicalType.getCode())) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Medical type not found!", OHSeverityLevel.ERROR));
 		}
-		MedicalType isUpdated = medicalTypeBrowserManager.updateMedicalType(medicalType);
-		if (isUpdated == null) {
+		MedicalType isUpdatedMedicalType = medicalTypeBrowserManager.updateMedicalType(medicalType);
+		if (isUpdatedMedicalType == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Medical type is not updated!", OHSeverityLevel.ERROR));
         }
-        return ResponseEntity.ok(medicalTypeMapper.map2DTO(isUpdated));
+        return ResponseEntity.ok(medicalTypeMapper.map2DTO(isUpdatedMedicalType));
 	}
 	
 	/**

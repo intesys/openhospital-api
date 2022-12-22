@@ -74,11 +74,11 @@ public class PregnantTreatmentTypeController {
 	ResponseEntity<PregnantTreatmentTypeDTO> newPregnantTreatmentType(@RequestBody PregnantTreatmentTypeDTO pregnantTreatmentTypeDTO) throws OHServiceException {
 		String code = pregnantTreatmentTypeDTO.getCode();
 		LOGGER.info("Create pregnant treatment Type {}", code);
-		PregnantTreatmentType isCreated = pregTreatTypeManager.newPregnantTreatmentType(mapper.map2Model(pregnantTreatmentTypeDTO));
-		if (isCreated == null) {
+		PregnantTreatmentType isCreatedPregnantTreatmentType = pregTreatTypeManager.newPregnantTreatmentType(mapper.map2Model(pregnantTreatmentTypeDTO));
+		if (isCreatedPregnantTreatmentType == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "pregnant treatment Type is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedPregnantTreatmentType));
 	}
 
 	/**
@@ -95,11 +95,11 @@ public class PregnantTreatmentTypeController {
 		if (!pregTreatTypeManager.isCodePresent(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "pregnantTreatment Type not found!", OHSeverityLevel.ERROR));
 		}
-		PregnantTreatmentType isUpdated = pregTreatTypeManager.updatePregnantTreatmentType(pregTreatType);
-		if (isUpdated == null) {
+		PregnantTreatmentType isUpdatedPregnantTreatmentType = pregTreatTypeManager.updatePregnantTreatmentType(pregTreatType);
+		if (isUpdatedPregnantTreatmentType == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "pregnantTreatment Type is not updated!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
+		return ResponseEntity.ok(mapper.map2DTO(isUpdatedPregnantTreatmentType));
 	}
 
 	/**

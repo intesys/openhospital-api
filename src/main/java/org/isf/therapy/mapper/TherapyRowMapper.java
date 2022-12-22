@@ -21,13 +21,9 @@
  */
 package org.isf.therapy.mapper;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.isf.admission.dto.AdmissionDTO;
 import org.isf.medicals.model.Medical;
 import org.isf.patient.dto.PatientDTO;
 import org.isf.patient.mapper.PatientMapper;
@@ -40,12 +36,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TherapyRowMapper extends GenericMapper<TherapyRow, TherapyRowDTO> {
+
 	@Autowired
-	private PatientMapper patientMapper = new PatientMapper();
+	private PatientMapper patientMapper;
+
 	public TherapyRowMapper() {
 		super(TherapyRow.class, TherapyRowDTO.class);
 	}
-	
 
 	@Override
 	public TherapyRow map2Model(TherapyRowDTO toObj) {
@@ -57,8 +54,8 @@ public class TherapyRowMapper extends GenericMapper<TherapyRow, TherapyRowDTO> {
 		therapyRow.setMedical(medical);
 		Patient patient = patientMapper.map2Model(toObj.getPatID());
 		therapyRow.setPatient(patient);
-		therapyRow.setStartDate(toObj.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-		therapyRow.setEndDate(toObj.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+//		therapyRow.setStartDate(toObj.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+//		therapyRow.setEndDate(toObj.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		return therapyRow;
 	}
 
@@ -70,13 +67,13 @@ public class TherapyRowMapper extends GenericMapper<TherapyRow, TherapyRowDTO> {
 		therapyRowDTO.setMedicalId(fromObj.getMedical());
 		PatientDTO patID = patientMapper.map2DTO(fromObj.getPatient());
 		therapyRowDTO.setPatID(patID);
-		Instant instant1 = fromObj.getStartDate().atZone(ZoneId.systemDefault()).toInstant();
-		Date date1 = Date.from(instant1);
-		therapyRowDTO.setStartDate(date1);
+//		Instant instant1 = fromObj.getStartDate().atZone(ZoneId.systemDefault()).toInstant();
+//		Date date1 = Date.from(instant1);
+//		therapyRowDTO.setStartDate(date1);
 		
-		Instant instant2 = fromObj.getEndDate().atZone(ZoneId.systemDefault()).toInstant();
-		Date date2 = Date.from(instant2);
-		therapyRowDTO.setEndDate(date2);
+//		Instant instant2 = fromObj.getEndDate().atZone(ZoneId.systemDefault()).toInstant();
+//		Date date2 = Date.from(instant2);
+//		therapyRowDTO.setEndDate(date2);
 		return therapyRowDTO;
 	}
 

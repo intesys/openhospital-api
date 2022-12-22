@@ -47,9 +47,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 
 @RestController
-@Api(value = "/suppliers", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(value = "/suppliers", produces = MediaType.APPLICATION_JSON_VALUE, authorizations = {@Authorization(value="apiKey")})
 public class SupplierController {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SupplierController.class);
@@ -69,13 +70,13 @@ public class SupplierController {
 	@PostMapping(value = "/suppliers", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<SupplierDTO> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO) throws OHServiceException {
 		LOGGER.info("Saving a new supplier...");
-		Supplier isCreated = manager.saveOrUpdate(mapper.map2Model(supplierDTO));
-		if (isCreated == null) {
+		Supplier isCreatedSupplier = manager.saveOrUpdate(mapper.map2Model(supplierDTO));
+		if (isCreatedSupplier == null) {
 			LOGGER.error("Supplier is not created!");
             throw new OHAPIException(new OHExceptionMessage(null, "Supplier is not created!", OHSeverityLevel.ERROR));
         }
 		LOGGER.info("Supplier saved successfully");
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedSupplier));
 	}
 	
 	/**
@@ -86,17 +87,17 @@ public class SupplierController {
 	 */
 	@PutMapping(value = "/suppliers", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<SupplierDTO> updateSupplier(@RequestBody @Valid SupplierDTO supplierDTO) throws OHServiceException {
-		if(supplierDTO.getSupId() == null || manager.getByID(supplierDTO.getSupId()) == null) {
+		if (supplierDTO.getSupId() == null || manager.getByID(supplierDTO.getSupId()) == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Supplier not found!", OHSeverityLevel.ERROR));
 		}
 		LOGGER.info("Updating supplier...");
-		Supplier isUpdated = manager.saveOrUpdate(mapper.map2Model(supplierDTO));
-		if (isUpdated == null) {
+		Supplier isUpdatedSupplier = manager.saveOrUpdate(mapper.map2Model(supplierDTO));
+		if (isUpdatedSupplier == null) {
 			LOGGER.error("Supplier is not updated!");
             throw new OHAPIException(new OHExceptionMessage(null, "Supplier is not updated!", OHSeverityLevel.ERROR));
         }
 		LOGGER.info("Supplier updated successfully");
-        return ResponseEntity.ok(mapper.map2DTO(isUpdated));
+        return ResponseEntity.ok(mapper.map2DTO(isUpdatedSupplier));
 	}
 	
 	/**

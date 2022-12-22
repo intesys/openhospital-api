@@ -171,13 +171,13 @@ public class MedicalController {
 			@RequestBody MedicalDTO medicalDTO,
 			@RequestParam(name="ignore_similar", defaultValue="false") boolean ignoreSimilar) throws OHServiceException {
 		LOGGER.info("Creating a new medical ...");
-		Medical isCreated = medicalManager.newMedical(mapper.map2Model(medicalDTO), ignoreSimilar);
-		if (isCreated == null) {
+		Medical isCreatedMedical = medicalManager.newMedical(mapper.map2Model(medicalDTO), ignoreSimilar);
+		if (isCreatedMedical == null) {
 			LOGGER.info("Medical is not created!");
             throw new OHAPIException(new OHExceptionMessage(null, "Medical is not created!", OHSeverityLevel.ERROR));
         }
 		LOGGER.info("Medical successfully created!");
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedMedical));
 	}
 	
 	/**
@@ -192,13 +192,13 @@ public class MedicalController {
 			@RequestBody @Valid MedicalDTO medicalDTO,
 			@RequestParam(name="ignore_similar", defaultValue="false") boolean ignoreSimilar) throws OHServiceException {
 		LOGGER.info("Updating a medical ...");
-		Medical isUpdated = medicalManager.updateMedical(mapper.map2Model(medicalDTO), ignoreSimilar);
-		if (isUpdated == null) {
+		Medical isUpdatedMedical = medicalManager.updateMedical(mapper.map2Model(medicalDTO), ignoreSimilar);
+		if (isUpdatedMedical == null) {
 			LOGGER.info("Medical is not updated!");
             throw new OHAPIException(new OHExceptionMessage(null, "Medical is not updated!", OHSeverityLevel.ERROR));
         }
 		LOGGER.info("Medical successfully updated!");
-        return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(isUpdated));
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(isUpdatedMedical));
 	}
 	
 	/**

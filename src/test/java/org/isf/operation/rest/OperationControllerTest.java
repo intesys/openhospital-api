@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.isf.dlvrtype.rest.DeliveryTypeControllerTest;
@@ -22,8 +21,8 @@ import org.isf.operation.model.Operation;
 import org.isf.shared.exceptions.OHResponseEntityExceptionHandler;
 import org.isf.shared.mapper.converter.BlobToByteArrayConverter;
 import org.isf.shared.mapper.converter.ByteArrayToBlobConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
@@ -47,9 +46,9 @@ public class OperationControllerTest {
 
 	private MockMvc mockMvc;
 
-	@Before
+	@BeforeEach
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 		this.mockMvc = MockMvcBuilders
 				.standaloneSetup(new OperationController(operationBrowserManagerMock, operationMapper))
 				.setControllerAdvice(new OHResponseEntityExceptionHandler())
@@ -71,9 +70,12 @@ public class OperationControllerTest {
 		when(operationBrowserManagerMock.descriptionControl(body.getDescription(), body.getType().getCode()))
 				.thenReturn(false);
 
-		when(operationBrowserManagerMock.newOperation(operationMapper.map2Model(body)));
+		when(operationBrowserManagerMock.newOperation(operationMapper.map2Model(body)))
+				.thenReturn(operation);
+
 		when(operationBrowserManagerMock.getOperationByCode(code))
-		    .thenReturn(operation);
+		    	.thenReturn(operation);
+		
 		MvcResult result = this.mockMvc
 				.perform(post(request)
 						.contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +100,8 @@ public class OperationControllerTest {
 		when(operationBrowserManagerMock.isCodePresent(code))
 				.thenReturn(true);
 
-		when(operationBrowserManagerMock.updateOperation(operation));
+		when(operationBrowserManagerMock.updateOperation(operation))
+				.thenReturn(operation);
 
 		MvcResult result = this.mockMvc
 				.perform(put(request, code)
@@ -160,3 +163,5 @@ public class OperationControllerTest {
 		LOGGER.debug("result: {}", result);
 	}
 }
+Footer
+© 2022 GitHub, Inc.

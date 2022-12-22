@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isf.admission.dto.AdmissionDTO;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -36,13 +35,14 @@ public class MalnutritionDTO {
 	private int code;
 
 	@NotNull(message="The date of control is required")
-	@ApiModelProperty(notes="The date of this malnutrition control", example = "1979-05-01T11:20:33.000Z", position = 2)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	@ApiModelProperty(notes="The date of this malnutrition control", example = "1979-05-01T11:20:33", position = 2)
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime dateSupp;
 
-	@ApiModelProperty(notes="The date of the next malnutrition control", example = "1979-05-01T11:20:33.000Z", position = 3)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	@ApiModelProperty(notes="The date of the next malnutrition control", example = "1979-05-01T11:20:33", position = 3)
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime dateConf;
+	
 
 	@NotNull(message="The admission is required")
 	@ApiModelProperty(notes="The admission requesting the control", position = 4)

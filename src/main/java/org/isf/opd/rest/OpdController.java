@@ -21,15 +21,11 @@
  */
 package org.isf.opd.rest;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.isf.disease.manager.DiseaseBrowserManager;
 import org.isf.opd.dto.OpdDTO;
 import org.isf.opd.manager.OpdBrowserManager;
 import org.isf.opd.mapper.OpdMapper;
@@ -42,7 +38,6 @@ import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -67,20 +62,15 @@ public class OpdController {
 	protected OpdBrowserManager opdManager;
 	
 	@Autowired
-	private PatientBrowserManager patientManager = new PatientBrowserManager();
-	
-	@Autowired
 	protected OpdMapper mapper;
 	
 	@Autowired
-	protected DiseaseBrowserManager diseaseManager = new DiseaseBrowserManager();
-	
-	@Autowired
-	protected PatientBrowserManager patientBrowserManager;
+	protected PatientBrowserManager patientManager;
 
-	public OpdController(OpdBrowserManager opdManager, OpdMapper opdmapper) {
+	public OpdController(OpdBrowserManager opdManager, OpdMapper opdmapper, PatientBrowserManager patientManager) {
 		this.opdManager = opdManager;
 		this.mapper = opdmapper;
+		this.patientManager = patientManager;
 	}
 
 	/**
@@ -93,28 +83,28 @@ public class OpdController {
 	ResponseEntity<OpdDTO> newOpd(@RequestBody OpdDTO opdDTO) throws OHServiceException {
 		int code = opdDTO.getCode();
 		LOGGER.info("store Out patient {}", code);
-		Patient patient = patientBrowserManager.getPatientById(opdDTO.getPatientCode());
+		Patient patient = patientManager.getPatientById(opdDTO.getPatientCode());
 		if (patient == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
-		}
-		if(diseaseManager.getDisease(opdDTO.getDisease().toString()) == null) {
-			throw new OHAPIException(new OHExceptionMessage(null, "disease that you give is not available!", OHSeverityLevel.ERROR));
 		}
 		if (opdDTO.getNote() == " ") {
 			throw new OHAPIException(new OHExceptionMessage(null, "not field is mandatory!", OHSeverityLevel.ERROR));
 		}
 		Opd opdToInsert = mapper.map2Model(opdDTO);
-		opdToInsert.setDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-		Opd isCreated = opdManager.newOpd(opdToInsert);
-		if (isCreated == null) {
+//		opdToInsert.setDate(opdDTO.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+//		opdToInsert.setNextVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+//		opdToInsert.setVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+		opdToInsert.setPatient(patient);
+		Opd isCreatedOpd = opdManager.newOpd(opdToInsert);
+		if (isCreatedOpd == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Opd is not created!", OHSeverityLevel.ERROR));
 		}
-		OpdDTO opdDTOs = mapper.map2DTO(isCreated);
-		Instant instant = isCreated.getDate().atZone(ZoneId.systemDefault()).toInstant();
-		Date date = Date.from(instant);
-		opdDTOs.setDate(date);
-		opdDTOs.setVisitDate(date);
-		return ResponseEntity.status(HttpStatus.OK).body(opdDTOs);
+//		OpdDTO opdDTOs = mapper.map2DTO(isCreated);
+//		Instant instant = isCreated.getDate().atZone(ZoneId.systemDefault()).toInstant();
+//		Date date = Date.from(instant);
+//		opdDTOs.setDate(date);
+//		opdDTOs.setVisitDate(date);
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedOpd));
 	}
 
 	/**
@@ -135,26 +125,25 @@ public class OpdController {
 			throw new OHAPIException(new OHExceptionMessage(null, "Opd not found!", OHSeverityLevel.ERROR));
 		}
 		
-		Patient patient = patientBrowserManager.getPatientById(opdDTO.getPatientCode());
+		Patient patient = patientManager.getPatientById(opdDTO.getPatientCode());
 		if (patient == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
 		}
 
 		Opd opdToUpdate = mapper.map2Model(opdDTO);
-		opdToUpdate.setDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-		//opdToUpdate.setVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+//		opdToUpdate.setDate(opdDTO.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+//		opdToUpdate.setVisitDate(opdDTO.getVisitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		opdToUpdate.setLock(opdDTO.getLock());
 		Opd updatedOpd = opdManager.updateOpd(opdToUpdate);
-		
-		if(updatedOpd == null)
+		if (updatedOpd == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Opd is not updated!", OHSeverityLevel.ERROR));
-		
-		OpdDTO opdDTOs = mapper.map2DTO(updatedOpd);
-		Instant instant = updatedOpd.getDate().atZone(ZoneId.systemDefault()).toInstant();
-		Date date = Date.from(instant);
-		opdDTOs.setDate(date);
-		opdDTOs.setVisitDate(date);
-		return ResponseEntity.status(HttpStatus.OK).body(opdDTOs);
+		}
+//		OpdDTO opdDTOs = mapper.map2DTO(updatedOpd);
+//		Instant instant = updatedOpd.getDate().atZone(ZoneId.systemDefault()).toInstant();
+//		Date date = Date.from(instant);
+//		opdDTOs.setDate(date);
+//		opdDTOs.setVisitDate(date);
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedOpd));
 	}
 
 	/**
@@ -184,31 +173,25 @@ public class OpdController {
 	 */
 	@GetMapping(value = "/opds/search", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OpdDTO>> getOpdByDates(
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom, 
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo, 
-			@RequestParam(value = "diseaseTypeCode", required = false, defaultValue = "angal.common.alltypes.txt") String diseaseTypeCode, @RequestParam(value = "diseaseCode", required = false, defaultValue = "angal.opd.alldiseases.txt") String diseaseCode,
-			@RequestParam(value = "ageFrom", required = false, defaultValue = "0") Integer ageFrom, @RequestParam(value = "ageTo", required = false, defaultValue = "200") Integer ageTo,
+			@RequestParam(value = "dateFrom") LocalDate dateFrom, 
+			@RequestParam(value = "dateFrom") LocalDate dateTo, 
+			@RequestParam(value = "diseaseTypeCode", required = false, defaultValue = "angal.common.alltypes.txt") String diseaseTypeCode,
+			@RequestParam(value = "diseaseCode", required = false, defaultValue = "angal.opd.alldiseases.txt") String diseaseCode,
+			@RequestParam(value = "ageFrom", required = false, defaultValue = "0") Integer ageFrom, 
+			@RequestParam(value = "ageTo", required = false, defaultValue = "200") Integer ageTo,
 			@RequestParam(value = "sex", required = false, defaultValue = "A") char sex,
 			@RequestParam(value = "newPatient", required = false, defaultValue = "A") char newPatient,
 			@RequestParam(value = "patientCode", required = false, defaultValue = "0") Integer patientCode) throws OHServiceException {
 		LOGGER.info("Get opd within specified dates");
-		LocalDate dateF = null;
-		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		}
-		
-		LocalDate dateT = null;
-		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1);
-		}
-		List<Opd> opds = opdManager.getOpd(null,diseaseTypeCode, diseaseCode, dateF, dateT, ageFrom,  ageTo, sex, newPatient, patientCode);
+
+		List<Opd> opds = opdManager.getOpd(null, diseaseTypeCode, diseaseCode, dateFrom, dateTo, ageFrom,  ageTo, sex, newPatient, 0);
 		
 		List<OpdDTO> opdDTOs = opds.stream().map(opd -> {
 			OpdDTO opdDTO = mapper.map2DTO(opd);
-			Instant instant = opd.getDate().atZone(ZoneId.systemDefault()).toInstant();
-			Date date = Date.from(instant);
-			opdDTO.setVisitDate(date);
-			opdDTO.setDate(date);
+//			Instant instant = opd.getDate().atZone(ZoneId.systemDefault()).toInstant();
+//			Date date = Date.from(instant);
+//			opdDTO.setVisitDate(date);
+//			opdDTO.setDate(date);
 			return opdDTO;
 		}).collect(Collectors.toList());
 		
@@ -227,23 +210,24 @@ public class OpdController {
 	@GetMapping(value = "/opds/patient/{pcode}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OpdDTO>> getOpdByPatient(@PathVariable("pcode") int pcode) throws OHServiceException {
 		LOGGER.info("Get opd associated to specified patient CODE: {}", pcode);
-		
+
 		List<Opd> opds = opdManager.getOpdList(pcode);
 		List<OpdDTO> opdDTOs = new ArrayList<OpdDTO>();
-		if(!opds.isEmpty()) {
-			opdDTOs = opds.stream().map(opd-> {
-				 OpdDTO opdDTO =  mapper.map2DTO(opd);
-		    		Instant instant = opd.getDate().atZone(ZoneId.systemDefault()).toInstant();
-		        	Date date = (Date) Date.from(instant);
-		        	opdDTO.setVisitDate(date);
-		        	opdDTO.setDate(date);
-		        	return opdDTO;
+		if (!opds.isEmpty()) {
+			opdDTOs = opds.stream().map(opd -> {
+				OpdDTO opdDTO = mapper.map2DTO(opd);
+//				Instant instant = opd.getDate().atZone(ZoneId.systemDefault()).toInstant();
+//				Date date = (Date) Date.from(instant);
+//				opdDTO.setVisitDate(date);
+//				opdDTO.setDate(date);
+				return opdDTO;
 			}).collect(Collectors.toList());
 			return ResponseEntity.ok(opdDTOs);
-		}else {
-		
+
+		} else {
+
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(opdDTOs);
-			
+
 		}
 	}
 
@@ -287,10 +271,10 @@ public class OpdController {
 		LOGGER.info("Get the last opp for patient code: {}", patientCode);
 		Opd lastOpd = opdManager.getLastOpd(patientCode);
 		OpdDTO opdDTO =  mapper.map2DTO(lastOpd);
-		Instant instant = lastOpd.getDate().atZone(ZoneId.systemDefault()).toInstant();
-    	Date date = (Date) Date.from(instant);
-    	opdDTO.setVisitDate(date);
-    	opdDTO.setDate(date);
+//		Instant instant = lastOpd.getDate().atZone(ZoneId.systemDefault()).toInstant();
+//		opdDTO.setVisitDate(date);
+//    	Date date = (Date) Date.from(instant);
+//    	opdDTO.setVisitDate(date);
 		return ResponseEntity.ok(opdDTO);
 	}
 	

@@ -62,12 +62,9 @@ public class WardDTO {
 	private int visitDuration;
 
 	@ApiModelProperty(notes = "lock", example = "0")
-	private int lock;
-
-	public void setLock(int lock) {
-		this.lock = lock;
-	}
-
+	private Integer lock;
+	
+	
 	public String getCode() {
 		return this.code;
 	}

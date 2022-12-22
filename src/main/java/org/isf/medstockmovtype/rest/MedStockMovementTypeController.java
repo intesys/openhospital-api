@@ -104,11 +104,11 @@ public class MedStockMovementTypeController {
 	 */
 	@PostMapping(value = "/medstockmovementtype", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MovementTypeDTO> newMedicaldsrstockmovType(@RequestBody @Valid MovementTypeDTO medicaldsrstockmovType) throws OHServiceException {
-		MovementType isCreated = manager.newMedicaldsrstockmovType(mapper.map2Model(medicaldsrstockmovType));
-		if (isCreated == null) {
+		MovementType isCreatedMovementType = manager.newMedicaldsrstockmovType(mapper.map2Model(medicaldsrstockmovType));
+		if (isCreatedMovementType == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Movement type is not created!", OHSeverityLevel.ERROR));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedMovementType));
 	}
 	
 	/**
@@ -123,11 +123,11 @@ public class MedStockMovementTypeController {
 		if (!manager.isCodePresent(medicaldsrstockmovType.getCode())) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Movement type not found!", OHSeverityLevel.ERROR));
 		}
-		MovementType isUpdated = manager.updateMedicaldsrstockmovType(medicaldsrstockmovType);
-		if (isUpdated == null) {
+		MovementType isUpdatedMovementType = manager.updateMedicaldsrstockmovType(medicaldsrstockmovType);
+		if (isUpdatedMovementType == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Movement type is not updated!", OHSeverityLevel.ERROR));
         }
-        return ResponseEntity.ok(mapper.map2DTO(isUpdated));
+        return ResponseEntity.ok(mapper.map2DTO(isUpdatedMovementType));
 	}
 	
 	/**

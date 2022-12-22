@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Built-By: unigrow
+Build-Jdk: 17.0.4
+Implementation-Title: openhospital-api
+Implementation-Version: 0.0.1
+Implementation-Vendor-Id: org.isf
+Implementation-Vendor: Pivotal Software, Inc.
+Implementation-URL: https://projects.spring.io/spring-boot/openhospital-
+ api/
+Created-By: Maven Integration for Eclipse
+
