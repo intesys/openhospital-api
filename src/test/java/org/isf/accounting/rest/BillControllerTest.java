@@ -28,9 +28,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -43,8 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -156,8 +151,8 @@ public class BillControllerTest extends ControllerBaseTest {
 
 		Optional<HttpMediaTypeNotSupportedException> exception = Optional.ofNullable((HttpMediaTypeNotSupportedException) result.getResolvedException());
 		LOGGER.debug("exception: {}", exception);
-		//exception.ifPresent(se -> assertThat(se, notNullValue()));
-		//exception.ifPresent(se -> assertThat(se, instanceOf(HttpMediaTypeNotSupportedException.class)));
+		exception.ifPresent(se -> assertThat(se, notNullValue()));
+		exception.ifPresent(se -> assertThat(se, instanceOf(HttpMediaTypeNotSupportedException.class)));
 
 	}
 
@@ -180,8 +175,8 @@ public class BillControllerTest extends ControllerBaseTest {
 
 		Optional<HttpMessageNotReadableException> exception = Optional.ofNullable((HttpMessageNotReadableException) result.getResolvedException());
 		LOGGER.debug("exception: {}", exception);
-		//exception.ifPresent(se -> assertThat(se, notNullValue()));
-		//exception.ifPresent(se -> assertThat(se, instanceOf(HttpMessageNotReadableException.class)));
+		exception.ifPresent(se -> assertThat(se, notNullValue()));
+		exception.ifPresent(se -> assertThat(se, instanceOf(HttpMessageNotReadableException.class)));
 	}
 
 	@Test
@@ -193,7 +188,7 @@ public class BillControllerTest extends ControllerBaseTest {
 		Integer code = 0;
 		newFullBillDTO.getBill().getPatient().setCode(code);
 
-		newFullBillDTO.getBill().setPatient(true);
+		newFullBillDTO.getBill().setPatientTrue(true);
 
 		when(patientManagerMock.getPatientByName(any(String.class))).thenReturn(null); //FIXME: why we were searching by name?
 
@@ -212,8 +207,8 @@ public class BillControllerTest extends ControllerBaseTest {
 		//TODO Create OHCreateAPIException
 		Optional<OHAPIException> oHAPIException = Optional.ofNullable((OHAPIException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", oHAPIException);
-		//oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
-		//oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
+		oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
+		oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
 	}
 
 	@Test
@@ -225,7 +220,7 @@ public class BillControllerTest extends ControllerBaseTest {
 		newFullBillDTO.getBill().setId(id);
 		Integer code = 111;
 		newFullBillDTO.getBill().getPatient().setCode(code);
-		newFullBillDTO.getBill().setPatient(true);
+		newFullBillDTO.getBill().setPatientTrue(true);
 		Bill bill = BillHelper.setup();
 		when(patientManagerMock.getPatientByName(bill.getPatName())).thenReturn(null); //FIXME: why we were searching by name?
 		when(billManagerMock.getBill(id)).thenReturn(bill);
@@ -246,8 +241,8 @@ public class BillControllerTest extends ControllerBaseTest {
 		//TODO Create OHCreateAPIException
 		Optional<OHAPIException> oHAPIException = Optional.ofNullable((OHAPIException) result.getResolvedException());
 		LOGGER.debug("oHAPIException: {}", oHAPIException);
-		//oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
-		//oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
+		oHAPIException.ifPresent(se -> assertThat(se, notNullValue()));
+		oHAPIException.ifPresent(se -> assertThat(se, instanceOf(OHAPIException.class)));
 	}
 
 	@Test
@@ -258,7 +253,7 @@ public class BillControllerTest extends ControllerBaseTest {
 		newFullBillDTO.getBill().setId(id);
 		Integer code = 111;
 		newFullBillDTO.getBill().getPatient().setCode(code);
-		newFullBillDTO.getBill().setPatient(true);
+		newFullBillDTO.getBill().setPatientTrue(true);
 		Bill bill = BillHelper.setup();
 
 		Patient patient = bill.getBillPatient();

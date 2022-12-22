@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isf.patient.dto.PatientDTO;
 
 import io.swagger.annotations.ApiModel;
@@ -42,12 +41,10 @@ public class BillDTO {
 
 	@NotNull
 	@ApiModelProperty(notes = "Date of bill creation", example="2020-03-19T14:58:00.000Z", position = 1)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 	private LocalDateTime date;
 	
 	@NotNull
 	@ApiModelProperty(notes = "Date of bill updated", example="2020-03-19T14:58:00.000Z", position = 2)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 	private LocalDateTime update;
 	
 	@NotNull
@@ -60,7 +57,7 @@ public class BillDTO {
 	
 	@NotNull
 	@ApiModelProperty(notes = "Is bill belongs to a patient?", example="true", position = 5)
-	private boolean isPatient;
+	private boolean patientTrue;
 	
 	@NotNull
 	@ApiModelProperty(notes = "patient name", example="Mario Rossi", position = 6)
@@ -108,6 +105,10 @@ public class BillDTO {
 
 	public String getListName() {
 		return this.listName;
+	}
+
+	public boolean isPatientTrue() {
+		return this.patientTrue;
 	}
 
 	public String getPatName() {
@@ -158,12 +159,8 @@ public class BillDTO {
 		this.listName = listName;
 	}
 
-	public boolean isPatient() {
-		return isPatient;
-	}
-
-	public void setPatient(boolean isPatient) {
-		this.isPatient = isPatient;
+	public void setPatientTrue(boolean isPatientBill) {
+		this.patientTrue = isPatientBill;
 	}
 
 	public void setPatName(String patName) {
