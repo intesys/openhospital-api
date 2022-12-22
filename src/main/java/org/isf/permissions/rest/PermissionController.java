@@ -22,10 +22,6 @@
 package org.isf.permissions.rest;
 
 import java.util.List;
-<<<<<<< HEAD
-import java.util.Optional;
-=======
->>>>>>> upstream/staging3Test
 
 import org.isf.menu.manager.UserGroupManager;
 import org.isf.menu.model.UserGroup;
@@ -154,23 +150,17 @@ public class PermissionController {
 	@PutMapping(value = { "/permissions/{id}", "/permissions" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PermissionDTO> updatePermission(@PathVariable(value = "id") Optional<Integer> optionalPermissionId, @RequestBody PermissionDTO permissionDTO) throws OHServiceException {
 		LOGGER.info("updatePermission(id: {}, id: {})", optionalPermissionId.isPresent() ? optionalPermissionId.get() : "EMPTY", permissionDTO);
-
 		if (optionalPermissionId == null && (permissionDTO == null || permissionDTO.getId() == null)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "wrong input: no permission id", OHSeverityLevel.ERROR), HttpStatus.BAD_REQUEST);
 		}
-
 		if (optionalPermissionId.isPresent() && optionalPermissionId.get().compareTo(permissionDTO.getId()) != 0) {
 			throw new OHAPIException(new OHExceptionMessage(null, "wrong input: permissio ids does not match", OHSeverityLevel.ERROR), HttpStatus.BAD_REQUEST);
 		}
-
 		final Integer permissionId = optionalPermissionId.isPresent() ? optionalPermissionId.get() : permissionDTO.getId();
-
 		if (!this.permissionManager.exists(permissionId.intValue())) {
 			throw new OHAPIException(new OHExceptionMessage(null, "permission not found", OHSeverityLevel.ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 		Permission model = this.permissionMapper.map2Model(permissionDTO);
-
 		List<GroupPermission> groupPermissions = this.groupPermissionManager.findByPermissionIdAndUserGroupCodes(permissionDTO.getId(), permissionDTO.getUserGroupIds());
 		model.setGroupPermission(groupPermissions);
 		Permission permission = this.permissionManager.updatePermission(model);

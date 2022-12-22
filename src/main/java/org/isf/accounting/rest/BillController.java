@@ -22,8 +22,6 @@
 package org.isf.accounting.rest;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import org.isf.accounting.dto.BillDTO;
@@ -105,7 +103,7 @@ public class BillController {
      * @throws OHServiceException
      */
 	@PostMapping(value = "/bills", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<FullBillDTO> newBill(@RequestBody FullBillDTO newBillDto) throws OHServiceException {
+	public ResponseEntity<FullBillDTO> newBill(@RequestBody FullBillDTO newBillDto) throws OHServiceException {
 
 		if (newBillDto == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Bill is null!", OHSeverityLevel.ERROR));
@@ -206,33 +204,22 @@ public class BillController {
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/bills", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<BillDTO>> searchBills(@RequestParam(value = "datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
-			@RequestParam(value = "dateto") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo,
+	public ResponseEntity<List<BillDTO>> searchBills(@RequestParam(value = "datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateFrom,
+			@RequestParam(value = "dateto") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateTo,
 			@RequestParam(value = "patient_code", required = false, defaultValue = "") Integer code) throws OHServiceException {
-
-		LocalDateTime dateF = null;
-		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime dateT = null;
-		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
 
 		List<Bill> bills;
 
 		List<BillDTO> billDTOS;
 
 		if (code == null) {
-			LOGGER.info("Get payments datefrom: {}  dateTo: {}", dateF, dateT);
-			bills = billManager.getBills(dateF, dateT);
+			LOGGER.info("Get payments datefrom: {}  dateTo: {}", dateFrom, dateTo);
+			bills = billManager.getBills(dateFrom, dateTo);
 		} else {
 			Patient pat = patientManager.getPatientById(code);
 
-			LOGGER.info("Get Bills datefrom: {}  dateTo: {} patient: {}", dateF, dateT, pat);
-
-			bills = billManager.getBills(dateF, dateT, pat);
+			LOGGER.info("Get Bills datefrom: {}  dateTo: {} patient: {}", dateFrom, dateTo, pat);
+			bills = billManager.getBills(dateFrom, dateTo, pat);
 		}
 
 		billDTOS = billMapper.map2DTOList(bills);
@@ -253,46 +240,30 @@ public class BillController {
 	 */
 	@GetMapping(value = "/bills/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<BillPaymentsDTO>> searchBillsPayments(
-<<<<<<< HEAD
-			@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
-			@RequestParam(value="dateto")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo, @RequestParam(value="patient_code", required=false, defaultValue="") Integer code) throws OHServiceException {
-=======
 			@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateFrom,
 			@RequestParam(value="dateto") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateTo, 
 			@RequestParam(value="patient_code", required=false, defaultValue="") Integer code) throws OHServiceException {
->>>>>>> upstream/staging3Test
 		LOGGER.info("Get Payments datefrom: {}  dateTo: {} patient: {}", dateFrom, dateTo, code);
 
 		List<BillPayments> payments;
-        
-        List<BillPaymentsDTO> paymentsDTOS;
-        
-        LocalDateTime dateF = null;
-		if(dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime dateT = null;
-		if(dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+		List<BillPaymentsDTO> paymentsDTOS;
+
+		LOGGER.info("Get getPayments datefrom: {}  dateTo: {}", dateFrom, dateTo);
+
+		if (code == null) {
+			payments = billManager.getPayments(dateFrom, dateTo);
+		} else {
+			Patient pat = patientManager.getPatientById(code);
+			payments = billManager.getPayments(dateFrom, dateTo, pat);
 		}
 
-		LOGGER.info("Get getPayments datefrom: {}  dateTo: {}", dateF, dateT);
-        
-        if (code == null) {
-        	payments = billManager.getPayments(dateF, dateT);
-        } else {
-        	 Patient pat = patientManager.getPatientById(code);             
-             payments = billManager.getPayments(dateF, dateT, pat);
-        }
-        
-        paymentsDTOS = billPaymentsMapper.map2DTOList(payments);
-        
-        if (paymentsDTOS.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        } else {
-            return ResponseEntity.ok(paymentsDTOS);
-        }
+		paymentsDTOS = billPaymentsMapper.map2DTOList(payments);
+
+		if (paymentsDTOS.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		}
+		return ResponseEntity.ok(paymentsDTOS);
 	}
 
 	/**
@@ -405,33 +376,22 @@ public class BillController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/bills/search/by/item", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<BillDTO>> searchBills(@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
-			@RequestParam(value="dateto")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo,
+	public ResponseEntity<List<BillDTO>> searchBills(@RequestParam(value="datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateFrom,
+			@RequestParam(value="dateto")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime dateTo,
 			@RequestBody BillItemsDTO billItemDTO) throws OHServiceException {
-        
-		LocalDateTime dateF = null;
-		if (dateFrom != null) {
-			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-		
-		LocalDateTime dateT = null;
-		if (dateTo != null) {
-			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		}
-               
-        BillItems billItem = billItemsMapper.map2Model(billItemDTO);
 
-		LOGGER.info("Get Bills dateFrom: {}  dateTo: {}  Bill ITEM ID: {}", dateF, dateT, billItem.getId());
+		BillItems billItem = billItemsMapper.map2Model(billItemDTO);
 
-		List<Bill> bills = billManager.getBills(dateF, dateT, billItem);
-        
-        List<BillDTO> billDTOS = billMapper.map2DTOList(bills);
-        
-        if (billDTOS.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        } else {
-            return ResponseEntity.ok(billDTOS);
-        }
+		LOGGER.info("Get Bills dateFrom: {}  dateTo: {}  Bill ITEM ID: {}", dateFrom, dateTo, billItem.getId());
+
+		List<Bill> bills = billManager.getBills(dateFrom, dateTo, billItem);
+
+		List<BillDTO> billDTOS = billMapper.map2DTOList(bills);
+
+		if (billDTOS.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		}
+		return ResponseEntity.ok(billDTOS);
 	}
 
 	/**

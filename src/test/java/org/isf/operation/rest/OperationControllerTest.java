@@ -163,5 +163,3 @@ public class OperationControllerTest {
 		LOGGER.debug("result: {}", result);
 	}
 }
-Footer
-© 2022 GitHub, Inc.
