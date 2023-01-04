@@ -22,6 +22,8 @@
 package org.isf.opd.rest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -173,8 +175,8 @@ public class OpdController {
 	 */
 	@GetMapping(value = "/opds/search", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OpdDTO>> getOpdByDates(
-			@RequestParam(value = "dateFrom") LocalDate dateFrom, 
-			@RequestParam(value = "dateFrom") LocalDate dateTo, 
+			@RequestParam(value = "dateFrom") String dateFrom, 
+			@RequestParam(value = "dateFrom") String dateTo, 
 			@RequestParam(value = "diseaseTypeCode", required = false, defaultValue = "angal.common.alltypes.txt") String diseaseTypeCode,
 			@RequestParam(value = "diseaseCode", required = false, defaultValue = "angal.opd.alldiseases.txt") String diseaseCode,
 			@RequestParam(value = "ageFrom", required = false, defaultValue = "0") Integer ageFrom, 
@@ -183,8 +185,11 @@ public class OpdController {
 			@RequestParam(value = "newPatient", required = false, defaultValue = "A") char newPatient,
 			@RequestParam(value = "patientCode", required = false, defaultValue = "0") Integer patientCode) throws OHServiceException {
 		LOGGER.info("Get opd within specified dates");
-
-		List<Opd> opds = opdManager.getOpd(null, diseaseTypeCode, diseaseCode, dateFrom, dateTo, ageFrom,  ageTo, sex, newPatient, 0);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		LocalDate dateT= LocalDateTime.parse(dateTo, formatter).toLocalDate();	
+		LocalDate dateF = LocalDateTime.parse(dateFrom, formatter).toLocalDate();
+		
+		List<Opd> opds = opdManager.getOpd(null, diseaseTypeCode, diseaseCode, dateF, dateT, ageFrom,  ageTo, sex, newPatient, 0);
 		
 		List<OpdDTO> opdDTOs = opds.stream().map(opd -> {
 			OpdDTO opdDTO = mapper.map2DTO(opd);

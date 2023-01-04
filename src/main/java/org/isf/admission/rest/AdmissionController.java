@@ -22,6 +22,8 @@
 package org.isf.admission.rest;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -298,34 +300,34 @@ public class AdmissionController {
 	@GetMapping(value = "/admissions", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<AdmissionDTO>> getAdmissions(
 			@RequestParam(name = "patientcode", defaultValue = "0", required = false) int patientcode,
-			@RequestParam(name = "admissionrange", required = false) LocalDateTime[] admissionRange,
-			@RequestParam(name = "dischargerange", required = false) LocalDateTime[] dischargeRange)
+			@RequestParam(name = "admissionrange", required = false) String[] admissionrange,
+			@RequestParam(name = "dischargerange", required = false) String[] dischargerange)
 			throws OHServiceException {
 		LOGGER.info("Get admissions of patients by id: {}", patientcode);
-//		LocalDateTime[] admissionR= new LocalDateTime[2];	
-//		LocalDateTime[] dischargeR = new LocalDateTime[2];
-//		
-//		
-//		if(admissionrange != null) {
-//			admissionR = new LocalDateTime[admissionrange.length];	
-//			for (int i = 0; i < admissionrange.length; i++) {
-//				LocalDateTime dateR  = admissionrange[i].toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//				admissionR[i] = dateR;
-//			}
-//		}
-//		if(dischargerange != null) {
-//
-//			dischargeR = new LocalDateTime[dischargerange.length];	
-//			for (int j = 0; j < dischargerange.length; j++) {
-//				LocalDateTime dateD  = dischargerange[j].toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//				dischargeR[j] = dateD;
-//			}
-//		}
+		LocalDateTime[] admissionR= new LocalDateTime[2];	
+		LocalDateTime[] dischargeR = new LocalDateTime[2];
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+		if(admissionrange != null) {
+			admissionR = new LocalDateTime[admissionrange.length];	
+			for (int i = 0; i < admissionrange.length; i++) {
+				LocalDateTime dateR  = LocalDateTime.parse(admissionrange[i], formatter);
+				admissionR[i] = dateR;
+			}
+		}
+		if(dischargerange != null) {
+
+			dischargeR = new LocalDateTime[dischargerange.length];	
+			for (int j = 0; j < dischargerange.length; j++) {
+				LocalDateTime dateD  = LocalDateTime.parse(dischargerange[j], formatter);
+				dischargeR[j] = dateD;
+			}
+		}
 		List<AdmittedPatient> admittedPatients = new ArrayList<AdmittedPatient>();
 		if(patientcode == 0) {
-			 admittedPatients = admissionManager.getAdmittedPatients(admissionRange, dischargeRange,"");
+			 admittedPatients = admissionManager.getAdmittedPatients(admissionR, dischargeR,"");
 		}else {
-			admittedPatients = admissionManager.getAdmittedPatients(admissionRange, dischargeRange,
+			admittedPatients = admissionManager.getAdmittedPatients(admissionR, dischargeR,
 					Integer.toString(patientcode));
 		}
 		if (admittedPatients.isEmpty()) {
