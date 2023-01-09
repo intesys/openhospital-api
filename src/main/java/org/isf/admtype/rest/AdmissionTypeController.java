@@ -67,11 +67,11 @@ public class AdmissionTypeController {
 	/**
 	 * Create a new {@link AdmissionType}
 	 * @param admissionTypeDTO
-	 * @return <code>true</code> if the admission type has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the admission type has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/admissiontypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> newAdmissionType(@RequestBody AdmissionTypeDTO admissionTypeDTO) throws OHServiceException {
+	ResponseEntity<AdmissionTypeDTO> newAdmissionType(@RequestBody AdmissionTypeDTO admissionTypeDTO) throws OHServiceException {
 		String code = admissionTypeDTO.getCode();
 		LOGGER.info("Create Admission Type {}", code);
 		boolean isCreated = admtManager.newAdmissionType(mapper.map2Model(admissionTypeDTO));
@@ -86,28 +86,30 @@ public class AdmissionTypeController {
 					new OHExceptionMessage(null, "Admission Type is not created!", OHSeverityLevel.ERROR),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(admtCreated.getCode());
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(admtCreated));
 	}
 
 	/**
 	 * Updates the specified {@link AdmissionType}.
 	 * @param admissionTypeDTO
-	 * @return <code>true</code> if the admission type has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the admission type has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/admissiontypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> updateAdmissionTypet(@RequestBody AdmissionTypeDTO admissionTypeDTO)
+	ResponseEntity<AdmissionTypeDTO> updateAdmissionTypet(@RequestBody AdmissionTypeDTO admissionTypeDTO)
 			throws OHServiceException {
 		LOGGER.info("Update admissiontypes code: {}", admissionTypeDTO.getCode());
 		AdmissionType admt = mapper.map2Model(admissionTypeDTO);
-		if (!admtManager.isCodePresent(admt.getCode()))
+		if (!admtManager.isCodePresent(admt.getCode())) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Admission Type not found!", OHSeverityLevel.ERROR));
+		}
 		boolean isUpdated = admtManager.updateAdmissionType(admt);
-		if (!isUpdated)
+		if (!isUpdated) {
 			throw new OHAPIException(
 					new OHExceptionMessage(null, "Admission Type is not updated!", OHSeverityLevel.ERROR),
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		return ResponseEntity.ok(admt.getCode());
+		}
+		return ResponseEntity.ok(mapper.map2DTO(admt));
 	}
 
 	/**
@@ -130,7 +132,7 @@ public class AdmissionTypeController {
 	/**
 	 * Delete {@link AdmissionType} for specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link AdmissionType} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link AdmissionType} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/admissiontypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)

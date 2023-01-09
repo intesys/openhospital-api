@@ -67,11 +67,11 @@ public class DeliveryTypeController {
 	/**
 	 * Create a new {@link DeliveryType}.
 	 * @param dlvrTypeDTO
-	 * @return <code>true</code> if the {@link DeliveryType} has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link DeliveryType} has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/deliverytypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> newDeliveryType(@RequestBody DeliveryTypeDTO dlvrTypeDTO) throws OHServiceException {
+	ResponseEntity<DeliveryTypeDTO> newDeliveryType(@RequestBody DeliveryTypeDTO dlvrTypeDTO) throws OHServiceException {
 		String code = dlvrTypeDTO.getCode();
 		LOGGER.info("Create Delivery type {}", code);
 		boolean isCreated = dlvrtypeManager.newDeliveryType(deliveryTypeMapper.map2Model(dlvrTypeDTO));
@@ -85,27 +85,29 @@ public class DeliveryTypeController {
 			throw new OHAPIException(
 					new OHExceptionMessage(null, "Delivery type is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(dlvrTypeCreated.getCode());
+		return ResponseEntity.status(HttpStatus.CREATED).body(deliveryTypeMapper.map2DTO(dlvrTypeCreated));
 	}
 
 	/**
 	 * Update the specified {@link DeliveryType}.
 	 * @param dlvrTypeDTO
-	 * @return <code>true</code> if the {@link DeliveryType} has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link DeliveryType} has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/deliverytypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> updateDeliveryTypet(@RequestBody DeliveryTypeDTO dlvrTypeDTO) throws OHServiceException {
+	ResponseEntity<DeliveryTypeDTO> updateDeliveryTypet(@RequestBody DeliveryTypeDTO dlvrTypeDTO) throws OHServiceException {
 		LOGGER.info("Update deliverytypes code: {}", dlvrTypeDTO.getCode());
 		DeliveryType dlvrType = deliveryTypeMapper.map2Model(dlvrTypeDTO);
-		if (!dlvrtypeManager.isCodePresent(dlvrType.getCode()))
+		if (!dlvrtypeManager.isCodePresent(dlvrType.getCode())) {
 			throw new OHAPIException(
 					new OHExceptionMessage(null, "Delivery type not found!", OHSeverityLevel.ERROR));
+		}
 		boolean isUpdated = dlvrtypeManager.updateDeliveryType(dlvrType);
-		if (!isUpdated)
+		if (!isUpdated) {
 			throw new OHAPIException(
 					new OHExceptionMessage(null, "Delivery type is not updated!", OHSeverityLevel.ERROR));
-		return ResponseEntity.ok(dlvrType.getCode());
+		}
+		return ResponseEntity.ok(deliveryTypeMapper.map2DTO(dlvrType));
 	}
 
 	/**
@@ -128,7 +130,7 @@ public class DeliveryTypeController {
 	/**
 	 * Delete {@link DeliveryType} for specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link DeliveryType} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link DeliveryType} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/deliverytypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)

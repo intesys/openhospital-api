@@ -21,15 +21,19 @@
  */
 package org.isf.operation.data;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.isf.operation.dto.OperationDTO;
 import org.isf.operation.model.Operation;
 import org.isf.operation.test.TestOperation;
 import org.isf.opetype.model.OperationType;
 import org.isf.opetype.test.TestOperationType;
 import org.isf.utils.exception.OHException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OperationHelper {
 
@@ -44,8 +48,8 @@ public class OperationHelper {
 		return testOperation.setup(operationType, false);
 	}
 
-	public static ArrayList<Operation> setupOperationList(int size) {
-		return (ArrayList<Operation>) IntStream.range(0, size)
+	public static List<Operation> setupOperationList(int size) {
+		return IntStream.range(0, size)
 				.mapToObj(i -> {
 					try {
 						return OperationHelper.setup();
@@ -54,6 +58,16 @@ public class OperationHelper {
 					}
 					return null;
 				}).collect(Collectors.toList());
+	}
+
+	public static String asJsonString(OperationDTO body) {
+		// TODO Auto-generated method stub
+		try {
+			return new ObjectMapper().writeValueAsString(body);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

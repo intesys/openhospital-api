@@ -25,12 +25,15 @@ import java.util.Arrays;
 
 import org.isf.security.OHSimpleUrlAuthenticationSuccessHandler;
 import org.isf.security.RestAuthenticationEntryPoint;
+import org.isf.security.jwt.JWTAuthenticationFilter;
+import org.isf.security.jwt.JWTAuthorizationFilter;
 import org.isf.security.jwt.JWTConfigurer;
 import org.isf.security.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -52,6 +55,7 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
 	@Autowired
     private UserDetailsService userDetailsService;
 	
@@ -84,6 +88,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -93,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // config.setAllowedHeaders(Arrays.asList("Accept", "Accept-Encoding", "Accept-Language", "Authorization", "Content-Type", "Cache-Control", "Connection", "Cookie", "Host", "Pragma", "Referer, User-Agent"));
         config.setAllowedMethods(Arrays.asList("*"));
         // config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        config.setAllowCredentials(true);
+        //config.setAllowCredentials(true);
         config.setAllowedOrigins(Arrays.asList("*"));
         config.setMaxAge(3600L);
         source.registerCorsConfiguration("/**", config);
@@ -110,6 +120,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.disable()
 					.authorizeRequests()
             .and()
+            .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+            .addFilter(new JWTAuthorizationFilter(authenticationManager()))
             .exceptionHandling()
             	//.accessDeniedHandler(accessDeniedHandler)
             	.authenticationEntryPoint(restAuthenticationEntryPoint)
@@ -255,11 +267,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             	.antMatchers(HttpMethod.DELETE, "/diseases/**").hasAuthority("admin")
             	.antMatchers(HttpMethod.GET, "/diseases/**").hasAnyAuthority("admin", "guest")
             .and()
-          	.formLogin()
-          		.loginPage("/auth/login")
-            		.successHandler(successHandler())
-            		.failureHandler(failureHandler())
-            .and()
+          //	.formLogin()
+          	//	.loginPage("/auth/login")
+            //		.successHandler(successHandler())
+            //		.failureHandler(failureHandler())
+           // .and()
 			.apply(securityConfigurerAdapter())
 			.and()
             .httpBasic()

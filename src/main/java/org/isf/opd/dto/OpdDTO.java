@@ -25,8 +25,9 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isf.disease.dto.DiseaseDTO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -34,21 +35,19 @@ import io.swagger.annotations.ApiModelProperty;
  * @author gildas
  */
 public class OpdDTO {
-
+	
+	@ApiModelProperty(notes = "the code of the opd", example="3", position = 1)
     private int code;
 
     @ApiModelProperty(notes = "the date of the admission", position = 2)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date date;
 
     @NotNull
     @ApiModelProperty(notes = "the visit date", position = 3)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date visitDate;
 
-    @ApiModelProperty(notes = "the next visit date", position = 4)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date nextVisitDate;
 
     @ApiModelProperty(notes = "the admitted patient code", position = 5)
     private Integer patientCode;
@@ -60,54 +59,63 @@ public class OpdDTO {
     @NotNull
     @ApiModelProperty(notes = "the patient sex", example = "M", position = 7)
     private char sex;
-
-    /*@NotNull
-    @ApiModelProperty(notes = "the admission note", example = "", position = 8)
-    private String note; // ADDED: Alex
-    */
+    
+    //@NotNull
+    @ApiModelProperty(notes = "the patient sex", example = "M", position = 8)
+    private String patientName;
+    
+    @ApiModelProperty(notes = "Age type", example="null", position = 9)
+	private String ageType; // ADDED: Arnaud
+    
 
     @NotNull
-    @ApiModelProperty(notes = "a progr. in year for each ward", example = "18", position = 9)
+    @ApiModelProperty(notes = "the admission note", example = "this is out patient", position = 10)
+    private String note; // ADDED: Alex
+
+   // @NotNull
+    @ApiModelProperty(notes = "a progr. in year for each ward", example = "18", position = 11)
     private int prog_year;
 
-    @ApiModelProperty(notes = "disease", position = 10)
+    @ApiModelProperty(notes = "disease", position = 12)
     private DiseaseDTO disease;
 
-    @ApiModelProperty(notes = "disease 2", position = 11)
+    @ApiModelProperty(notes = "disease 2", position = 13)
     private DiseaseDTO disease2;
 
-    @ApiModelProperty(notes = "disease 3", position = 12)
+    @ApiModelProperty(notes = "disease 3", position = 14)
     private DiseaseDTO disease3;
 
     @NotNull
-    @ApiModelProperty(notes = "new(N) or reattendance(R) patient", example = "N", position = 13)
+    @ApiModelProperty(notes = "new(N) or reattendance(R) patient", example = "N", position = 15)
     private char newPatient; // n=NEW R=REATTENDANCE
 
-    @ApiModelProperty(notes = "referral from another unit", example = "R", position = 14)
+    @ApiModelProperty(notes = "referral from another unit", example = "R", position = 16)
     private String referralFrom; // R=referral from another unit; null=no referral from
 
-    @ApiModelProperty(notes = "referral to another unit", example = "R", position = 15)
+    @ApiModelProperty(notes = "referral to another unit", example = "R", position = 17)
     private String referralTo; // R=referral to another unit; null=no referral to
 
-    @ApiModelProperty(notes = "user id", position = 16)
+    @ApiModelProperty(notes = "user id", position = 18)
     private String userID;
-
-    @ApiModelProperty(notes = "opd lock column", position = 16)
-    private int lock;
     
-    @ApiModelProperty(notes = "reasons for entry", position = 18)
+    @ApiModelProperty(notes = "lock", example = "0")
+	private int lock;
+	
+	private int hashCode;
+    
+    @ApiModelProperty(notes = "reasons for entry", position = 19)
     private String reason; // ADDED: Arnaud
     
-    @ApiModelProperty(notes = "history of a medical or psychiatric patient", position = 19)
+    @ApiModelProperty(notes = "history of a medical or psychiatric patient", position = 20)
     private String anamnesis; // ADDED: Arnaud
     
-    @ApiModelProperty(notes = "allergies of patient", position = 20)
+    @ApiModelProperty(notes = "allergies of patient", position = 21)
     private String allergies; // ADDED: Arnaud
     
-    @ApiModelProperty(notes = "Current therapies", position = 21)
+    @ApiModelProperty(notes = "Current therapies", position = 22)
     private String therapies; // ADDED: Arnaud
     
-    @ApiModelProperty(notes = "prescription", position = 22)
+    @ApiModelProperty(notes = "prescription", position = 23)
     private String prescription; // ADDED: Arnaud
     
     public String getReason() {
@@ -150,17 +158,19 @@ public class OpdDTO {
 		this.prescription = prescription;
 	}
 
-	private int hashCode = 0;
-
-	@ApiModelProperty(hidden= true)
-	public int getLock() {
-		return lock;
-	}
-
+	
     @ApiModelProperty(hidden = true)
     public int getHashCode() {
         return hashCode;
     }
+
+	public int getLock() {
+		return lock;
+	}
+
+	public void setLock(int lock) {
+		this.lock = lock;
+	}
 
 	public int getCode() {
 		return this.code;
@@ -174,8 +184,12 @@ public class OpdDTO {
 		return this.visitDate;
 	}
 
-	public Date getNextVisitDate() {
-		return this.nextVisitDate;
+	public String getPatientName() {
+		return patientName;
+	}
+
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
 	}
 
 	public Integer getPatientCode() {
@@ -190,9 +204,9 @@ public class OpdDTO {
 		return this.sex;
 	}
 
-/*	public String getNote() {
+	public String getNote() {
 		return this.note;
-	}*/
+	}
 
 	public int getProg_year() {
 		return this.prog_year;
@@ -237,11 +251,6 @@ public class OpdDTO {
 	public void setVisitDate(Date visitDate) {
 		this.visitDate = visitDate;
 	}
-
-	public void setNextVisitDate(Date nextVisitDate) {
-		this.nextVisitDate = nextVisitDate;
-	}
-
 	public void setPatientCode(Integer patientCode) {
 		this.patientCode = patientCode;
 	}
@@ -254,9 +263,9 @@ public class OpdDTO {
 		this.sex = sex;
 	}
 
-	/*public void setNote(String note) {
+	public void setNote(String note) {
 		this.note = note;
-	}*/
+	}
 
 	public void setProg_year(int prog_year) {
 		this.prog_year = prog_year;
@@ -290,11 +299,18 @@ public class OpdDTO {
 		this.userID = userID;
 	}
 
-	public void setLock(int lock) {
-		this.lock = lock;
-	}
 
 	public void setHashCode(int hashCode) {
 		this.hashCode = hashCode;
 	}
+
+	public String getAgeType() {
+		return ageType;
+	}
+
+	public void setAgeType(String ageType) {
+		this.ageType = ageType;
+	}
+	
+	
 }

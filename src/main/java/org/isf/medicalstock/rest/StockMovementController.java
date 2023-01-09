@@ -21,9 +21,10 @@
  */
 package org.isf.medicalstock.rest;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.isf.medicals.manager.MedicalBrowsingManager;
@@ -42,6 +43,7 @@ import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
 import org.isf.ward.model.Ward;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -84,7 +86,7 @@ public class StockMovementController {
 	@PostMapping(value = "/stockmovements/charge", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> newMultipleChargingMovements(@RequestBody List<MovementDTO> movementDTOs, 
 			@RequestParam(name="ref", required=true) String referenceNumber) throws OHServiceException {
-		ArrayList<Movement> movements = new ArrayList<>();
+		List<Movement> movements = new ArrayList<>();
 		movements.addAll(movMapper.map2ModelList(movementDTOs));
 		boolean done = movInsertingManager.newMultipleChargingMovements(movements, referenceNumber);
 		return ResponseEntity.status(HttpStatus.CREATED).body(done);
@@ -102,7 +104,7 @@ public class StockMovementController {
 	@PostMapping(value = "/stockmovements/discharge", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> newMultipleDischargingMovements(@RequestBody List<MovementDTO> movementDTOs, 
 			@RequestParam(name="ref", required=true) String referenceNumber) throws OHServiceException {
-		ArrayList<Movement> movements = new ArrayList<>();
+		List<Movement> movements = new ArrayList<>();
 		movements.addAll(movMapper.map2ModelList(movementDTOs));
 		boolean done = movInsertingManager.newMultipleDischargingMovements(movements, referenceNumber);
 		return ResponseEntity.status(HttpStatus.CREATED).body(done);
@@ -130,13 +132,18 @@ public class StockMovementController {
 	@GetMapping(value = "/stockmovements/filter/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<MovementDTO>> getMovements(
 			@RequestParam("ward_id") String wardId,
-			@RequestParam("from") Date dateFrom,
-			@RequestParam("to") Date dateTo) throws OHServiceException {
-		GregorianCalendar dateFrom_ = new GregorianCalendar();
-		dateFrom_.setTime(dateFrom);
-		GregorianCalendar dateTo_ = new GregorianCalendar();
-		dateTo_.setTime(dateTo);
-		List<Movement> movements = movManager.getMovements(wardId, dateFrom_, dateTo_);
+			@RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateFrom,
+			@RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date dateTo) throws OHServiceException {
+		LocalDateTime dateF = null;
+		if(dateFrom != null) {
+			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
+		
+		LocalDateTime dateT = null;
+		if(dateTo != null) {
+			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
+		List<Movement> movements = movManager.getMovements(wardId, dateF, dateT);
 		return collectResults(movements);
 	}
 	
@@ -173,44 +180,44 @@ public class StockMovementController {
 			@RequestParam(name="med_type", required=false) String medicalType,
 			@RequestParam(name="ward_id", required=false) String wardId,
 			@RequestParam(name="mov_type", required=false) String movType,
-			@RequestParam(name="mov_from", required=false) Date movFrom,
-			@RequestParam(name="mov_to", required=false) Date movTo,
-			@RequestParam(name="lot_prep_from", required=false) Date lotPrepFrom,
-			@RequestParam(name="lot_prep_to", required=false) Date lotPrepTo,
-			@RequestParam(name="lot_due_from", required=false) Date lotDueFrom,
-			@RequestParam(name="lot_due_to", required=false) Date lotDueTo) throws OHServiceException {
-		GregorianCalendar movFrom_ = null;
+			@RequestParam(name="mov_from", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date movFrom,
+			@RequestParam(name="mov_to", required=false)  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date movTo,
+			@RequestParam(name="lot_prep_from", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date lotPrepFrom,
+			@RequestParam(name="lot_prep_to", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date lotPrepTo,
+			@RequestParam(name="lot_due_from", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date lotDueFrom,
+			@RequestParam(name="lot_due_to", required=false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date lotDueTo) throws OHServiceException {
+		LocalDateTime movF = null;
 		if(movFrom != null) {
-			movFrom_ = new GregorianCalendar();
-			movFrom_.setTime(movFrom);
-		}
-		GregorianCalendar movTo_ = null;
-		if(movTo != null) {
-			movTo_ = new GregorianCalendar();
-			movTo_.setTime(movTo);
-		}
-		GregorianCalendar lotPrepFrom_ = null;
-		if(lotPrepFrom != null) {
-			lotPrepFrom_ = new GregorianCalendar();
-			lotPrepFrom_.setTime(lotPrepFrom);
-		}
-		GregorianCalendar lotPrepTo_ = null;
-		if(lotPrepTo != null) {
-			lotPrepTo_ = new GregorianCalendar();
-			lotPrepTo_.setTime(lotPrepTo);
-		}
-		GregorianCalendar lotDueFrom_ = null;
-		if(lotDueFrom != null) {
-			lotDueFrom_ = new GregorianCalendar();
-			lotDueFrom_.setTime(lotDueFrom);
-		}
-		GregorianCalendar lotDueTo_ = null;
-		if(lotDueTo != null) {
-			lotDueTo_ = new GregorianCalendar();
-			lotDueTo_.setTime(lotDueTo);
+			movF  = movFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		}
 		
-		List<Movement> movements = movManager.getMovements(medicalCode, medicalType, wardId, movType, movFrom_, movTo_, lotPrepFrom_, lotPrepTo_, lotDueFrom_, lotDueTo_);
+		LocalDateTime movT = null;
+		if(movTo != null) {
+			movT  = movTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
+		
+		LocalDateTime lotPrepF = null;
+		if(lotPrepFrom != null) {
+			lotPrepF  = lotPrepFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
+		
+		LocalDateTime lotPrepT = null;
+		if(lotPrepTo != null) {
+			lotPrepT  = lotPrepTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
+		
+		LocalDateTime lotDueF = null;
+		if(lotDueFrom != null) {
+			lotDueF  = lotDueFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
+		
+		LocalDateTime lotDueT = null;
+		if(lotDueTo != null) {
+			lotDueT  = lotDueTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		}
+		
+		List<Movement> movements = movManager.getMovements(medicalCode, medicalType, wardId, movType, movF, movT, lotPrepF, lotPrepT, lotDueF, lotDueT);
+
 		return collectResults(movements);
 	}
 	
@@ -223,12 +230,12 @@ public class StockMovementController {
 	@GetMapping(value = "/stockmovements/lot/{med_code}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<LotDTO>> getLotByMedical(@PathVariable("med_code") int medCode) throws OHServiceException {
 		Medical med = medicalManager.getMedical(medCode);
-		if(med == null) {
+		if (med == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Medical not found!", OHSeverityLevel.ERROR));
 		}
 		List<Lot> lots = movInsertingManager.getLotByMedical(med);
 		List<LotDTO> mappedLots = lotMapper.map2DTOList(lots);
-		if(mappedLots.isEmpty()) {
+		if (mappedLots.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedLots);
 		} else {
 			return ResponseEntity.ok(mappedLots);
@@ -239,7 +246,7 @@ public class StockMovementController {
 	 * Checks if the provided quantity is under the medical limits. 
 	 * @param medCode
 	 * @param specifiedQuantity
-	 * @return <code>true</code> if is under the limit, false otherwise
+	 * @return {@code true} if is under the limit, false otherwise
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/stockmovements/critical/check", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -247,7 +254,7 @@ public class StockMovementController {
 			@RequestParam("med_code") int medCode,
 			@RequestParam("qty") int specifiedQuantity) throws OHServiceException {
 		Medical med = medicalManager.getMedical(medCode);
-		if(med == null) {
+		if (med == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Medical not found!", OHSeverityLevel.ERROR));
 		}
 		return ResponseEntity.ok(movInsertingManager.alertCriticalQuantity(med, specifiedQuantity));
@@ -255,7 +262,7 @@ public class StockMovementController {
 	
 	private ResponseEntity<List<MovementDTO>> collectResults(List<Movement> movements) {
 		List<MovementDTO> mappedMovements = movMapper.map2DTOList(movements);
-		if(mappedMovements.isEmpty()) {
+		if (mappedMovements.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMovements);
 		} else {
 			return ResponseEntity.ok(mappedMovements);

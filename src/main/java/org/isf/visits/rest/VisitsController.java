@@ -21,9 +21,15 @@
  */
 package org.isf.visits.rest;
 
+
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.isf.examination.dto.PatientExaminationDTO;
+import org.isf.examination.model.PatientExamination;
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
@@ -41,6 +47,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,10 +78,18 @@ public class VisitsController {
      * @throws OHServiceException
      */
     @GetMapping(value = "/visit/{patID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<VisitDTO>> getVisit(@PathVariable int patID) throws OHServiceException {
+    public ResponseEntity<List<VisitDTO>> getVisit(@PathVariable("patID") int patID) throws OHServiceException {
         LOGGER.info("Get visit related to patId: {}", patID);
         List<Visit> visit = visitManager.getVisits(patID);
-        List<VisitDTO> listVisit = mapper.map2DTOList(visit);
+        List<VisitDTO> listVisit = new ArrayList<VisitDTO>();
+        for(Visit visitP : visit) {	
+			VisitDTO visitDTO =  mapper.map2DTO(visitP);
+    		Instant instant = visitP.getDate().atZone(ZoneId.systemDefault()).toInstant();
+        	Date date = (Date) Date.from(instant);
+        	visitDTO.setDate(date);
+        	listVisit.add(visitDTO);
+    			
+    	}
         if (listVisit.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
@@ -90,30 +105,32 @@ public class VisitsController {
      * @throws OHServiceException
      */
     @PostMapping(value = "/visit", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> newVisit(@RequestBody VisitDTO newVisit) throws OHServiceException {
+    public ResponseEntity<VisitDTO> newVisit(@RequestBody VisitDTO newVisit) throws OHServiceException {
 	    LOGGER.info("Create Visit: {}", newVisit);
-        Visit visit = visitManager.newVisit(mapper.map2Model(newVisit));
-        return ResponseEntity.status(HttpStatus.CREATED).body(visit.getVisitID()); //TODO: verify if it's correct
+	    Visit visitD = mapper.map2Model(newVisit);
+	    visitD.setDate(newVisit.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        Visit visit = visitManager.newVisit(visitD);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(visit)); //TODO: verify if it's correct
     }
 
     /**
      * Create new visitors.
-     *
+     * 
      * @param newVisits a list with all the visitors
      * @return an error message if there are some problem, ok otherwise
      * @throws OHServiceException
      */
     @PostMapping(value = "/visits", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity newVisits(@RequestBody List<VisitDTO> newVisits) throws OHServiceException {
+    public ResponseEntity<Boolean> newVisits(@RequestBody List<VisitDTO> newVisits) throws OHServiceException {
         LOGGER.info("Create Visits");
-        ArrayList<Visit> listVisits = (ArrayList<Visit>) mapper.map2ModelList(newVisits);
+        List<Visit> listVisits = mapper.map2ModelList(newVisits);
         boolean areCreated = visitManager.newVisits(listVisits);
         if (!areCreated) {
             throw new OHAPIException(new OHExceptionMessage(null, "Visits are not created!", OHSeverityLevel.ERROR));
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(areCreated);
     }
-
+    
     /**
      * Delete all the visits related to a patient.
      *
@@ -122,13 +139,39 @@ public class VisitsController {
      * @throws OHServiceException
      */
     @DeleteMapping(value = "/visit/{patID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity deleteVisitsRelatedToPatient(@PathVariable int patID) throws OHServiceException {
+    public ResponseEntity<Boolean> deleteVisitsRelatedToPatient(@PathVariable("patID") int patID) throws OHServiceException {
 	    LOGGER.info("Delete Visit related to patId: {}", patID);
         boolean areDeleted = visitManager.deleteAllVisits(patID);
         if (!areDeleted) {
             throw new OHAPIException(new OHExceptionMessage(null, "Visits are not deleted!", OHSeverityLevel.ERROR));
         }
         return ResponseEntity.ok(true);
+    }
+    
+    /**
+     * Create new visitors.
+     *
+     * @param newVisits a list with all the visitors
+     * @return an error message if there are some problem, ok otherwise
+     * @throws OHServiceException
+     */
+    @PutMapping(value = "/visit/{visitID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<VisitDTO> updateVisit(@PathVariable("visitID") int visitID, @RequestBody VisitDTO updateVisit) throws OHServiceException {
+        LOGGER.info("Create Visits");
+        Visit visit = visitManager.findVisit(visitID);
+        if(visit == null)
+        	throw new OHAPIException( new OHExceptionMessage(null, "Visit not found!", OHSeverityLevel.ERROR));
+        
+        if(visit.getVisitID() != updateVisit.getVisitID())
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        
+        Visit visitUp = mapper.map2Model(updateVisit);
+        visitUp.setDate(updateVisit.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        Visit visitUpdate = visitManager.updateVisit(visitUp);
+        if(visitUpdate == null)
+        	throw new OHAPIException( new OHExceptionMessage(null, "visit is not update !", OHSeverityLevel.ERROR));
+        
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(visitUpdate));
     }
 
 }

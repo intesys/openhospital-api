@@ -21,9 +21,13 @@
  */
 package org.isf.sms.rest;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -38,6 +42,7 @@ import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -70,32 +75,44 @@ public class SmsController {
 	 */
 	@GetMapping(value = "/sms", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<SmsDTO>> getAll(
-			@RequestParam(required=true) String dateFrom, 
-			@RequestParam(required=true) String dateTo) throws OHServiceException {
+			@RequestParam(required = true) String dateFrom,
+			@RequestParam(required = true) String dateTo) throws OHServiceException {
 		LOGGER.info("Fetching the list of sms");
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		Date from, to;
+		LocalDateTime dateT = null;
+		LocalDateTime dateF = null;
 		try {
 			from = format.parse(dateFrom);
 			to = format.parse(dateTo);
+			if(dateFrom != null) {
+				dateF  = from.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			}
+			
+			
+			if(dateTo != null) {
+				dateT  = to.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			}
 		} catch (ParseException e) {
-			throw new OHAPIException(new OHExceptionMessage(null, "Invalid date! Format is yyyy-MM-dd", OHSeverityLevel.ERROR));
+			throw new OHAPIException(new OHExceptionMessage(null, "Invalid date! Format is yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", OHSeverityLevel.ERROR));
 		}
-		List<Sms> smsList = smsManager.getAll(from, to);
+		
+		List<Sms> smsList = smsManager.getAll(dateF, dateT);
+
 		List<SmsDTO> mappedSmsList = smsMapper.map2DTOList(smsList);
-		if(mappedSmsList.isEmpty()){
+		if (mappedSmsList.isEmpty()) {
 			LOGGER.info("No sms found");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedSmsList);
-        }else{
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedSmsList);
+		} else {
 			LOGGER.info("Found {} sms", mappedSmsList.size());
-            return ResponseEntity.ok(mappedSmsList);
-        }
+			return ResponseEntity.ok(mappedSmsList);
+		}
 	}
 	
 	/**
 	 * Save the specified {@link Sms}.
 	 * @param smsDTO
-	 * @return <code>true</code> if the sms is saved
+	 * @return {@code true} if the sms is saved
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/sms", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -109,13 +126,13 @@ public class SmsController {
 	/**
 	 * Deletes the specified {@link Sms}.
 	 * @param smsDTOList
-	 * @return <code>true</code> if the sms is deleted
+	 * @return {@code true} if the sms is deleted
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/sms/delete", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> deleteSms(@RequestBody @Valid List<SmsDTO> smsDTOList) throws OHServiceException {
 		List<Sms> smsList = smsMapper.map2ModelList(smsDTOList);
-		if(smsList.stream().anyMatch(sms -> sms.getSmsId() <= 0)) {
+		if (smsList.stream().anyMatch(sms -> sms.getSmsId() <= 0)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Some Sms are not found!", OHSeverityLevel.ERROR));
 		}
 		smsManager.delete(smsList);

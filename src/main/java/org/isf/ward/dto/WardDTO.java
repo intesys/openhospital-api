@@ -23,6 +23,8 @@ package org.isf.ward.dto;
 
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class WardDTO {
 
 	private String code;
@@ -47,6 +49,8 @@ public class WardDTO {
 
 	@NotNull
 	private boolean isPharmacy;
+	
+	private boolean isOpd;
 
 	@NotNull
 	private boolean isMale;
@@ -54,7 +58,15 @@ public class WardDTO {
 	@NotNull
 	private boolean isFemale;
 
-	private Integer lock;
+	@NotNull
+	private int visitDuration;
+
+	@ApiModelProperty(notes = "lock", example = "0")
+	private int lock;
+
+	public void setLock(int lock) {
+		this.lock = lock;
+	}
 
 	public String getCode() {
 		return this.code;
@@ -98,6 +110,10 @@ public class WardDTO {
 
 	public boolean isFemale() {
 		return this.isFemale;
+	}
+
+	public Integer getVisitDuration() {
+		return this.visitDuration;
 	}
 
 	public Integer getLock() {
@@ -148,7 +164,25 @@ public class WardDTO {
 		this.isFemale = isFemale;
 	}
 
+	public void setVisitDuration(Integer visitDuration) {
+		this.visitDuration = visitDuration;
+	}
+
 	public void setLock(Integer lock) {
 		this.lock = lock;
 	}
+
+	public boolean isOpd() {
+		return isOpd;
+	}
+
+	public void setOpd(boolean isOpd) {
+		this.isOpd = isOpd;
+	}
+
+	public void setVisitDuration(int visitDuration) {
+		this.visitDuration = visitDuration;
+	}
+	
+	
 }

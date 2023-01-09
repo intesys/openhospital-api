@@ -21,6 +21,7 @@
  */
 package org.isf.patvac.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -40,7 +41,7 @@ public class PatientVaccineDTO
 	private int progr;
 
 	@NotNull
-	@ApiModelProperty(notes = "the vaccine date", position = 2)
+	@ApiModelProperty(notes = "the vaccine date", example="2021-05-01T00:00:00.000Z", position = 2)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 	private Date vaccineDate;
 
@@ -51,16 +52,21 @@ public class PatientVaccineDTO
 	@NotNull
 	@ApiModelProperty(notes = "the vaccine", position = 4)
 	private VaccineDTO vaccine;
-	
+
+	@ApiModelProperty(notes = "lock", example = "0")
 	private int lock;
 	
-	private int hashCode = 0;
+	private int hashCode;
 
-	@ApiModelProperty(hidden= true)
+
 	public int getLock() {
 		return lock;
 	}
 
+	public void setLock(int lock) {
+		this.lock = lock;
+	}
+	
 	@ApiModelProperty(hidden= true)
 	public int getHashCode() {
 		return hashCode;
@@ -104,10 +110,6 @@ public class PatientVaccineDTO
 
 	public void setVaccine(VaccineDTO vaccine) {
 		this.vaccine = vaccine;
-	}
-
-	public void setLock(int lock) {
-		this.lock = lock;
 	}
 
 	public void setHashCode(int hashCode) {

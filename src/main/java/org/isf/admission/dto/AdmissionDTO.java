@@ -21,6 +21,7 @@
  */
 package org.isf.admission.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -65,8 +66,8 @@ public class AdmissionDTO {
 	private PatientDTO patient;
 
 	@NotNull
-	@ApiModelProperty(notes = "admission date", position = 7)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	@ApiModelProperty(notes = "admission date", example="2020-03-19T14:58:00.000Z", position = 7)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date admDate;
 
 	@ApiModelProperty(notes = "admission type", position = 8)
@@ -91,17 +92,17 @@ public class AdmissionDTO {
 	private OperationDTO operation;
 
 	@ApiModelProperty(notes = "operation date", position = 15)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date opDate;
 
 	@ApiModelProperty(notes = "operation result value is 'P' or 'N' ", example = "N", position = 16)
 	private String opResult;
 
 	@ApiModelProperty(notes = "discharge date", position = 17)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date disDate;
 
-	@ApiModelProperty(notes = "disChargeType ", position = 18)
+	@ApiModelProperty(notes = "disChargeType", position = 18)
 	private DischargeTypeDTO disType;
 
 	@ApiModelProperty(notes = "free note", position = 19)
@@ -111,14 +112,14 @@ public class AdmissionDTO {
 	private Float transUnit;
 
 	@ApiModelProperty(notes = "visit date", position = 21)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date visitDate;
 
 	@ApiModelProperty(notes = "treatmentType ", position = 22)
 	private PregnantTreatmentTypeDTO pregTreatmentType;
 
 	@ApiModelProperty(notes = "delivery date", position = 23)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date deliveryDate;
 
 	@ApiModelProperty(notes = "delivery type", position = 24)
@@ -130,20 +131,26 @@ public class AdmissionDTO {
 	@ApiModelProperty(notes = "weight", position = 26)
 	private Float weight;
 
+	@ApiModelProperty(notes = "delivery date", position = 27)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date ctrlDate1;
 
+	@ApiModelProperty(notes = "delivery date", position = 28) 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date ctrlDate2;
 
+	@ApiModelProperty(notes = "delivery date", position = 29)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date abortDate;
 
 	@ApiModelProperty(notes = "weight", position = 30)
 	private String userID;
-
-	private int lock;
 	
-	private int hashCode = 0;
+	private int hashCode;
+	
+	@ApiModelProperty(notes = "lock", example = "0", position = 31)
+	private int lock;
 
-	@NotNull
 	@ApiModelProperty(notes = "flag record deleted, values are 'Y' OR 'N' ", example = "N", position = 32)
 	private String deleted;
 
@@ -272,11 +279,6 @@ public class AdmissionDTO {
 	}
 
 	@ApiModelProperty(hidden= true)
-	public int getLock() {
-		return lock;
-	}
-
-	@ApiModelProperty(hidden= true)
 	public int getHashCode() {
 		return hashCode;
 	}
@@ -332,7 +334,6 @@ public class AdmissionDTO {
 	public void setDiseaseOut3(DiseaseDTO diseaseOut3) {
 		this.diseaseOut3 = diseaseOut3;
 	}
-
 	public void setOperation(OperationDTO operation) {
 		this.operation = operation;
 	}
@@ -401,12 +402,16 @@ public class AdmissionDTO {
 		this.userID = userID;
 	}
 
-	public void setLock(int lock) {
-		this.lock = lock;
-	}
-
 	public void setHashCode(int hashCode) {
 		this.hashCode = hashCode;
+	}
+
+	public int getLock() {
+		return lock;
+	}
+
+	public void setLock(int lock) {
+		this.lock = lock;
 	}
 
 	public void setDeleted(String deleted) {

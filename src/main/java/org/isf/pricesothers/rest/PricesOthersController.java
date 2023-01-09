@@ -67,37 +67,39 @@ public class PricesOthersController {
 	/**
 	 * Create a new {@link PricesOthers}.
 	 * @param pricesOthersDTO
-	 * @return <code>true</code> if the prices others has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the prices others has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/pricesothers", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> newPricesOthers(@RequestBody PricesOthersDTO pricesOthersDTO) throws OHServiceException {
+	ResponseEntity<PricesOthersDTO> newPricesOthers(@RequestBody PricesOthersDTO pricesOthersDTO) throws OHServiceException {
 		LOGGER.info("Create prices others {}", pricesOthersDTO.getCode());
-		boolean isCreated = pricesOthersManager.newOther(mapper.map2Model(pricesOthersDTO));
-		if (!isCreated) {
+		PricesOthers isCreated = pricesOthersManager.newOther(mapper.map2Model(pricesOthersDTO));
+		if (isCreated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "prices others is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(pricesOthersDTO.getCode());
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
 	}
 
 	/**
 	 * Updates the specified {@link PricesOthers}.
 	 * @param pricesOthersDTO
-	 * @return <code>true</code> if the prices others has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the prices others has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/pricesothers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> updatePricesOtherst(@PathVariable Integer id, @RequestBody PricesOthersDTO pricesOthersDTO)
+	ResponseEntity<PricesOthersDTO> updatePricesOtherst(@PathVariable Integer id, @RequestBody PricesOthersDTO pricesOthersDTO)
 			throws OHServiceException {
 		LOGGER.info("Update pricesothers code: {}", pricesOthersDTO.getCode());
 		PricesOthers pricesOthers = mapper.map2Model(pricesOthersDTO);
 		List<PricesOthers> pricesOthersFounds = pricesOthersManager.getOthers().stream().filter(po -> po.getId() == pricesOthersDTO.getId()).collect(Collectors.toList());
-		if (pricesOthersFounds.isEmpty())
+		if (pricesOthersFounds.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-		boolean isUpdated = pricesOthersManager.updateOther(pricesOthers);
-		if (!isUpdated)
+		}
+		PricesOthers isUpdated = pricesOthersManager.updateOther(pricesOthers);
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "prices others is not updated!", OHSeverityLevel.ERROR));
-		return ResponseEntity.ok(pricesOthers.getCode());
+		}
+		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
 	}
 
 	/**
@@ -121,13 +123,13 @@ public class PricesOthersController {
 	/**
 	 * Delete {@link PricesOthers} for specified code.
 	 * @param id
-	 * @return <code>true</code> if the {@link PricesOthers} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link PricesOthers} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/pricesothers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> deletePricesOthers(@PathVariable int id) throws OHServiceException {
 		LOGGER.info("Delete prices others id: {}", id);
-		boolean isDeleted = false;
+		boolean isDeleted;
 		List<PricesOthers> pricesOthers = pricesOthersManager.getOthers();
 		List<PricesOthers> pricesOthersFounds = pricesOthers.stream().filter(po -> po.getId() == id).collect(Collectors.toList());
 		if (!pricesOthersFounds.isEmpty()) {

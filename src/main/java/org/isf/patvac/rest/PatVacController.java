@@ -21,8 +21,10 @@
  */
 package org.isf.patvac.rest;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.isf.patvac.dto.PatientVaccineDTO;
@@ -69,34 +71,37 @@ public class PatVacController {
 	/**
 	 * Create a new {@link PatientVaccine}.
 	 * @param patientVaccineDTO
-	 * @return <code>true</code> if the operation type has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the operation type has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/patientvaccines", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<Boolean> newPatientVaccine(@RequestBody PatientVaccineDTO patientVaccineDTO) throws OHServiceException {
+	ResponseEntity<PatientVaccineDTO> newPatientVaccine(@RequestBody PatientVaccineDTO patientVaccineDTO) throws OHServiceException {
 		int code = patientVaccineDTO.getCode();
 		LOGGER.info("Create patient vaccine {}", code);
-		boolean isCreated = patVacManager.newPatientVaccine(mapper.map2Model(patientVaccineDTO));
-		if (!isCreated) {
+		PatientVaccine isCreated = patVacManager.newPatientVaccine(mapper.map2Model(patientVaccineDTO));
+		if (isCreated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "patient vaccine is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(true);
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
 	}
 
 	/**
 	 * Updates the specified {@link PatientVaccine}.
 	 * @param patientVaccineDTO
-	 * @return <code>true</code> if the operation type has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the operation type has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/patientvaccines/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<Integer> updatePatientVaccinet(@PathVariable Integer code, @RequestBody PatientVaccineDTO patientVaccineDTO)
+	ResponseEntity<PatientVaccineDTO> updatePatientVaccine(@PathVariable Integer code, @RequestBody PatientVaccineDTO patientVaccineDTO)
 			throws OHServiceException {
 		LOGGER.info("Update patientvaccines code: {}", patientVaccineDTO.getCode());
-		boolean isUpdated = patVacManager.updatePatientVaccine(mapper.map2Model(patientVaccineDTO));
-		if (!isUpdated)
+		PatientVaccine patvac = mapper.map2Model(patientVaccineDTO);
+		patvac.setLock(patientVaccineDTO.getLock());
+		PatientVaccine isUpdated = patVacManager.updatePatientVaccine(patvac);
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "patient vaccine is not updated!", OHSeverityLevel.ERROR));
-		return ResponseEntity.ok(patientVaccineDTO.getCode());
+		}
+		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
 	}
 
 	/**
@@ -107,7 +112,9 @@ public class PatVacController {
 	@GetMapping(value = "/patientvaccines/week", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<PatientVaccineDTO>> getPatientVaccines(@RequestParam(required=false) Boolean oneWeek) throws OHServiceException {
 		LOGGER.info("Get the all patient vaccine of to day or one week");
-		if(oneWeek == null) oneWeek = false;
+		if (oneWeek == null) {
+			oneWeek = false;
+		}
 		List<PatientVaccine> patientVaccines = patVacManager.getPatientVaccine(oneWeek);
 		List<PatientVaccineDTO> patientVaccineDTOs = mapper.map2DTOList(patientVaccines);
 		if (patientVaccineDTOs.isEmpty()) {
@@ -118,7 +125,7 @@ public class PatVacController {
 	}
 	
 	/**
-	 * Get all {@link PatientVaccine}s within <code>dateFrom</code> and <code>dateTo</code>.
+	 * Get all {@link PatientVaccine}s within {@code dateFrom} and {@code dateTo}.
 	 * @return the list of {@link PatientVaccine}s
 	 * @throws OHServiceException
 	 */
@@ -127,12 +134,17 @@ public class PatVacController {
 			@RequestParam Date dateFrom, @RequestParam Date dateTo, @RequestParam char sex, @RequestParam int ageFrom, @RequestParam int ageTo) throws OHServiceException {
 		LOGGER.info("filter patient vaccine by dates ranges");
 		
-		GregorianCalendar datefrom = new GregorianCalendar();
-		GregorianCalendar dateto = new GregorianCalendar();
-        dateto.setTime(dateTo);
-        datefrom.setTime(dateFrom);
+		LocalDateTime dateF = null;
+		if(dateFrom != null) {
+			dateF  = dateFrom.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
+		}
+		
+		LocalDateTime dateT = null;
+		if(dateTo != null) {
+			dateT  = dateTo.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
+		}
         
-		List<PatientVaccine> patientVaccines = patVacManager.getPatientVaccine(vaccineTypeCode, vaccineCode, datefrom, dateto, sex, ageFrom, ageTo);
+		List<PatientVaccine> patientVaccines = patVacManager.getPatientVaccine(vaccineTypeCode, vaccineCode, dateF, dateT, sex, ageFrom, ageTo);
 		List<PatientVaccineDTO> patientVaccineDTOs = mapper.map2DTOList(patientVaccines);
 		if (patientVaccineDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(patientVaccineDTOs);
@@ -142,8 +154,8 @@ public class PatVacController {
 	}
 	
 	/**
-	 * Get the maximum progressive number within specified year or within current year if <code>0</code>.
-	 * @return <code>int</code> - the progressive number in the year
+	 * Get the maximum progressive number within specified year or within current year if {@code 0}.
+	 * @return {@code int} - the progressive number in the year
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/patientvaccines/progyear/{year}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -156,7 +168,7 @@ public class PatVacController {
 	/**
 	 * Delete {@link PatientVaccine} for specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link PatientVaccine} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link PatientVaccine} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/patientvaccines/{code}", produces = MediaType.APPLICATION_JSON_VALUE)

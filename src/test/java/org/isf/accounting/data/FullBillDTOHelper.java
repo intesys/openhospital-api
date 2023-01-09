@@ -23,7 +23,6 @@ package org.isf.accounting.data;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.isf.accounting.dto.BillDTO;
 import org.isf.accounting.dto.BillItemsDTO;
 import org.isf.accounting.dto.BillPaymentsDTO;
@@ -42,7 +41,6 @@ import org.isf.patient.test.TestPatient;
 import org.isf.utils.exception.OHException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FullBillDTOHelper {
 
@@ -76,7 +74,7 @@ public class FullBillDTOHelper {
 
 	public static String asJsonString(FullBillDTO fullBillDTO) {
 		try {
-			return new ObjectMapper().writeValueAsString(fullBillDTO);
+			return BillHelper.getObjectMapper().writeValueAsString(fullBillDTO);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -85,7 +83,7 @@ public class FullBillDTOHelper {
 
 	public static String asJsonString(List<FullBillDTO> fullBillDTOList) {
 		try {
-			return new ObjectMapper().writeValueAsString(fullBillDTOList);
+			return BillHelper.getObjectMapper().writeValueAsString(fullBillDTOList);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

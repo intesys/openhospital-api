@@ -23,8 +23,9 @@ package org.isf.lab.dto;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isf.exam.dto.ExamDTO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -39,17 +40,19 @@ public class LaboratoryDTO {
     @ApiModelProperty(notes = "Laboratory Exam", position = 3)
     private ExamDTO exam;
 
-    @ApiModelProperty(notes = "Laboratory Registration Date", position = 4)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-	private Date registrationDate;
-
+  /*  @ApiModelProperty(notes = "Laboratory Registration Date", position = 4)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	private Date registrationDate;*/
+    
     @ApiModelProperty(notes = "Laboratory Exam Date", position = 5)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date examDate;
+
 
     @ApiModelProperty(notes = "Laboratory Result", position = 6)
     private String result;
-
+    
+    @ApiModelProperty(notes = "lock", example = "0")
     private int lock;
 
     @ApiModelProperty(notes = "Laboratory Note", position = 7)
@@ -61,7 +64,7 @@ public class LaboratoryDTO {
     @ApiModelProperty(notes = "Laboratory Patient Name", position = 9)
     private String patName;
 
-    @ApiModelProperty(notes = "Laboratory Patient InOut", example = "0", position = 10)
+	@ApiModelProperty(notes = "Laboratory Patient InOut", example = "0", position = 10)
     private String inOutPatient;
 
     @ApiModelProperty(notes = "Laboratory Patient Age", position = 11)
@@ -70,9 +73,12 @@ public class LaboratoryDTO {
     @ApiModelProperty(notes = "Laboratory Patient Sex", example = "M", position = 12)
     private String sex;
 
-	@ApiModelProperty(hidden= true)
-	public int getLock() {
+    public int getLock() {
 		return lock;
+	}
+
+	public void setLock(int lock) {
+		this.lock = lock;
 	}
 
 	public Integer getCode() {
@@ -87,13 +93,9 @@ public class LaboratoryDTO {
 		return this.exam;
 	}
 
-	public Date getRegistrationDate() {
+	/*public Date getRegistrationDate() {
 		return this.registrationDate;
-	}
-
-	public Date getExamDate() {
-		return this.examDate;
-	}
+	}*/
 
 	public String getResult() {
 		return this.result;
@@ -135,20 +137,12 @@ public class LaboratoryDTO {
 		this.exam = exam;
 	}
 
-	public void setRegistrationDate(Date registrationDate) {
+	/*public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
-	}
-
-	public void setExamDate(Date examDate) {
-		this.examDate = examDate;
-	}
+	}*/
 
 	public void setResult(String result) {
 		this.result = result;
-	}
-
-	public void setLock(int lock) {
-		this.lock = lock;
 	}
 
 	public void setNote(String note) {
@@ -174,4 +168,14 @@ public class LaboratoryDTO {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
+
+	public Date getExamDate() {
+		return examDate;
+	}
+
+	public void setExamDate(Date examDate) {
+		this.examDate = examDate;
+	}
+	
+	
 }

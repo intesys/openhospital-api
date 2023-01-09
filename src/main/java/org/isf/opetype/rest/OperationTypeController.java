@@ -67,39 +67,40 @@ public class OperationTypeController {
 	/**
 	 * Create a new {@link OperationType}.
 	 * @param operationTypeDTO
-	 * @return <code>true</code> if the operation type has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the operation type has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/operationtypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> newOperationType(@RequestBody OperationTypeDTO operationTypeDTO) throws OHServiceException {
+	ResponseEntity<OperationTypeDTO> newOperationType(@RequestBody OperationTypeDTO operationTypeDTO) throws OHServiceException {
 		String code = operationTypeDTO.getCode();
 		LOGGER.info("Create operation Type {}", code);
-		boolean isCreated = opeTypeManager.newOperationType(mapper.map2Model(operationTypeDTO));
-		OperationType opeTypeCreated = opeTypeManager.getOperationType().stream().filter(opetype -> opetype.getCode().equals(code))
-				.findFirst().orElse(null);
-		if (!isCreated || opeTypeCreated == null) {
+		OperationType isCreated = opeTypeManager.newOperationType(mapper.map2Model(operationTypeDTO));
+		if (isCreated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation Type is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(opeTypeCreated.getCode());
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
 	}
 
 	/**
 	 * Updates the specified {@link OperationType}.
 	 * @param operationTypeDTO
-	 * @return <code>true</code> if the operation type has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the operation type has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/operationtypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> updateOperationTypet(@PathVariable String code, @RequestBody OperationTypeDTO operationTypeDTO)
+	ResponseEntity<OperationTypeDTO> updateOperationTypet(@PathVariable String code, @RequestBody OperationTypeDTO operationTypeDTO)
 			throws OHServiceException {
 		LOGGER.info("Update operationtypes code: {}", operationTypeDTO.getCode());
 		OperationType opeType = mapper.map2Model(operationTypeDTO);
-		if (!opeTypeManager.isCodePresent(code))
+		if (!opeTypeManager.isCodePresent(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation Type not found!", OHSeverityLevel.ERROR));
-		boolean isUpdated = opeTypeManager.updateOperationType(opeType);
-		if (!isUpdated)
+		}
+		OperationType isUpdated = opeTypeManager.updateOperationType(opeType);
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation Type is not updated!", OHSeverityLevel.ERROR));
-		return ResponseEntity.ok(opeType.getCode());
+		}
+		
+		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
 	}
 
 	/**
@@ -122,7 +123,7 @@ public class OperationTypeController {
 	/**
 	 * Delete {@link OperationType} with the specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link OperationType} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link OperationType} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/operationtypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)

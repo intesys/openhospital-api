@@ -21,22 +21,27 @@
  */
 package org.isf.lab.dto;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class LaboratoryForPrintDTO {
 
     private String exam;
 
-    private String date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+	private Date date;
 
     private String result;
 
     private Integer code;
+    
+    private String patName;
+    
+    private Integer patientCode;
 
 	public String getExam() {
 		return this.exam;
-	}
-
-	public String getDate() {
-		return this.date;
 	}
 
 	public String getResult() {
@@ -51,7 +56,11 @@ public class LaboratoryForPrintDTO {
 		this.exam = exam;
 	}
 
-	public void setDate(String date) {
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
@@ -62,4 +71,22 @@ public class LaboratoryForPrintDTO {
 	public void setCode(Integer code) {
 		this.code = code;
 	}
+
+	public String getPatName() {
+		return patName;
+	}
+
+	public void setPatName(String patName) {
+		this.patName = patName;
+	}
+
+	public Integer getPatientCode() {
+		return patientCode;
+	}
+
+	public void setPatientCode(Integer patientCode) {
+		this.patientCode = patientCode;
+	}
+	
+	
 }

@@ -55,13 +55,17 @@ public class DiseaseDTO {
 	@ApiModelProperty(notes = "indicates whether the disease is an IPD-OUT disease", example="true")
 	private boolean ipdOutInclude;
 	
-	private int hashCode = 0;
-
+	private int hashCode;
+	
+	@ApiModelProperty(notes = "lock", example = "0")
 	private int lock;
-
-	@ApiModelProperty(hidden= true)
+	
 	public int getLock() {
 		return lock;
+	}
+
+	public void setLock(int lock) {
+		this.lock = lock;
 	}
 
 	@ApiModelProperty(hidden= true)
@@ -121,7 +125,4 @@ public class DiseaseDTO {
 		this.hashCode = hashCode;
 	}
 
-	public void setLock(int lock) {
-		this.lock = lock;
-	}
 }

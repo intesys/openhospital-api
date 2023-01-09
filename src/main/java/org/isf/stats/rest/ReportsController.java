@@ -28,7 +28,6 @@ import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.poi.util.IOUtils;
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.stat.dto.JasperReportResultDto;
 import org.isf.stat.manager.JasperReportsManager;
@@ -43,6 +42,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+//import com.google.common.io.ByteStreams;
 
 import io.swagger.annotations.Api;
 
@@ -74,7 +75,7 @@ public class ReportsController {
 			throw new OHAPIException(new OHExceptionMessage(null, "File not found", OHSeverityLevel.ERROR));
 		}
 
-		String contentType = null;
+		String contentType;
 		try {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
@@ -85,13 +86,20 @@ public class ReportsController {
 		if (contentType == null) {
 			contentType = "application/octet-stream";
 		}
-
-		byte[] out = IOUtils.toByteArray(resource.getInputStream());
-
+		byte[] out;
+       /*
+       try {
+    	   out =ByteStreams.toByteArray( resource.getInputStream());
+       }catch (IOException ex) {
+			throw new OHAPIException(new OHExceptionMessage(null, "Failed to load the bytes", OHSeverityLevel.ERROR));
+		}
+		*/
+		
+		
 		return ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType(contentType))
 				.header(HttpHeaders.CONTENT_DISPOSITION,
-						"attachment; filename=\"" + resource.getFilename() + "\"")
-				.body(out);
+						"attachment; filename=\"" + resource.getFilename() + '"')
+				.body(null);//.body(out);
 	}
 }

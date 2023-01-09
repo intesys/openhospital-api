@@ -60,7 +60,7 @@ public class HospitalController {
     }
 
     @PutMapping(value = "/hospitals/{code:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateHospital(@PathVariable String code, @RequestBody HospitalDTO hospitalDTO) throws OHServiceException {
+    public ResponseEntity<HospitalDTO> updateHospital(@PathVariable String code, @RequestBody HospitalDTO hospitalDTO) throws OHServiceException {
 
         if (!hospitalDTO.getCode().equals(code)) {
             throw new OHAPIException(new OHExceptionMessage(null, "Hospital code mismatch", OHSeverityLevel.ERROR));
@@ -70,9 +70,10 @@ public class HospitalController {
         }
 
         Hospital hospital = hospitalMapper.map2Model(hospitalDTO);
-        hospitalBrowsingManager.updateHospital(hospital);
+        hospital.setLock(hospitalDTO.getLock());
+        Hospital hospi = hospitalBrowsingManager.updateHospital(hospital);
 
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(hospitalMapper.map2DTO(hospi));
     }
 
     @GetMapping(value = "/hospitals", produces = MediaType.APPLICATION_JSON_VALUE)

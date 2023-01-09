@@ -63,40 +63,40 @@ public class SupplierController {
 	/**
 	 * Saves the specified {@link SupplierDTO}.
 	 * @param supplierDTO
-	 * @return <code>true</code> if the supplier was saved
+	 * @return {@code true} if the supplier was saved
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/suppliers", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO) throws OHServiceException {
+	public ResponseEntity<SupplierDTO> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO) throws OHServiceException {
 		LOGGER.info("Saving a new supplier...");
-		boolean isCreated = manager.saveOrUpdate(mapper.map2Model(supplierDTO));
-		if (!isCreated) {
+		Supplier isCreated = manager.saveOrUpdate(mapper.map2Model(supplierDTO));
+		if (isCreated == null) {
 			LOGGER.error("Supplier is not created!");
             throw new OHAPIException(new OHExceptionMessage(null, "Supplier is not created!", OHSeverityLevel.ERROR));
         }
 		LOGGER.info("Supplier saved successfully");
-        return ResponseEntity.status(HttpStatus.CREATED).body(isCreated);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
 	}
 	
 	/**
 	 * Updates the specified {@link SupplierDTO}.
 	 * @param supplierDTO
-	 * @return <code>true</code> if the supplier was updated
+	 * @return {@code true} if the supplier was updated
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/suppliers", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> updateSupplier(@RequestBody @Valid SupplierDTO supplierDTO) throws OHServiceException {
+	public ResponseEntity<SupplierDTO> updateSupplier(@RequestBody @Valid SupplierDTO supplierDTO) throws OHServiceException {
 		if(supplierDTO.getSupId() == null || manager.getByID(supplierDTO.getSupId()) == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Supplier not found!", OHSeverityLevel.ERROR));
 		}
 		LOGGER.info("Updating supplier...");
-		boolean isUpdated = manager.saveOrUpdate(mapper.map2Model(supplierDTO));
-		if (!isUpdated) {
+		Supplier isUpdated = manager.saveOrUpdate(mapper.map2Model(supplierDTO));
+		if (isUpdated == null) {
 			LOGGER.error("Supplier is not updated!");
             throw new OHAPIException(new OHExceptionMessage(null, "Supplier is not updated!", OHSeverityLevel.ERROR));
         }
 		LOGGER.info("Supplier updated successfully");
-        return ResponseEntity.ok(isUpdated);
+        return ResponseEntity.ok(mapper.map2DTO(isUpdated));
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class SupplierController {
 		LOGGER.info("Loading suppliers...");
 		List<Supplier> suppliers = excludeDeleted? manager.getList() : manager.getAll();
 		List<SupplierDTO> mappedSuppliers = mapper.map2DTOList(suppliers);
-		if(mappedSuppliers.isEmpty()) {
+		if (mappedSuppliers.isEmpty()) {
 			LOGGER.info("No supplier found");
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedSuppliers);
 		} else {
@@ -130,7 +130,7 @@ public class SupplierController {
 	public ResponseEntity<SupplierDTO> getSuppliers(@PathVariable Integer id) throws OHServiceException {
 		LOGGER.info("Loading supplier with ID {}", id);
 		Supplier supplier = manager.getByID(id);
-		if(supplier == null) {
+		if (supplier == null) {
 			LOGGER.info("Supplier not found");
 			throw new OHAPIException(new OHExceptionMessage(null, "Supplier not found!", OHSeverityLevel.ERROR));
 		} else {

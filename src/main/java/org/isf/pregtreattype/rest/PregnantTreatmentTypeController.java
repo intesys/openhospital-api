@@ -67,39 +67,39 @@ public class PregnantTreatmentTypeController {
 	/**
 	 * Create a new {@link PregnantTreatmentType}.
 	 * @param pregnantTreatmentTypeDTO
-	 * @return <code>true</code> if the pregnant treatment type has been stored, <code>false</code> otherwise.
+	 * @return {@code true} if the pregnant treatment type has been stored, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/pregnanttreatmenttypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> newPregnantTreatmentType(@RequestBody PregnantTreatmentTypeDTO pregnantTreatmentTypeDTO) throws OHServiceException {
+	ResponseEntity<PregnantTreatmentTypeDTO> newPregnantTreatmentType(@RequestBody PregnantTreatmentTypeDTO pregnantTreatmentTypeDTO) throws OHServiceException {
 		String code = pregnantTreatmentTypeDTO.getCode();
 		LOGGER.info("Create pregnant treatment Type {}", code);
-		boolean isCreated = pregTreatTypeManager.newPregnantTreatmentType(mapper.map2Model(pregnantTreatmentTypeDTO));
-		PregnantTreatmentType pregTreatTypeCreated = pregTreatTypeManager.getPregnantTreatmentType().stream().filter(pregtreattype -> pregtreattype.getCode().equals(code))
-				.findFirst().orElse(null);
-		if (!isCreated || pregTreatTypeCreated == null) {
+		PregnantTreatmentType isCreated = pregTreatTypeManager.newPregnantTreatmentType(mapper.map2Model(pregnantTreatmentTypeDTO));
+		if (isCreated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "pregnant treatment Type is not created!", OHSeverityLevel.ERROR));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(pregTreatTypeCreated.getCode());
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreated));
 	}
 
 	/**
 	 * Updates the specified {@link PregnantTreatmentType}.
 	 * @param pregnantTreatmentTypeDTO
-	 * @return <code>true</code> if the pregnant treatment type has been updated, <code>false</code> otherwise.
+	 * @return {@code true} if the pregnant treatment type has been updated, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/pregnanttreatmenttypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> updatePregnantTreatmentTypet(@PathVariable String code, @RequestBody PregnantTreatmentTypeDTO pregnantTreatmentTypeDTO)
+	ResponseEntity<PregnantTreatmentTypeDTO> updatePregnantTreatmentTypet(@PathVariable String code, @RequestBody PregnantTreatmentTypeDTO pregnantTreatmentTypeDTO)
 			throws OHServiceException {
 		LOGGER.info("Update pregnanttreatmenttypes code: {}", pregnantTreatmentTypeDTO.getCode());
 		PregnantTreatmentType pregTreatType = mapper.map2Model(pregnantTreatmentTypeDTO);
-		if (!pregTreatTypeManager.isCodePresent(code))
+		if (!pregTreatTypeManager.isCodePresent(code)) {
 			throw new OHAPIException(new OHExceptionMessage(null, "pregnantTreatment Type not found!", OHSeverityLevel.ERROR));
-		boolean isUpdated = pregTreatTypeManager.updatePregnantTreatmentType(pregTreatType);
-		if (!isUpdated)
+		}
+		PregnantTreatmentType isUpdated = pregTreatTypeManager.updatePregnantTreatmentType(pregTreatType);
+		if (isUpdated == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "pregnantTreatment Type is not updated!", OHSeverityLevel.ERROR));
-		return ResponseEntity.ok(pregTreatType.getCode());
+		}
+		return ResponseEntity.ok(mapper.map2DTO(isUpdated));
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class PregnantTreatmentTypeController {
 	/**
 	 * Delete {@link PregnantTreatmentType} for the specified code.
 	 * @param code
-	 * @return <code>true</code> if the {@link PregnantTreatmentType} has been deleted, <code>false</code> otherwise.
+	 * @return {@code true} if the {@link PregnantTreatmentType} has been deleted, {@code false} otherwise.
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/pregnanttreatmenttypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)

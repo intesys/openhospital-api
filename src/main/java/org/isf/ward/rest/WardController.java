@@ -82,7 +82,7 @@ public class WardController {
     }
 
     /**
-     * Get all the wards with maternity flag <code>false</code>.
+     * Get all the wards with maternity flag {@code false}.
      *
      * @return NO_CONTENT if there aren't wards, {@code List<WardDTO>} otherwise
      * @throws OHServiceException
@@ -126,13 +126,13 @@ public class WardController {
      * @throws OHServiceException
      */
     @PostMapping(value = "/wards", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity newWard(@RequestBody WardDTO newWard) throws OHServiceException {
+    public ResponseEntity<WardDTO> newWard(@RequestBody WardDTO newWard) throws OHServiceException {
 	    LOGGER.info("Create Ward: {}", newWard);
         Ward wardCreated = wardManager.newWard(mapper.map2Model(newWard));
         if (wardCreated == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Ward is not created!", OHSeverityLevel.ERROR));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(wardCreated));
     }
 
     /**
@@ -143,13 +143,15 @@ public class WardController {
      * @throws OHServiceException
      */
     @PutMapping(value = "/wards", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateWard(@RequestBody WardDTO updateWard) throws OHServiceException {
+    public ResponseEntity<WardDTO> updateWard(@RequestBody WardDTO updateWard) throws OHServiceException {
 	    LOGGER.info("Update ward with code: {}", updateWard.getCode());
-        Ward wardUpdated = wardManager.updateWard(mapper.map2Model(updateWard));
+	    Ward ward = mapper.map2Model(updateWard);
+	    ward.setLock(updateWard.getLock());
+        Ward wardUpdated = wardManager.updateWard(ward);
         if (wardUpdated == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Ward is not updated!", OHSeverityLevel.ERROR));
         }
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(mapper.map2DTO(wardUpdated));
 
     }
 
@@ -161,19 +163,18 @@ public class WardController {
      * @throws OHServiceException
      */
     @DeleteMapping(value = "/wards/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity deleteWard(@PathVariable String code) throws OHServiceException {
+    public ResponseEntity<Boolean> deleteWard(@PathVariable String code) throws OHServiceException {
         LOGGER.info("Delete Ward with code: {}", code);
-        boolean isDeleted = false;
+        boolean isDeleted;
         Ward ward = wardManager.findWard(code);
-        if (ward!=null){
+        if (ward != null) {
             isDeleted = wardManager.deleteWard(ward);
             if (!isDeleted) {
                 throw new OHAPIException(new OHExceptionMessage(null, "Wards is not deleted!", OHSeverityLevel.ERROR));
             }
             return ResponseEntity.ok(isDeleted);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     /**
@@ -195,7 +196,7 @@ public class WardController {
      *
      * @param createIfNotExist if {@code true} it will create the missing {@link Ward} (with default values)
      *                         and will return {@link true}
-     * @return <code>true</code> if the Maternity {@link Ward} exists, <code>false</code> otherwise.
+     * @return {@code true} if the Maternity {@link Ward} exists, {@code false} otherwise.
      * @throws OHServiceException
      */
     @GetMapping(value = "/wards/check/maternity/{createIfNotExist}", produces = MediaType.APPLICATION_JSON_VALUE)

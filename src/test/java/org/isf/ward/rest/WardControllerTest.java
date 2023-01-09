@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.isf.shared.exceptions.OHResponseEntityExceptionHandler;
@@ -42,8 +41,8 @@ import org.isf.ward.dto.WardDTO;
 import org.isf.ward.manager.WardBrowserManager;
 import org.isf.ward.mapper.WardMapper;
 import org.isf.ward.model.Ward;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
@@ -53,8 +52,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WardControllerTest {
 
@@ -67,9 +64,9 @@ public class WardControllerTest {
 
 	private MockMvc mockMvc;
 
-	@Before
+	@BeforeEach
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 		this.mockMvc = MockMvcBuilders
 				.standaloneSetup(new WardController(wardBrowserManagerMock, wardMapper))
 				.setControllerAdvice(new OHResponseEntityExceptionHandler())
@@ -84,19 +81,17 @@ public class WardControllerTest {
 	public void testGetWards_200() throws Exception {
 		String request = "/wards";
 
-		ArrayList<Ward> wardList = WardHelper.setupWardList(4);
+		List<Ward> wardList = WardHelper.setupWardList(4);
 
 		when(wardBrowserManagerMock.getWards())
 				.thenReturn(wardList);
-
-		List<WardDTO> expectedWardDTOs = wardMapper.map2DTOList(wardList);
 
 		MvcResult result = this.mockMvc
 				.perform(get(request))
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(status().isOk())
-				.andExpect(content().string(containsString(new ObjectMapper().writeValueAsString(expectedWardDTOs))))
+				.andExpect(content().string(containsString(WardHelper.getObjectMapper().writeValueAsString(wardMapper.map2DTOList(wardList)))))
 				.andReturn();
 
 		LOGGER.debug("result: {}", result);
@@ -106,19 +101,18 @@ public class WardControllerTest {
 	public void testGetWardsNoMaternity_200() throws Exception {
 		String request = "/wardsNoMaternity";
 
-		ArrayList<Ward> wardList = WardHelper.setupWardList(4);
+		List<Ward> wardList = WardHelper.setupWardList(4);
 
 		when(wardBrowserManagerMock.getWardsNoMaternity()) //TODO OP-6 BUG (CORE) on WardIoOperationRepository.java line 15 about method name
 				.thenReturn(wardList);
 
-		List<WardDTO> expectedWardDTOs = wardMapper.map2DTOList(wardList);
 
 		MvcResult result = this.mockMvc
 				.perform(get(request))
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(status().isOk())
-				.andExpect(content().string(containsString(new ObjectMapper().writeValueAsString(expectedWardDTOs))))
+				.andExpect(content().string(containsString(WardHelper.getObjectMapper().writeValueAsString(wardMapper.map2DTOList(wardList)))))
 				// TODO assert that all wards on list are WRD_ID_A <> M
 				.andReturn();
 
@@ -157,15 +151,14 @@ public class WardControllerTest {
 		String request = "/wards";
 		int code = 1;
 		Ward ward = WardHelper.setup(code);
-		WardDTO body = wardMapper.map2DTO(ward);
 
-		when(wardBrowserManagerMock.newWard(wardMapper.map2Model(body)))
+		when(wardBrowserManagerMock.newWard(wardMapper.map2Model(wardMapper.map2DTO(ward))))
 				.thenReturn(ward);
 
 		MvcResult result = this.mockMvc
 				.perform(post(request)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(WardHelper.asJsonString(body))
+						.content(WardHelper.asJsonString(wardMapper.map2DTO(ward)))
 				)
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())
@@ -180,16 +173,14 @@ public class WardControllerTest {
 		String request = "/wards";
 		int code = 1;
 		Ward ward = WardHelper.setup(code);
-		WardDTO body = wardMapper.map2DTO(ward);
-
-		boolean isUpdated = true;
-		when(wardBrowserManagerMock.updateWard(wardMapper.map2Model(body)))
+		WardDTO wardDTO = wardMapper.map2DTO(ward);
+		when(wardBrowserManagerMock.updateWard(wardMapper.map2Model(wardDTO)))
 				.thenReturn(ward);
 
 		MvcResult result = this.mockMvc
 				.perform(put(request)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(WardHelper.asJsonString(body))
+						.content(WardHelper.asJsonString(wardMapper.map2DTO(ward)))
 				)
 				.andDo(log())
 				.andExpect(status().is2xxSuccessful())

@@ -21,6 +21,7 @@
  */
 package org.isf.patient.mapper;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,8 +42,18 @@ public class PatientMapper extends GenericMapper<Patient, PatientDTO> {
 	@Override
 	public PatientDTO map2DTO(Patient fromObj) {
 		PatientDTO patientDTO = super.map2DTO(fromObj);
+		if(fromObj.getBirthDate() != null) {
+			patientDTO.setBirthDate(java.sql.Date.valueOf(fromObj.getBirthDate()));
+		}
+		
 		if (fromObj.getPatientProfilePhoto() != null) {
 			patientDTO.setBlobPhoto(fromObj.getPatientProfilePhoto().getPhoto());
+		}
+		if (fromObj.getFatherName() != null) {
+			patientDTO.setFather_name(fromObj.getFatherName());
+		}
+		if (fromObj.getMotherName()!= null) {
+			patientDTO.setMother_name(fromObj.getMotherName());
 		}
 		return patientDTO;
 
@@ -50,8 +61,13 @@ public class PatientMapper extends GenericMapper<Patient, PatientDTO> {
 	@Override
 	public PatientDTO map2DTOWS(Patient fromObj, Boolean status) {
 		PatientDTO patientDTO = super.map2DTOWS(fromObj, status);
-		if (fromObj.getPatientProfilePhoto() != null) {
-			patientDTO.setBlobPhoto(fromObj.getPatientProfilePhoto().getPhoto());
+		if (fromObj.getPatientProfilePhoto()!= null) {
+			try {
+				patientDTO.setBlobPhoto(fromObj.getPatientProfilePhoto().getPhoto());	
+			}catch(Exception e) {
+				
+			}
+			
 		}
 		return patientDTO;
 
@@ -61,14 +77,22 @@ public class PatientMapper extends GenericMapper<Patient, PatientDTO> {
 	public Patient map2Model(PatientDTO toObj) {
 
 		Patient patient = super.map2Model(toObj);
-
+		if(toObj.getBirthDate() != null) {
+			patient.setBirthDate(toObj.getBirthDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		}
+		
 		if (toObj.getBlobPhoto() != null) {
 			PatientProfilePhoto photo = new PatientProfilePhoto();
 			photo.setPatient(patient);
 			photo.setPhoto(toObj.getBlobPhoto());
 			patient.setPatientProfilePhoto(photo);
 		}
-
+		if (toObj.getFather_name() != null) {
+			patient.setFatherName(toObj.getFather_name());
+		}
+		if (toObj.getMother_name()!= null) {
+			patient.setMotherName(toObj.getMother_name());
+		}
 		return patient;
 	}
 
