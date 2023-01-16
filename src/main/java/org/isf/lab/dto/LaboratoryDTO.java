@@ -21,6 +21,7 @@
  */
 package org.isf.lab.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.isf.exam.dto.ExamDTO;
@@ -46,7 +47,7 @@ public class LaboratoryDTO {
     
     @ApiModelProperty(notes = "Laboratory Exam Date", position = 5)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private Date examDate;
+	private LocalDateTime examDate;
 
 
     @ApiModelProperty(notes = "Laboratory Result", position = 6)
@@ -169,13 +170,14 @@ public class LaboratoryDTO {
 		this.sex = sex;
 	}
 
-	public Date getExamDate() {
+	public LocalDateTime getExamDate() {
 		return examDate;
 	}
 
-	public void setExamDate(Date examDate) {
+	public void setExamDate(LocalDateTime examDate) {
 		this.examDate = examDate;
 	}
+	
 	
 	
 }
