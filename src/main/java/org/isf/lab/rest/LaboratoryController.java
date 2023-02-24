@@ -192,7 +192,6 @@ public class LaboratoryController {
 		if (exam == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Exam not found!", OHSeverityLevel.ERROR));
 		}
-
 		Laboratory labToInsert = laboratoryMapper.map2Model(laboratoryDTO);
 		labToInsert.setExam(exam);
 		labToInsert.setPatient(patient);
@@ -312,7 +311,7 @@ public class LaboratoryController {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
 		}
 
-		List<Laboratory> labList = laboratoryManager.getLaboratory(patient);
+		List<Laboratory> labList = laboratoryManager.getLaboratory(patient).stream().filter(e -> e.getActive() == 1).collect(Collectors.toList());
 		if (labList == null || labList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
@@ -383,24 +382,37 @@ public class LaboratoryController {
 	@GetMapping(value = "/laboratories/exams", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<LabWithRowsDTO>> getLaboratoryForPrint(@RequestParam(required = false, defaultValue = "") String examName,
 					@RequestParam(value = "dateFrom") String dateFrom, @RequestParam(value = "dateTo") String dateTo,
-					@RequestParam(value = "patientCode", required = false, defaultValue = "0") int patientCode) throws OHServiceException {
+					@RequestParam(value = "patientCode", required = false, defaultValue = "0") int patientCode,
+					@RequestParam(value = "status", required = false, defaultValue = "-1") int status) throws OHServiceException {
 		LOGGER.info("Get lawithRow within specified date: {}");
 		LOGGER.info("examName: {}", examName);
 		LOGGER.info("dateFrom: {}", dateFrom);
 		LOGGER.info("dateTo: {}", dateTo);
 		LOGGER.info("patientCode: {}", patientCode);
+		LOGGER.info("status: {}", status);
 		Patient patient = null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		LocalDateTime dateT = LocalDateTime.parse(dateTo, formatter);
+		LocalDateTime dateT = LocalDateTime.parse(dateTo, formatter).plusHours(23).plusMinutes(59);
 		LocalDateTime dateF = LocalDateTime.parse(dateFrom, formatter);
-
 		if (patientCode != 0) {
 			patient = patientBrowserManager.getPatientById(patientCode);
 			if (patient == null || laboratoryManager.getLaboratory(patient) == null) {
 				throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
-		List<Laboratory> laboratoryList = laboratoryManager.getLaboratory(examName, dateF, dateT, patient);
+		List<Laboratory> laboratoryList = new ArrayList<Laboratory>();
+		if (status == -1) {
+			laboratoryList = laboratoryManager.getLaboratory(examName, dateF, dateT, patient);
+		}
+		
+		if (status == 1) {
+			laboratoryList = laboratoryManager.getLaboratory(examName, dateF, dateT, patient).stream().filter(e -> e.getActive() == 1).collect(Collectors.toList());
+		}
+		
+		if (status == 2) {
+			laboratoryList = laboratoryManager.getLaboratory(examName, dateF, dateT, patient).stream().filter(e -> e.getActive() == 2).collect(Collectors.toList());
+		}
+		
 		if (laboratoryList == null || laboratoryList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
