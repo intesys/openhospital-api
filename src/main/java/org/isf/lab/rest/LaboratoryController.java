@@ -192,7 +192,13 @@ public class LaboratoryController {
 		if (exam == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Exam not found!", OHSeverityLevel.ERROR));
 		}
-
+		List<Laboratory> labList = laboratoryManager.getLaboratory(patient).stream().filter(e -> e.getActive() == 2).collect(Collectors.toList());
+		System.out.println(labList.size());
+		for (Laboratory lab: labList) {
+			if (lab.getExam().getCode().equals(exam.getCode())) {
+				throw new OHAPIException(new OHExceptionMessage(null, "This Exam Request already exist !", OHSeverityLevel.ERROR));
+			}
+		}
 		Laboratory labToInsert = laboratoryMapper.map2Model(laboratoryDTO);
 		labToInsert.setExam(exam);
 		labToInsert.setPatient(patient);
