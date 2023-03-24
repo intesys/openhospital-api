@@ -35,3 +35,4 @@ bin
 
 ### VScode ###
 .vscode
+/deps/
