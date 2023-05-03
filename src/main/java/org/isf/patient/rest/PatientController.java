@@ -35,7 +35,9 @@ import org.isf.patient.manager.PatientBrowserManager;
 import org.isf.patient.mapper.PatientMapper;
 import org.isf.patient.model.Patient;
 import org.isf.shared.FormatErrorMessage;
+import org.isf.shared.PagedResponseDTO;
 import org.isf.shared.exceptions.OHAPIException;
+import org.isf.utils.db.PagedResponse;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
@@ -135,19 +137,24 @@ public class PatientController {
 	}
 
 	@GetMapping(value = "/patients", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<PatientDTO>> getPatients(
+	public ResponseEntity<PagedResponseDTO<PatientDTO>> getPatients(
 					@RequestParam(value = "page", required = false, defaultValue = "0") int page,
 					@RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size) throws OHServiceException {
 		LOGGER.info("Get patients page: {}  size: {}", page, size);
+		PagedResponse<Patient> patientsPaged = new PagedResponse<Patient>();
+		PagedResponseDTO<PatientDTO> patientsPagedDTO = new PagedResponseDTO<PatientDTO>();
 		try {
-			List<Patient> patients = patientManager.getPatient(page, size);
+			patientsPaged = patientManager.getPatient(page, size);
+			List<Patient> patients = patientsPaged.getData();
 			List<PatientDTO> patientDTOS = patients.stream().map(pat -> {
 				return patientMapper.map2DTO(pat);
 			}).collect(Collectors.toList());
 			if (patientDTOS.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(patientDTOS);
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 			}
-			return ResponseEntity.ok(patientDTOS);
+			patientsPagedDTO.setData(patientDTOS);
+			patientsPagedDTO.setPageInfo(patientsPaged.getPageInfo());
+			return ResponseEntity.ok(patientsPagedDTO);
 		} catch (OHServiceException e) {
 			throw new OHAPIException(new OHExceptionMessage(FormatErrorMessage.format(e.getMessages().get(0).getMessage())));
 		}

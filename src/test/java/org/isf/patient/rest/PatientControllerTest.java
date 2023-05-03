@@ -55,6 +55,7 @@ import org.isf.shared.exceptions.OHAPIException;
 import org.isf.shared.exceptions.OHResponseEntityExceptionHandler;
 import org.isf.shared.mapper.converter.BlobToByteArrayConverter;
 import org.isf.shared.mapper.converter.ByteArrayToBlobConverter;
+import org.isf.utils.db.PagedResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -344,7 +345,7 @@ public class PatientControllerTest {
 		List<PatientDTO> expectedPatientDTOList = patientMapper.map2DTOList(patientList);
 
 		when(patientBrowserManagerMock.getPatient(any(Integer.class), any(Integer.class)))
-				.thenReturn(patientList);
+				.thenReturn((PagedResponse<Patient>) patientList);
 
 		this.mockMvc
 				.perform(

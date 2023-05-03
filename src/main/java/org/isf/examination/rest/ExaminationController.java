@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.isf.admission.dto.AdmissionDTO;
+import org.isf.admission.model.Admission;
 import org.isf.examination.dto.PatientExaminationDTO;
 import org.isf.examination.manager.ExaminationBrowserManager;
 import org.isf.examination.mapper.PatientExaminationMapper;
@@ -32,7 +34,9 @@ import org.isf.examination.model.PatientExamination;
 import org.isf.patient.manager.PatientBrowserManager;
 import org.isf.patient.model.Patient;
 import org.isf.shared.FormatErrorMessage;
+import org.isf.shared.PagedResponseDTO;
 import org.isf.shared.exceptions.OHAPIException;
+import org.isf.utils.db.PagedResponse;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
 import org.slf4j.Logger;
@@ -268,22 +272,26 @@ public class ExaminationController {
 	}
 
 	@GetMapping(value = "/examinations/lastNByPatId", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<PatientExaminationDTO>> getLastNByPatID(@RequestParam Integer limit, @RequestParam Integer patId) throws OHServiceException {
-
+	public ResponseEntity<PagedResponseDTO<PatientExaminationDTO>> getLastNByPatID(@RequestParam Integer limit, @RequestParam Integer patId) throws OHServiceException {
+		PagedResponse<PatientExamination> patientExaminationListPaged = new PagedResponse<PatientExamination>();
 		List<PatientExamination> patientExaminationList = new ArrayList<>();
 		try {
-			patientExaminationList = examinationBrowserManager.getLastNByPatID(patId, limit);
+			patientExaminationListPaged = examinationBrowserManager.getLastNByPatID(patId, limit);
 		} catch (OHServiceException e) {
 			throw new OHAPIException(new OHExceptionMessage(FormatErrorMessage.format(e.getMessages().get(0).getMessage())));
 		}
-
+		patientExaminationList = patientExaminationListPaged.getData();
 		if (patientExaminationList == null || patientExaminationList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
+			
 			List<PatientExaminationDTO> patientExamList = patientExaminationList.stream().map(pat -> {
 				return patientExaminationMapper.map2DTO(pat);
 			}).collect(Collectors.toList());
-			return ResponseEntity.ok(patientExamList);
+			PagedResponseDTO<PatientExaminationDTO> result = new PagedResponseDTO<PatientExaminationDTO>();
+			result.setData(patientExamList);
+			result.setPageInfo(patientExaminationListPaged.getPageInfo());
+			return ResponseEntity.ok(result);
 		}
 	}
 

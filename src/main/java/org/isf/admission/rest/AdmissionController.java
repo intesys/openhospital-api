@@ -51,7 +51,9 @@ import org.isf.patient.model.Patient;
 import org.isf.pregtreattype.manager.PregnantTreatmentTypeBrowserManager;
 import org.isf.pregtreattype.model.PregnantTreatmentType;
 import org.isf.shared.FormatErrorMessage;
+import org.isf.shared.PagedResponseDTO;
 import org.isf.shared.exceptions.OHAPIException;
+import org.isf.utils.db.PagedResponse;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.ward.manager.WardBrowserManager;
@@ -246,23 +248,28 @@ public class AdmissionController {
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/admissions", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<AdmissionDTO>> getAdmissions(
+	public ResponseEntity<PagedResponseDTO<AdmissionDTO>> getAdmissions(
 					@RequestParam(name = "admissionrange") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime[] admissionRange,
 					@RequestParam(value = "page", required = false, defaultValue = "0") int page,
 					@RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size)
 					throws OHServiceException {
 		LOGGER.debug("Get admissions started between {} and {}", admissionRange[0], admissionRange[1]);
 
-		List<Admission> admissions = new ArrayList<>();
+		PagedResponse<Admission> admissions = new PagedResponse<Admission>();
+		List<Admission> adms = new ArrayList<>();
 		try {
 			admissions = admissionManager.getAdmissions(admissionRange[0], admissionRange[1], page, size);
 		} catch (OHServiceException e) {
 			throw new OHAPIException(new OHExceptionMessage(FormatErrorMessage.format(e.getMessages().get(0).getMessage())));
 		}
-		if (admissions.isEmpty()) {
+		adms = admissions.getData();
+		if (adms.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(admissionMapper.map2DTOList(admissions));
+		PagedResponseDTO<AdmissionDTO> result = new PagedResponseDTO<AdmissionDTO>();
+		result.setData(admissionMapper.map2DTOList(adms));
+		result.setPageInfo(admissions.getPageInfo());
+		return ResponseEntity.ok(result);
 	}
 
 	/**
@@ -273,24 +280,27 @@ public class AdmissionController {
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/discharges", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<AdmissionDTO>> getDischarges(
+	public ResponseEntity<PagedResponseDTO<AdmissionDTO>> getDischarges(
 					@RequestParam(name = "dischargerange") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime[] dischargeRange,
 					@RequestParam(value = "page", required = false, defaultValue = "0") int page,
 					@RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size)
 					throws OHServiceException {
 		LOGGER.debug("Get admissions that end between {} and {}", dischargeRange[0], dischargeRange[1]);
-
-		List<Admission> admissions = new ArrayList<>();
+		PagedResponse<Admission> admissions = new PagedResponse<Admission>();
+		List<Admission> adms = new ArrayList<>();
 		try {
 			admissions = admissionManager.getDischarges(dischargeRange[0], dischargeRange[1], page, size);
 		} catch (OHServiceException e) {
 			throw new OHAPIException(new OHExceptionMessage(FormatErrorMessage.format(e.getMessages().get(0).getMessage())));
 		}
-
-		if (admissions.isEmpty()) {
+		adms = admissions.getData();
+		if (adms.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(admissionMapper.map2DTOList(admissions));
+		PagedResponseDTO<AdmissionDTO> result = new PagedResponseDTO<AdmissionDTO>();
+		result.setData(admissionMapper.map2DTOList(adms));
+		result.setPageInfo(admissions.getPageInfo());
+		return ResponseEntity.ok(result);
 	}
 
 	/**
