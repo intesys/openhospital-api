@@ -60,15 +60,6 @@ public class PatientHelper {
 		}
 		return null;
 	}
-	
-	public static String asJsonStringPageable(PagedResponseDTO<PatientDTO> patientDTOPageable) {
-		try {
-			return getObjectMapper().writeValueAsString(patientDTOPageable);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	public static Patient setup() throws OHException {
 		return new TestPatient().setup(true);
