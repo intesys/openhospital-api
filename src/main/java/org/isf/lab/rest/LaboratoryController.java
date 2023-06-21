@@ -377,9 +377,9 @@ public class LaboratoryController {
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/laboratories", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PagedResponseDTO<LabWithRowsDTO>> getLaboratory(@RequestParam boolean oneWeek, @RequestParam int pageNo, @RequestParam int pageSize) throws OHServiceException {
+	public ResponseEntity<PagedResponseDTO<LabWithRowsDTO>> getLaboratory(@RequestParam boolean oneWeek, @RequestParam int page, @RequestParam int size) throws OHServiceException {
 		LOGGER.info("Get all LabWithRows");
-		PagedResponse<Laboratory> labListPageable = laboratoryManager.getLaboratoryPageable(oneWeek, pageNo, pageSize);
+		PagedResponse<Laboratory> labListPageable = laboratoryManager.getLaboratoryPageable(oneWeek, page, size);
 		if (labListPageable == null || labListPageable.getData().isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}

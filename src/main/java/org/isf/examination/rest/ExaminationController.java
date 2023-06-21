@@ -58,6 +58,9 @@ import io.swagger.annotations.Authorization;
 public class ExaminationController {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ExaminationController.class);
+	
+	// TODO: to centralize
+	protected static final String DEFAULT_PAGE_SIZE = "80";
 
 	@Autowired
     protected ExaminationBrowserManager examinationBrowserManager;
@@ -238,9 +241,12 @@ public class ExaminationController {
 	}
 
 	@GetMapping(value = "/examinations/lastNByPatId", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PagedResponseDTO<PatientExaminationDTO>> getLastNByPatID(@RequestParam Integer limit, @RequestParam Integer patId) throws OHServiceException {
-		LOGGER.info("Get examinations limit: {}", limit);
-		PagedResponse<PatientExamination> patientExaminationListPageable = examinationBrowserManager.getLastNByPatIDPageable(patId, limit);
+	public ResponseEntity<PagedResponseDTO<PatientExaminationDTO>> getLastNByPatID(
+												@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+												@RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size,							
+												@RequestParam Integer patId) throws OHServiceException {
+		LOGGER.info("Get examinations between {} and {}", page, size);
+		PagedResponse<PatientExamination> patientExaminationListPageable = examinationBrowserManager.getLastNByPatIDPageable(patId, page, size);
 
 		if (patientExaminationListPageable == null || patientExaminationListPageable.getData().isEmpty()) {
 			LOGGER.info("The patient list is empty.");
