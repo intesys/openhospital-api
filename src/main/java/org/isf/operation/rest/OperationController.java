@@ -40,8 +40,10 @@ import org.isf.opetype.model.OperationType;
 import org.isf.patient.manager.PatientBrowserManager;
 import org.isf.patient.model.Patient;
 import org.isf.shared.exceptions.OHAPIException;
+import org.isf.shared.pagination.PagedResponseDTO;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
+import org.isf.utils.pagination.PagedResponse;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,6 +65,9 @@ import io.swagger.annotations.Api;
 public class OperationController {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(OperationController.class);
+	
+	// TODO: to centralize
+	protected static final String DEFAULT_PAGE_SIZE = "80";
 
 	@Autowired
 	protected OperationBrowserManager operationManager;
@@ -138,14 +143,18 @@ public class OperationController {
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/operations", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<OperationDTO>> getOperations() throws OHServiceException {
-		LOGGER.info("Get all operations ");
-		List<Operation> operations = operationManager.getOperation();
-		List<OperationDTO> operationDTOs = mapper.map2DTOList(operations);
+	public ResponseEntity<PagedResponseDTO<OperationDTO>> getOperations(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+			@RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size) throws OHServiceException {
+		LOGGER.info("Get operations started between {} and {} ", page, size);
+		PagedResponse<Operation> operationsPageable = operationManager.getOperationPageable(page, size);
+		List<OperationDTO> operationDTOs = mapper.map2DTOList(operationsPageable.getData());
+		PagedResponseDTO<OperationDTO> admissionsPageableDTO = new PagedResponseDTO<OperationDTO>();
+		admissionsPageableDTO.setData(operationDTOs);
+		admissionsPageableDTO.setPageInfo(mapper.setParameterPageInfo(operationsPageable.getPageInfo()));
 		if (operationDTOs.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationDTOs);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(admissionsPageableDTO);
 		} else {
-			return ResponseEntity.ok(operationDTOs);
+			return ResponseEntity.ok(admissionsPageableDTO);
 		}
 	}
 	
