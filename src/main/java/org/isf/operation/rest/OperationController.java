@@ -143,18 +143,14 @@ public class OperationController {
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/operations", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PagedResponseDTO<OperationDTO>> getOperations(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
-			@RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size) throws OHServiceException {
-		LOGGER.info("Get operations started between {} and {} ", page, size);
-		PagedResponse<Operation> operationsPageable = operationManager.getOperationPageable(page, size);
-		List<OperationDTO> operationDTOs = mapper.map2DTOList(operationsPageable.getData());
-		PagedResponseDTO<OperationDTO> admissionsPageableDTO = new PagedResponseDTO<OperationDTO>();
-		admissionsPageableDTO.setData(operationDTOs);
-		admissionsPageableDTO.setPageInfo(mapper.setParameterPageInfo(operationsPageable.getPageInfo()));
+	public ResponseEntity<List<OperationDTO>> getOperations() throws OHServiceException {
+		LOGGER.info("Get all operations ");
+		List<Operation> operations = operationManager.getOperation();
+		List<OperationDTO> operationDTOs = mapper.map2DTOList(operations);
 		if (operationDTOs.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(admissionsPageableDTO);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationDTOs);
 		} else {
-			return ResponseEntity.ok(admissionsPageableDTO);
+			return ResponseEntity.ok(operationDTOs);
 		}
 	}
 	

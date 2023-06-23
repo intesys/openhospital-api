@@ -290,7 +290,8 @@ public class OpdController {
 			@RequestParam(value = "newPatient", required = false, defaultValue = "A") char newPatient,
 			@RequestParam(value = "patientCode", required = false, defaultValue = "0") Integer patientCode,
 			@RequestParam(value = "page", required = false, defaultValue = "0") int page,
-			@RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size) throws OHServiceException {
+			@RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size,
+			@RequestParam(value = "paged", required = false, defaultValue = "false") boolean paged) throws OHServiceException {
 		LOGGER.info("Get opd within specified dates");
 		LOGGER.debug("dateFrom: {}", dateFrom);
 		LOGGER.debug("dateTo: {}", dateTo);
@@ -301,25 +302,41 @@ public class OpdController {
 		LOGGER.debug("sex: {}", sex);
 		LOGGER.debug("newPatient: {}", newPatient);
 		LOGGER.debug("patientCode: {}", patientCode);
-		PagedResponse<Opd> opds;
-		if (patientCode != 0) {
-			opds = opdManager.getOpdListPageable(patientCode, page, size);
-		} else {
-			if (diseaseTypeCode != null) {
-				DiseaseType diseaseType = diseaseTypeManager.getDiseaseType(diseaseCode);
-				opds = opdManager.getOpdPageable(null, diseaseType, MessageBundle.getMessage(diseaseCode), dateFrom, dateTo, ageFrom,  ageTo, sex, newPatient, null, page, size);
-			} else {
-				opds = opdManager.getOpdPageable(null, null, MessageBundle.getMessage(diseaseCode), dateFrom, dateTo, ageFrom,  ageTo, sex, newPatient, null, page, size);
-			}
-			
-		}
-
-		List<OpdDTO> opdDTOs = opds.getData().stream().map(opd -> {
-			return mapper.map2DTO(opd);
-		}).collect(Collectors.toList());
+		LOGGER.debug("page: {}", page);
+		LOGGER.debug("size: {}", size);
+		LOGGER.debug("paged: {}", paged);
 		PagedResponseDTO<OpdDTO> opdPageable = new PagedResponseDTO<OpdDTO>();
+		PagedResponse<Opd> opdsPaged = new PagedResponse<Opd>();
+		List<Opd> opds = new ArrayList<>();
+		List<OpdDTO> opdDTOs =  new ArrayList<>();
+		
+		if (paged) {
+			if (patientCode != 0) {
+				opdsPaged = opdManager.getOpdListPageable(patientCode, page, size);
+			} else {
+				if (diseaseTypeCode != null) {
+					DiseaseType diseaseType = diseaseTypeManager.getDiseaseType(diseaseCode);
+					opdsPaged = opdManager.getOpdPageable(null, diseaseType, MessageBundle.getMessage(diseaseCode), dateFrom, dateTo, ageFrom,  ageTo, sex, newPatient, null, page, size);
+				} else {
+					opdsPaged = opdManager.getOpdPageable(null, null, MessageBundle.getMessage(diseaseCode), dateFrom, dateTo, ageFrom,  ageTo, sex, newPatient, null, page, size);
+				}
+				
+			}
+			opdDTOs = opdsPaged.getData().stream().map(opd -> {
+				return mapper.map2DTO(opd);
+			}).collect(Collectors.toList());
+			opdPageable.setPageInfo(mapper.setParameterPageInfo(opdsPaged.getPageInfo()));
+		} else {
+			if (patientCode != 0) {
+				opds = opdManager.getOpdList(patientCode);
+			} else {
+				opds = opdManager.getOpd(null, diseaseCode, MessageBundle.getMessage(diseaseCode), dateFrom, dateTo, ageFrom,  ageTo, sex, newPatient, null);
+			}
+			opdDTOs = opds.stream().map(opd -> {
+				return mapper.map2DTO(opd);
+			}).collect(Collectors.toList());
+		}
 		opdPageable.setData(opdDTOs);
-		opdPageable.setPageInfo(mapper.setParameterPageInfo(opds.getPageInfo()));
 		if (opdDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(opdPageable);
 		} else {
