@@ -70,7 +70,7 @@ You can see Swagger Api Documentation at: http://localhost:8080/swagger-ui/
 ![image](https://github.com/mwithi/openhospital-api/assets/2938553/6c7ebd7e-aad7-4d9a-9bdc-62ad71c1cbdd)
 ![image](https://github.com/mwithi/openhospital-api/assets/2938553/d395317c-80f1-43d3-8c8b-3527f2a336cf)
 
- 2. use the Authorize button at the top of the Swagger-UI, paste the token form step #1 and click Authorize
+ 2. use the Authorize button at the top of the Swagger-UI, paste the token from step #1 and click Authorize
 
 ![image](https://github.com/mwithi/openhospital-api/assets/2938553/ae1f371d-d14b-4329-8221-696358b9b79b)
  
