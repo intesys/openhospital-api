@@ -168,7 +168,7 @@ public class AdmissionController {
 			return admissionDTO;
 		}).collect(Collectors.toList());
 
-		return ResponseEntity.ok(listAdmissionsDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(listAdmissionsDTO);
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class AdmissionController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 		AdmissionDTO admDTO = admissionMapper.map2DTO(admission);
-		return ResponseEntity.ok(admDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(admDTO);
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class AdmissionController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 
-		return ResponseEntity.ok(admittedMapper.map2DTOList(admittedPatients));
+		return ResponseEntity.status(HttpStatus.OK).body(admittedMapper.map2DTOList(admittedPatients));
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class AdmissionController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 		admissionsPageableDTO.setData(admissionsDTO);
-		return ResponseEntity.ok(admissionsPageableDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(admissionsPageableDTO);
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class AdmissionController {
 		List<AdmissionDTO> admissionsDTO = admissionMapper.map2DTOList(admissionsPageable.getData());
 		admissionsPageableDTO.setData(admissionsDTO);
 		admissionsPageableDTO.setPageInfo(admissionMapper.setParameterPageInfo(admissionsPageable.getPageInfo()));
-		return ResponseEntity.ok(admissionsPageableDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(admissionsPageableDTO);
 	}
 
 	/**
@@ -301,7 +301,7 @@ public class AdmissionController {
 			throw new OHAPIException(new OHExceptionMessage("Ward not found for code:" + wardCode));
 		}
 
-		return ResponseEntity.ok(admissionManager.getNextYProg(wardCode));
+		return ResponseEntity.status(HttpStatus.OK).body(admissionManager.getNextYProg(wardCode));
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class AdmissionController {
 			throw new OHAPIException(new OHExceptionMessage("Ward not found for code:" + wardCode));
 		}
 
-		return ResponseEntity.ok(admissionManager.getUsedWardBed(wardCode));
+		return ResponseEntity.status(HttpStatus.OK).body(admissionManager.getUsedWardBed(wardCode));
 	}
 
 	/**
@@ -337,7 +337,7 @@ public class AdmissionController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 		admissionManager.setDeleted(id);
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 	/**
@@ -688,7 +688,7 @@ public class AdmissionController {
 		}
 
 		AdmissionDTO admDTO = admissionMapper.map2DTO(isUpdatedAdmission);
-		return ResponseEntity.ok(admDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(admDTO);
 	}
 
 }

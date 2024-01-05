@@ -271,7 +271,7 @@ public class OpdController {
 		if (opdDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(opdDTOs);
 		} else {
-			return ResponseEntity.ok(opdDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(opdDTOs);
 		}
 	}
 	
@@ -333,7 +333,7 @@ public class OpdController {
 		if (opdDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(opdPageable);
 		} else {
-			return ResponseEntity.ok(opdPageable);
+			return ResponseEntity.status(HttpStatus.OK).body(opdPageable);
 		}
 	}
 	
@@ -367,7 +367,7 @@ public class OpdController {
 					
 				return opRows;
 			}).collect(Collectors.toList());
-			return ResponseEntity.ok(opdWithOperations);
+			return ResponseEntity.status(HttpStatus.OK).body(opdWithOperations);
 
 		} else {
 
@@ -392,7 +392,7 @@ public class OpdController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Opd not deleted."));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 	
 	/**
@@ -404,7 +404,7 @@ public class OpdController {
 	public ResponseEntity<Integer> getProgYear(@PathVariable("year") int year) throws OHServiceException {
 		LOGGER.info("Get progressive number within specified year");
 		int yProg = opdManager.getProgYear(year);
-		return ResponseEntity.ok(yProg);
+		return ResponseEntity.status(HttpStatus.OK).body(yProg);
 	}
 	
 	/**
@@ -419,7 +419,7 @@ public class OpdController {
 		if (lastOpd == null) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
-			return ResponseEntity.ok(mapper.map2DTO(lastOpd));
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(lastOpd));
 		}
 		
 	}
@@ -433,7 +433,7 @@ public class OpdController {
 	public ResponseEntity<Boolean> isExistOpdNum(@RequestParam("opdNum") int opdNum, @RequestParam("year") int year) throws OHServiceException {
 		LOGGER.info("check if progYear: {}  already exist for year : {}", opdNum, year);
 		Boolean isExist = opdManager.isExistOpdNum(opdNum, year);
-		return ResponseEntity.ok(isExist);
+		return ResponseEntity.status(HttpStatus.OK).body(isExist);
 	}
 
 }

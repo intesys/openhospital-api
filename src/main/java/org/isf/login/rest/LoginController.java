@@ -40,6 +40,7 @@ import org.isf.utils.exception.OHServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -97,6 +98,6 @@ public class LoginController {
 			LOGGER.error("Unable to log user login in the session_audit table");
 		}
 
-		return ResponseEntity.ok(new LoginResponse(jwt, userDetails));
+		return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(jwt, userDetails));
 	}
 }

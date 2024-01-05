@@ -112,7 +112,7 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedUsers);
 		} else {
 			LOGGER.info("Found {} users.", mappedUsers.size());
-			return ResponseEntity.ok(mappedUsers);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedUsers);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class UserController {
 		if (user == null) {
 			throw new OHAPIException(new OHExceptionMessage("User not found."));
 		}
-		return ResponseEntity.ok(userMapper.map2DTO(user));
+		return ResponseEntity.status(HttpStatus.OK).body(userMapper.map2DTO(user));
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class UserController {
 			isUpdated = userManager.updateUser(user);
 		}
 		if (isUpdated) {
-			return ResponseEntity.ok(isUpdated);
+			return ResponseEntity.status(HttpStatus.OK).body(isUpdated);
 		} else {
 			throw new OHAPIException(new OHExceptionMessage("User not updated."));
 		}
@@ -198,7 +198,7 @@ public class UserController {
 		}
 		try {
 			userManager.deleteUser(foundUser);
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("User not deleted."));
 		}
@@ -218,7 +218,7 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedGroups);
 		} else {
 			LOGGER.info("Found {} groups.", mappedGroups.size());
-			return ResponseEntity.ok(mappedGroups);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedGroups);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class UserController {
 		try {
 			UserGroup group = loadUserGroup(code);
 			userManager.deleteGroup(group);
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("User group not deleted."));
 		}
@@ -267,7 +267,7 @@ public class UserController {
 		}
 		boolean isUpdated = userManager.updateUserGroup(group);
 		if (isUpdated) {
-			return ResponseEntity.ok(isUpdated);
+			return ResponseEntity.status(HttpStatus.OK).body(isUpdated);
 		} else {
 			throw new OHAPIException(new OHExceptionMessage("User group not updated."));
 		}
@@ -358,7 +358,7 @@ public class UserController {
 		}
 		List<UserSettingDTO> userSettingsDTO = userSettingMapper.map2DTOList(userSettings);
 		LOGGER.info("Found {} user settings.", userSettingsDTO);
-		return ResponseEntity.ok(userSettingsDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(userSettingsDTO);
 	}
 
 	/**
@@ -433,7 +433,7 @@ public class UserController {
 				throw new OHAPIException(new OHExceptionMessage("UserSetting not updated."));
 			}
 			LOGGER.info("UserSetting successfully updated.");
-			return ResponseEntity.ok(userSettingMapper.map2DTO(updated));
+			return ResponseEntity.status(HttpStatus.OK).body(userSettingMapper.map2DTO(updated));
 		}
 		throw new OHAPIException(new OHExceptionMessage("Not allowed."));
 	}
@@ -453,7 +453,7 @@ public class UserController {
 			LOGGER.info("No user settings with id {}.", id);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(userSettingMapper.map2DTO(userSetting.get()));
+		return ResponseEntity.status(HttpStatus.OK).body(userSettingMapper.map2DTO(userSetting.get()));
 	}
 
 	/**
@@ -478,7 +478,7 @@ public class UserController {
 			LOGGER.info("No user settings '{}' for the user {}.", configName, userName);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(userSettingMapper.map2DTO(userSetting));
+		return ResponseEntity.status(HttpStatus.OK).body(userSettingMapper.map2DTO(userSetting));
 	}
 
 	/**
@@ -503,7 +503,7 @@ public class UserController {
 			} catch (OHServiceException serviceException) {
 				throw new OHAPIException(new OHExceptionMessage("UserSetting not deleted."));
 			}
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		}
 		throw new OHAPIException(new OHExceptionMessage("Not allowed."));
 	}

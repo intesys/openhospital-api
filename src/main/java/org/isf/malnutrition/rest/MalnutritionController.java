@@ -102,7 +102,7 @@ public class MalnutritionController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMalnutritions);
 		} else {
 			LOGGER.info("Found {} malnutrition controls", mappedMalnutritions.size());
-			return ResponseEntity.ok(mappedMalnutritions);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMalnutritions);
 		}
 	}
 	
@@ -118,7 +118,7 @@ public class MalnutritionController {
 		if (foundMalnutrition == null) {
             throw new OHAPIException(new OHExceptionMessage("No malnutrition found."));
 		} else {
-			return ResponseEntity.ok(mapper.map2DTO(foundMalnutrition));
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(foundMalnutrition));
 		}
 	}
 	
@@ -131,7 +131,7 @@ public class MalnutritionController {
 	@PutMapping(value = "/malnutritions", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MalnutritionDTO> updateMalnutrition(@RequestBody @Valid MalnutritionDTO malnutritionDTO) throws OHServiceException {
 		Malnutrition updatedMalnutrition = manager.updateMalnutrition(mapper.map2Model(malnutritionDTO));
-		return ResponseEntity.ok(mapper.map2DTO(updatedMalnutrition));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedMalnutrition));
 	}
 	
 	/**
@@ -159,6 +159,6 @@ public class MalnutritionController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Malnutrition not deleted."));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 }

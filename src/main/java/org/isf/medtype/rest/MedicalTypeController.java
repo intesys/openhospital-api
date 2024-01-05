@@ -78,7 +78,7 @@ public class MedicalTypeController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMedicalTypes);
 		} else {
 			LOGGER.info("Found {} medical types", mappedMedicalTypes.size());
-			return ResponseEntity.ok(mappedMedicalTypes);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMedicalTypes);
 		}
 	}
 	
@@ -113,7 +113,7 @@ public class MedicalTypeController {
 		if (isUpdatedMedicalType == null) {
             throw new OHAPIException(new OHExceptionMessage("Medical type not updated."));
         }
-        return ResponseEntity.ok(medicalTypeMapper.map2DTO(isUpdatedMedicalType));
+        return ResponseEntity.status(HttpStatus.OK).body(medicalTypeMapper.map2DTO(isUpdatedMedicalType));
 	}
 	
 	/**
@@ -124,7 +124,7 @@ public class MedicalTypeController {
 	 */
 	@GetMapping(value = "/medicaltypes/check/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> isCodeUsed(@PathVariable String code) throws OHServiceException {
-		return ResponseEntity.ok(medicalTypeBrowserManager.isCodePresent(code));
+		return ResponseEntity.status(HttpStatus.OK).body(medicalTypeBrowserManager.isCodePresent(code));
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class MedicalTypeController {
 			} catch (OHServiceException serviceException) {
 				throw new OHAPIException(new OHExceptionMessage("Medical type not deleted."));
 			}
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} else {
 			throw new OHAPIException(new OHExceptionMessage("Medical type not found."));
 		}

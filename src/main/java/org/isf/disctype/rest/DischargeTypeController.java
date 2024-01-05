@@ -78,7 +78,7 @@ public class DischargeTypeController {
 		LOGGER.info("Create discharge type {}", code);
 		DischargeType newDischargeType = discTypeManager.newDischargeType(mapper.map2Model(dischTypeDTO));
 		if (!discTypeManager.isCodePresent(code)) {
-			throw new OHAPIException(new OHExceptionMessage("Discharge Type is not created."), HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new OHAPIException(new OHExceptionMessage("Discharge Type is not created."));
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(newDischargeType));
 	}
@@ -98,9 +98,9 @@ public class DischargeTypeController {
 		}
 		DischargeType updatedDischargeType = discTypeManager.updateDischargeType(dischType);
 		if (!discTypeManager.isCodePresent(updatedDischargeType.getCode())) {
-			throw new OHAPIException(new OHExceptionMessage("Discharge Type is not updated."), HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new OHAPIException(new OHExceptionMessage("Discharge Type is not updated."));
 		}
-		return ResponseEntity.ok(mapper.map2DTO(dischType));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(dischType));
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class DischargeTypeController {
 		if (dischTypeDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(dischTypeDTOs);
 		} else {
-			return ResponseEntity.ok(dischTypeDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(dischTypeDTOs);
 		}
 	}
 
@@ -136,10 +136,10 @@ public class DischargeTypeController {
 			if (!dischTypeFounds.isEmpty()) {
 				discTypeManager.deleteDischargeType(dischTypeFounds.get(0));
 			}
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		return ResponseEntity.ok(true);
 	}
 
 }

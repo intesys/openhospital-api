@@ -104,12 +104,11 @@ public class DeliveryResultTypeController {
 		if (!dlvrrestManager.isCodePresent(dlvrrestType.getCode())) {
 			throw new OHAPIException(new OHExceptionMessage("Delivery Result Type not found."));
 		}
-		try {
-			dlvrrestManager.updateDeliveryResultType(dlvrrestType);
-		} catch (OHServiceException serviceException) {
+		DeliveryResultType updateDlerrestType = dlvrrestManager.updateDeliveryResultType(dlvrrestType);
+		if (updateDlerrestType == null) {
 			throw new OHAPIException(new OHExceptionMessage("Delivery Result Type is not updated."), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return ResponseEntity.ok(mapper.map2DTO(dlvrrestType));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updateDlerrestType));
 	}
 
 	/**
@@ -125,7 +124,7 @@ public class DeliveryResultTypeController {
 		if (dlvrrestTypeDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(dlvrrestTypeDTOs);
 		} else {
-			return ResponseEntity.ok(dlvrrestTypeDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(dlvrrestTypeDTOs);
 		}
 	}
 	
@@ -153,7 +152,7 @@ public class DeliveryResultTypeController {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 }

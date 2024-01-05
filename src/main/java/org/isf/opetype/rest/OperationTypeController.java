@@ -105,7 +105,7 @@ public class OperationTypeController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Operation Type not updated."));
 		}
-		return ResponseEntity.ok(mapper.map2DTO(updatedOperationType));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedOperationType));
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class OperationTypeController {
 		if (operationTypeDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationTypeDTOs);
 		} else {
-			return ResponseEntity.ok(operationTypeDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(operationTypeDTOs);
 		}
 	}
 
@@ -143,13 +143,13 @@ public class OperationTypeController {
 					opeTypeManager.deleteOperationType(opeTypeFounds.get(0));
 				} catch (OHServiceException serviceException) {
 					LOGGER.error("Delete Operation Type code: {} failed.", code);
-					return ResponseEntity.ok(false);
+					return ResponseEntity.status(HttpStatus.OK).body(false);
 				}
 			}
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 }

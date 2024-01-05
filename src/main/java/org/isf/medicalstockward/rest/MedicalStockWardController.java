@@ -96,7 +96,7 @@ public class MedicalStockWardController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMedWards);
 		} else {
 			LOGGER.info("Found {} medicals", mappedMedWards.size());
-			return ResponseEntity.ok(mappedMedWards);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMedWards);
 		}
 	}
 
@@ -120,7 +120,7 @@ public class MedicalStockWardController {
 		if (wards == null || wards.isEmpty()) {
 			throw new OHAPIException(new OHExceptionMessage("Ward not found."));
 		}
-		return ResponseEntity.ok(movWardBrowserManager.getCurrentQuantityInWard(wards.get(0), medical));
+		return ResponseEntity.status(HttpStatus.OK).body(movWardBrowserManager.getCurrentQuantityInWard(wards.get(0), medical));
 	}
 
 // TODO: needs update when UI supports movements wards
@@ -170,7 +170,7 @@ public class MedicalStockWardController {
 		if (mappedMovs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMovs);
 		} else {
-			return ResponseEntity.ok(mappedMovs);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMovs);
 		}
 	}
 
@@ -194,7 +194,7 @@ public class MedicalStockWardController {
 		if (mappedMovs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMovs);
 		}
-		return ResponseEntity.ok(mappedMovs);
+		return ResponseEntity.status(HttpStatus.OK).body(mappedMovs);
 	}
 
 	/**

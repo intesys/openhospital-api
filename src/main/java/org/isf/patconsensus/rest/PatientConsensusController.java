@@ -66,7 +66,7 @@ public class PatientConsensusController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 		PatientConsensusDTO patientDTO = mapper.map2DTO(patientConsensus.get());
-		return ResponseEntity.ok(patientDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(patientDTO);
 	}
 
 	@PutMapping(value = "/patientConsensus/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -85,7 +85,7 @@ public class PatientConsensusController {
 		try {
 			PatientConsensus patientConsensusUpdated = manager.updatePatientConsensus(updatedPatienConsensusModel);
 			PatientConsensusDTO patientConsensusDTO = mapper.map2DTO(patientConsensusUpdated);
-			return ResponseEntity.ok(patientConsensusDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(patientConsensusDTO);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("PatientConsensus is not updated."));
 		}

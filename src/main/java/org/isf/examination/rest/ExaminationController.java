@@ -51,7 +51,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -96,7 +95,6 @@ public class ExaminationController {
 	}
 
 	@PutMapping(value = "/examinations/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Boolean> updateExamination(@PathVariable Integer id, @RequestBody PatientExaminationDTO dto) throws OHServiceException {
 		if (dto.getPex_ID() != id) {
 			throw new OHAPIException(new OHExceptionMessage("Patient examination id mismatch."));
@@ -115,7 +113,7 @@ public class ExaminationController {
 		patientExamination.setPex_date(dto.getPex_date());
 		examinationBrowserManager.saveOrUpdate(patientExamination);
 
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 	@GetMapping(value = "/examinations/defaultPatientExamination", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -130,7 +128,7 @@ public class ExaminationController {
 		if (patientExaminationDTO == null) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
-			return ResponseEntity.ok(patientExaminationDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(patientExaminationDTO);
 		}
 	}
 
@@ -143,7 +141,7 @@ public class ExaminationController {
 		if (patientExaminationDTO == null) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
-			return ResponseEntity.ok(patientExaminationDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(patientExaminationDTO);
 		}
 	}
 
@@ -156,7 +154,7 @@ public class ExaminationController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
 			PatientExaminationDTO patientExaminationDTO = patientExaminationMapper.map2DTO(patientExamination);
-			return ResponseEntity.ok(patientExaminationDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(patientExaminationDTO);
 
 		}
 	}
@@ -170,7 +168,7 @@ public class ExaminationController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
 			PatientExaminationDTO patientExaminationDTO = patientExaminationMapper.map2DTO(patientExamination);
-			return ResponseEntity.ok(patientExaminationDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(patientExaminationDTO);
 		}
 	}
 
@@ -187,7 +185,7 @@ public class ExaminationController {
 			List<PatientExaminationDTO> patientExaminationDTO = patientExaminationMapper.map2DTOList(patientExaminationListPageable.getData());
 			patientExaminationPageableDTO.setData(patientExaminationDTO);
 			patientExaminationPageableDTO.setPageInfo(patientExaminationMapper.setParameterPageInfo(patientExaminationListPageable.getPageInfo()));
-			return ResponseEntity.ok(patientExaminationPageableDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(patientExaminationPageableDTO);
 		}
 	}
 
@@ -201,7 +199,7 @@ public class ExaminationController {
 			List<PatientExaminationDTO> listPatientExaminationDTO = patientExamination.stream().map(pat -> {
 				return patientExaminationMapper.map2DTO(pat);
 			}).collect(Collectors.toList());
-			return ResponseEntity.ok(listPatientExaminationDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(listPatientExaminationDTO);
 		}
 	}
 

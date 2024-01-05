@@ -132,7 +132,7 @@ public class OperationController {
 		if (isUpdatedOperation == null) {
 			throw new OHAPIException(new OHExceptionMessage("Operation not updated."));
 		}
-		return ResponseEntity.ok(mapper.map2DTO(isUpdatedOperation));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(isUpdatedOperation));
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class OperationController {
 		if (operationDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationDTOs);
 		} else {
-			return ResponseEntity.ok(operationDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(operationDTOs);
 		}
 	}
 	
@@ -162,7 +162,7 @@ public class OperationController {
 		LOGGER.info("Get operation for provided code: {}.", code);
 		Operation operation = operationManager.getOperationByCode(code);
 		if (operation != null) {
-			return ResponseEntity.ok(mapper.map2DTO(operation));
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(operation));
 		} else {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
@@ -201,9 +201,9 @@ public class OperationController {
 		}
 		try {
 			operationManager.deleteOperation(operation);
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
-			return ResponseEntity.ok(false);
+			return ResponseEntity.status(HttpStatus.OK).body(false);
 		}
 	}
 	
@@ -260,7 +260,7 @@ public class OperationController {
 		if (updateOpeRow == null) {
 			throw new OHAPIException(new OHExceptionMessage("Operation not updated."));
 		}
-		return ResponseEntity.ok(opRow.getId());
+		return ResponseEntity.status(HttpStatus.OK).body(opRow.getId());
 	}
 	
 	/**
@@ -279,7 +279,7 @@ public class OperationController {
 		if (operationRowDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationRowDTOs);
 		} else {
-			return ResponseEntity.ok(operationRowDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(operationRowDTOs);
 		}
 	}
 
@@ -297,7 +297,7 @@ public class OperationController {
 		if (operationRowDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationRowDTOs);
 		} else {
-			return ResponseEntity.ok(operationRowDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(operationRowDTOs);
 		}
 	}
 	
@@ -315,7 +315,7 @@ public class OperationController {
 		if (operationRowDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationRowDTOs);
 		} else {
-			return ResponseEntity.ok(operationRowDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(operationRowDTOs);
 		}
 	}
 	
@@ -332,7 +332,7 @@ public class OperationController {
 		opRow.setId(code);
 		try {
 			operationRowManager.deleteOperationRow(opRow);
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Operation row not deleted."));
 		}

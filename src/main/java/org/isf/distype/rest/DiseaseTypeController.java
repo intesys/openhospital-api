@@ -76,7 +76,7 @@ public class DiseaseTypeController {
 		List<DiseaseType> results = diseaseTypeManager.getDiseaseType();
 		List<DiseaseTypeDTO> parsedResults=mapper.map2DTOList(results);
 		if (!parsedResults.isEmpty()) {
-			return ResponseEntity.ok(parsedResults);
+			return ResponseEntity.status(HttpStatus.OK).body(parsedResults);
         } else {
         	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(parsedResults);
         }
@@ -116,7 +116,7 @@ public class DiseaseTypeController {
 		}
 		try {
 			diseaseTypeManager.updateDiseaseType(diseaseType);
-			return ResponseEntity.ok(diseaseTypeDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(diseaseTypeDTO);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Disease Type not updated."), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -139,7 +139,7 @@ public class DiseaseTypeController {
 				diseaseTypeManager.deleteDiseaseType(optDiseaseType.get());
 				Map<String, Boolean> result = new HashMap<>(1);
 				result.put("deleted", true);
-				return ResponseEntity.ok(result);
+				return ResponseEntity.status(HttpStatus.OK).body(result);
 			} catch (OHServiceException serviceException) {
 				throw new OHAPIException(new OHExceptionMessage("Disease Type not deleted."), HttpStatus.INTERNAL_SERVER_ERROR);
 			}

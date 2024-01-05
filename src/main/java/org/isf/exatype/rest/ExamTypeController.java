@@ -86,7 +86,7 @@ public class ExamTypeController {
 
         ExamType examType = examTypeMapper.map2Model(updateExamType);
         ExamType updatedExamType = examTypeBrowserManager.updateExamType(examType);
-        return ResponseEntity.ok(examTypeMapper.map2DTO(updatedExamType));
+        return ResponseEntity.status(HttpStatus.OK).body(examTypeMapper.map2DTO(updatedExamType));
     }
 
 
@@ -97,7 +97,7 @@ public class ExamTypeController {
         if (examTypeDTOS == null || examTypeDTOS.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
-        return ResponseEntity.ok(examTypeDTOS);
+        return ResponseEntity.status(HttpStatus.OK).body(examTypeDTOS);
     }
 
     @DeleteMapping(value = "/examtypes/{code:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,7 +111,7 @@ public class ExamTypeController {
         if (examTypeBrowserManager.isCodePresent(code)) {
             throw new OHAPIException(new OHExceptionMessage("Exam Type not deleted."));
         }
-        return ResponseEntity.ok(true);
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
 }

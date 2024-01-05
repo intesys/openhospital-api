@@ -79,12 +79,11 @@ public class AgeTypeController {
 		LOGGER.info("Get age types");
 		List<AgeType> results = ageTypeManager.getAgeType();
 		List<AgeTypeDTO> parsedResults = mapper.map2DTOList(results);
-		if (!parsedResults.isEmpty()) {
-			return ResponseEntity.ok(parsedResults);
-        } else {
-        	LOGGER.info("Empty age types list");
+		if (parsedResults.isEmpty()) {
+			LOGGER.info("Empty age types list");
         	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(parsedResults);
         }
+		return ResponseEntity.status(HttpStatus.OK).body(parsedResults);
 	}
 	
 	/**
@@ -102,12 +101,11 @@ public class AgeTypeController {
 		AgeType ageType = mapper.map2Model(ageTypeDTO);
 		List<AgeType> ageTypes = new ArrayList<>();
 		ageTypes.add(ageType);
-		try {
-			ageTypeManager.updateAgeType(ageTypes);
-			return ResponseEntity.ok(ageTypeDTO);
-		} catch (OHServiceException ex) {
-			throw new OHAPIException(new OHExceptionMessage("The age type is not updated."), HttpStatus.INTERNAL_SERVER_ERROR);
+		List<AgeType> updateAgeTypes = ageTypeManager.updateAgeType(ageTypes);
+		if (updateAgeTypes.isEmpty()) {
+			throw new OHAPIException(new OHExceptionMessage("The age type is not updated."));
 		}
+		return ResponseEntity.status(HttpStatus.OK).body(ageTypeDTO);
 	}
 	
 	/**
@@ -121,13 +119,12 @@ public class AgeTypeController {
 		LOGGER.info("Get age type by age: {}", age);
 		String result = ageTypeManager.getTypeByAge(age);
 		Map<String, String> responseBody = new HashMap<>();
-		if (result != null){
-			responseBody.put("code", result);
-			return ResponseEntity.ok(responseBody);
-        } else {
-        	LOGGER.info("No corresponding age code for the given age");
-        	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseBody);
+		if (result == null) {
+			LOGGER.info("No corresponding age code for the given age");
+        	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);	
         }
+		responseBody.put("code", result);
+		return ResponseEntity.status(HttpStatus.OK).body(responseBody);
 	}
 	
 	/**
@@ -140,12 +137,11 @@ public class AgeTypeController {
 	public ResponseEntity<AgeType> getAgeTypeByIndex(@PathVariable int index) throws OHServiceException {
 		LOGGER.info("Get age type by index: {}", index);
 		AgeType result = ageTypeManager.getTypeByCode(index);
-		if (result != null){
-			return ResponseEntity.ok(result);
-        } else {
-        	LOGGER.info("No corresponding age code for the given index");
+		if (result == null) {
+			LOGGER.info("No corresponding age code for the given index");
         	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 	
 }

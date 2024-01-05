@@ -196,7 +196,7 @@ public class StockMovementController {
 		if (mappedLots.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedLots);
 		} else {
-			return ResponseEntity.ok(mappedLots);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedLots);
 		}
 	}
 	
@@ -215,7 +215,7 @@ public class StockMovementController {
 		if (med == null) {
 			throw new OHAPIException(new OHExceptionMessage("Medical not found."));
 		}
-		return ResponseEntity.ok(movInsertingManager.alertCriticalQuantity(med, specifiedQuantity));
+		return ResponseEntity.status(HttpStatus.OK).body(movInsertingManager.alertCriticalQuantity(med, specifiedQuantity));
 	}
 	
 	private ResponseEntity<List<MovementDTO>> collectResults(List<Movement> movements) {
@@ -223,7 +223,7 @@ public class StockMovementController {
 		if (mappedMovements.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMovements);
 		} else {
-			return ResponseEntity.ok(mappedMovements);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMovements);
 		}
 	}
 }

@@ -82,7 +82,7 @@ public class ExamController {
         } catch (OHServiceException serviceException) {
             throw new OHAPIException(new OHExceptionMessage("Exam not created."));
         }
-        return ResponseEntity.ok(examMapper.map2DTO(exam));
+        return ResponseEntity.status(HttpStatus.CREATED).body(examMapper.map2DTO(exam));
     }
 
     @PutMapping(value = "/exams/{code:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -108,7 +108,7 @@ public class ExamController {
             throw new OHAPIException(new OHExceptionMessage("Exam not updated."));
         }
 
-        return ResponseEntity.ok(examMapper.map2DTO(examUpdated));
+        return ResponseEntity.status(HttpStatus.OK).body(examMapper.map2DTO(examUpdated));
     }
 
 
@@ -119,7 +119,7 @@ public class ExamController {
         if (exams == null || exams.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
-            return ResponseEntity.ok(exams);
+            return ResponseEntity.status(HttpStatus.OK).body(exams);
         }
     }
 
@@ -130,7 +130,7 @@ public class ExamController {
         if (exams == null || exams.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
-            return ResponseEntity.ok(exams);
+            return ResponseEntity.status(HttpStatus.OK).body(exams);
         }
     }
 
@@ -145,6 +145,6 @@ public class ExamController {
         } catch (OHServiceException serviceException) {
             throw new OHAPIException(new OHExceptionMessage("Exam not deleted."));
         }
-        return ResponseEntity.ok(true);
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 }

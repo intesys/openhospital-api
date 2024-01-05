@@ -78,7 +78,7 @@ public class MedStockMovementTypeController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMovements);
 		} else {
 			LOGGER.info("Found {} movement types", mappedMovements.size());
-			return ResponseEntity.ok(mappedMovements);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMovements);
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class MedStockMovementTypeController {
 		if (foundMvmntType == null) {
 			throw new OHAPIException(new OHExceptionMessage("Movement type not found."));
 		}
-		return ResponseEntity.ok(mapper.map2DTO(foundMvmntType));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(foundMvmntType));
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public class MedStockMovementTypeController {
 		}
 		try {
 			MovementType isUpdatedMovementType = manager.updateMedicalDsrStockMovementType(medicalDsrStockMovementType);
-			return ResponseEntity.ok(mapper.map2DTO(isUpdatedMovementType));
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(isUpdatedMovementType));
 		} catch (OHServiceException serviceException) {
             throw new OHAPIException(new OHExceptionMessage("Movement type not updated."));
         }
@@ -140,7 +140,7 @@ public class MedStockMovementTypeController {
 	 */
 	@GetMapping(value = "/medstockmovementtype/check/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> isCodeUsed(@PathVariable String code) throws OHServiceException {
-		return ResponseEntity.ok(manager.isCodePresent(code));
+		return ResponseEntity.status(HttpStatus.OK).body(manager.isCodePresent(code));
 	}
 	
 	/**
@@ -160,7 +160,7 @@ public class MedStockMovementTypeController {
 		}
 		try {
 			manager.deleteMedicalDsrStockMovementType(matchedMvmntTypes.get(0));
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Movement type not deleted."));
 		}

@@ -78,7 +78,7 @@ public class AdmissionTypeController {
 		LOGGER.info("Create Admission Type {}", code);
 		AdmissionType newAdmissionType = admtManager.newAdmissionType(mapper.map2Model(admissionTypeDTO));
 		if (!admtManager.isCodePresent(code)) {
-			throw new OHAPIException(new OHExceptionMessage("Admission Type is not created."), HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new OHAPIException(new OHExceptionMessage("Admission Type is not created."));
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(newAdmissionType));
 	}
@@ -98,7 +98,7 @@ public class AdmissionTypeController {
 			throw new OHAPIException(new OHExceptionMessage("Admission Type not found."));
 		}
 		AdmissionType updatedAdmissionType = admtManager.updateAdmissionType(admt);
-		return ResponseEntity.ok(mapper.map2DTO(updatedAdmissionType));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedAdmissionType));
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class AdmissionTypeController {
 		if (admissionTypeDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(admissionTypeDTOs);
 		} else {
-			return ResponseEntity.ok(admissionTypeDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(admissionTypeDTOs);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class AdmissionTypeController {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 }

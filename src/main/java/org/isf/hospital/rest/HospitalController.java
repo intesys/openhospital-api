@@ -71,7 +71,7 @@ public class HospitalController {
         hospital.setLock(hospitalDTO.getLock());
         Hospital hospi = hospitalBrowsingManager.updateHospital(hospital);
 
-        return ResponseEntity.ok(hospitalMapper.map2DTO(hospi));
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalMapper.map2DTO(hospi));
     }
 
     @GetMapping(value = "/hospitals", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -81,7 +81,7 @@ public class HospitalController {
         if (hospital == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
-            return ResponseEntity.ok(hospitalMapper.map2DTO(hospital));
+            return ResponseEntity.status(HttpStatus.OK).body(hospitalMapper.map2DTO(hospital));
         }
     }
 
@@ -92,7 +92,7 @@ public class HospitalController {
         if (hospitalCurrencyCod == null || hospitalCurrencyCod.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
-            return ResponseEntity.ok(hospitalCurrencyCod);
+            return ResponseEntity.status(HttpStatus.OK).body(hospitalCurrencyCod);
         }
     }
 

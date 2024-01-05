@@ -79,7 +79,7 @@ public class MedicalController {
 			throw new OHAPIException(new OHExceptionMessage("Medical not found."));
 		} else {
 			LOGGER.info("Medical retrieved successfully.");
-			return ResponseEntity.ok(mapper.map2DTO(medical));
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(medical));
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class MedicalController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMedicals);
 		} else {
 			LOGGER.info("Found {} medicals.", mappedMedicals.size());
-			return ResponseEntity.ok(mappedMedicals);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMedicals);
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class MedicalController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMedicals);
 		} else {
 			LOGGER.info("Found {} medicals.", mappedMedicals.size());
-			return ResponseEntity.ok(mappedMedicals);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMedicals);
 		}
 	}
 	
@@ -220,6 +220,6 @@ public class MedicalController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Medical not deleted"));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 }

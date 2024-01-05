@@ -190,7 +190,7 @@ public class BillController {
 		} catch (OHServiceException e) {
 			throw new OHAPIException(new OHExceptionMessage("Bill is not updated."));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(odBillDto);
+		return ResponseEntity.status(HttpStatus.OK).body(odBillDto);
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class BillController {
 		if (billDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(billDTOS);
 		}
-		return ResponseEntity.ok(billDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(billDTOS);
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class BillController {
 		if (paymentsDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(paymentsDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(paymentsDTOS);
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class BillController {
 		if (paymentsDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(paymentsDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(paymentsDTOS);
 	}
 
 	/**
@@ -298,7 +298,7 @@ public class BillController {
 		if (itemsDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(itemsDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(itemsDTOS);
 	}
 
 	/**
@@ -318,7 +318,7 @@ public class BillController {
 		if (billDTO == null) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(billDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(billDTO);
 	}
 
 	/**
@@ -338,7 +338,7 @@ public class BillController {
 		if (billDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(billDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(billDTOS);
 	}
 
 	/**
@@ -358,7 +358,7 @@ public class BillController {
 		if (billDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(billDTOS);
 		}
-		return ResponseEntity.ok(billDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(billDTOS);
 	}
 
 	/**
@@ -369,7 +369,7 @@ public class BillController {
 	 * @return a list of retrieved {@link Bill}s or {@code null} if an error occurred.
 	 * @throws OHServiceException
 	 */
-	@PostMapping(value = "/bills/search/by/item", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/bills/search/item", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<BillDTO>> searchBills(
 					@RequestParam(value = "datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") @Schema(implementation = String.class) LocalDateTime dateFrom,
 					@RequestParam(value = "dateto") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") @Schema(implementation = String.class) LocalDateTime dateTo,
@@ -386,7 +386,7 @@ public class BillController {
 		if (billDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(billDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(billDTOS);
 	}
 
 	/**
@@ -407,7 +407,7 @@ public class BillController {
 		if (itemsDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(itemsDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(itemsDTOS);
 	}
 
 	@DeleteMapping(value = "/bills/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -422,7 +422,7 @@ public class BillController {
 		} catch (OHServiceException e) {
 			throw new OHAPIException(new OHExceptionMessage("Bill is not deleted."));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 	/**
@@ -431,7 +431,7 @@ public class BillController {
 	 * @return a list of {@link Bill} associated to the passed {@link BillPayments} or {@code null} if an error occurred.
 	 * @throws OHServiceException
 	 */
-	@PostMapping(value = "/bills/search/by/payments", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/bills/search/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<BillDTO>> searchBillsByPayments(@RequestBody List<BillPaymentsDTO> paymentsDTO) throws OHServiceException {
 
 		List<BillPayments> billPayments = billPaymentsMapper.map2ModelList(paymentsDTO);
@@ -443,7 +443,7 @@ public class BillController {
 		if (billDTOS.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(billDTOS);
+		return ResponseEntity.status(HttpStatus.OK).body(billDTOS);
 	}
 
 }

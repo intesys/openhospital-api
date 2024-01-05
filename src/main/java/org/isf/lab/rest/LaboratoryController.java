@@ -316,7 +316,7 @@ public class LaboratoryController {
 			}
 			throw new OHAPIException(e.getMessages().get(0));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 	/**
@@ -339,7 +339,7 @@ public class LaboratoryController {
 			} catch (OHServiceException serviceException) {
 				throw new OHAPIException(new OHExceptionMessage("Laboratory not updated."));
 			}
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} else {
 			throw new OHAPIException(new OHExceptionMessage("This status doesn't exist."));
 		}
@@ -370,7 +370,7 @@ public class LaboratoryController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Exam is not deleted."));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 	/**
@@ -419,7 +419,7 @@ public class LaboratoryController {
 		Page<LabWithRowsDTO> labWithRowsDtoPageable = new Page<>();
 		labWithRowsDtoPageable.setPageInfo(laboratoryMapper.setParameterPageInfo(labListPageable.getPageInfo()));
 		labWithRowsDtoPageable.setData(labWithRowsDto);
-		return ResponseEntity.ok(labWithRowsDtoPageable);
+		return ResponseEntity.status(HttpStatus.OK).body(labWithRowsDtoPageable);
 	}
 
 	/**
@@ -442,7 +442,7 @@ public class LaboratoryController {
 		if (labList == null || labList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.ok(labList.stream().map(lab -> {
+		return ResponseEntity.status(HttpStatus.OK).body(labList.stream().map(lab -> {
 			LabWithRowsDTO labDTO = new LabWithRowsDTO();
 			List<String> labDescription = new ArrayList<>();
 			LaboratoryDTO laboratoryDTO = laboratoryMapper.map2DTO(lab);
@@ -493,7 +493,7 @@ public class LaboratoryController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 
-		return ResponseEntity.ok(labList.stream().map(lab -> {
+		return ResponseEntity.status(HttpStatus.OK).body(labList.stream().map(lab -> {
 			LaboratoryDTO laboratoryDTO = laboratoryMapper.map2DTO(lab);
 			laboratoryDTO.setRegistrationDate(lab.getCreatedDate());
 			laboratoryDTO.setInOutPatient(PatientSTATUS.valueOf(lab.getInOutPatient()));
@@ -518,7 +518,7 @@ public class LaboratoryController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 
-		return ResponseEntity.ok(labList.stream().map(lab -> {
+		return ResponseEntity.status(HttpStatus.OK).body(labList.stream().map(lab -> {
 			LaboratoryDTO laboratoryDTO = laboratoryMapper.map2DTO(lab);
 			laboratoryDTO.setRegistrationDate(lab.getCreatedDate());
 			laboratoryDTO.setInOutPatient(PatientSTATUS.valueOf(lab.getInOutPatient()));
@@ -540,7 +540,7 @@ public class LaboratoryController {
 		if (materialList == null || materialList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		} else {
-			return ResponseEntity.ok(materialList);
+			return ResponseEntity.status(HttpStatus.OK).body(materialList);
 		}
 	}
 
@@ -675,7 +675,7 @@ public class LaboratoryController {
 		laboratoryDTO.setRegistrationDate(lab.getCreatedDate());
 		laboratoryDTO.setInOutPatient(PatientSTATUS.valueOf(lab.getInOutPatient()));
 		laboratoryDTO.setStatus(LaboratoryStatus.valueOf(lab.getStatus()));
-		return ResponseEntity.ok(laboratoryDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(laboratoryDTO);
 	}
 
 	/**
@@ -713,7 +713,7 @@ public class LaboratoryController {
 
 		}
 		lab.setLaboratoryRowList(labDescription);
-		return ResponseEntity.ok(lab);
+		return ResponseEntity.status(HttpStatus.OK).body(lab);
 	}
 
 	/**
@@ -741,6 +741,6 @@ public class LaboratoryController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Exam request is not deleted."));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 }
