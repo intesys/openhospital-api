@@ -24,6 +24,8 @@ package org.isf.accounting.rest;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.isf.accounting.dto.BillDTO;
 import org.isf.accounting.dto.BillItemsDTO;
 import org.isf.accounting.dto.BillPaymentsDTO;
@@ -105,7 +107,7 @@ public class BillController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/bills", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<FullBillDTO> newBill(@RequestBody FullBillDTO newBillDto) throws OHServiceException {
+	public ResponseEntity<FullBillDTO> newBill(@Valid @RequestBody FullBillDTO newBillDto) throws OHServiceException {
 
 		if (newBillDto == null) {
 			throw new OHAPIException(new OHExceptionMessage("Bill is null."));
@@ -152,7 +154,7 @@ public class BillController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/bills/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<FullBillDTO> updateBill(@PathVariable Integer id, @RequestBody FullBillDTO odBillDto) throws OHServiceException {
+	public ResponseEntity<FullBillDTO> updateBill(@PathVariable Integer id, @Valid @RequestBody FullBillDTO odBillDto) throws OHServiceException {
 
 		LOGGER.info("updated Bill {}", odBillDto);
 		Bill bill = billMapper.map2Model(odBillDto.getBill());
@@ -369,11 +371,11 @@ public class BillController {
 	 * @return a list of retrieved {@link Bill}s or {@code null} if an error occurred.
 	 * @throws OHServiceException
 	 */
-	@PostMapping(value = "/bills/search/item", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/bills/search/item", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<BillDTO>> searchBills(
 					@RequestParam(value = "datefrom") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") @Schema(implementation = String.class) LocalDateTime dateFrom,
 					@RequestParam(value = "dateto") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") @Schema(implementation = String.class) LocalDateTime dateTo,
-					@RequestBody BillItemsDTO billItemDTO) throws OHServiceException {
+					@Valid @RequestBody BillItemsDTO billItemDTO) throws OHServiceException {
 
 		BillItems billItem = billItemsMapper.map2Model(billItemDTO);
 
@@ -431,8 +433,8 @@ public class BillController {
 	 * @return a list of {@link Bill} associated to the passed {@link BillPayments} or {@code null} if an error occurred.
 	 * @throws OHServiceException
 	 */
-	@PostMapping(value = "/bills/search/payments", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<BillDTO>> searchBillsByPayments(@RequestBody List<BillPaymentsDTO> paymentsDTO) throws OHServiceException {
+	@GetMapping(value = "/bills/search/payments", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<BillDTO>> searchBillsByPayments(@Valid @RequestBody List<BillPaymentsDTO> paymentsDTO) throws OHServiceException {
 
 		List<BillPayments> billPayments = billPaymentsMapper.map2ModelList(paymentsDTO);
 

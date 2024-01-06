@@ -267,7 +267,7 @@ public class AdmissionController {
 	 * @return the {@link List} of found {@link Admission} or NO_CONTENT otherwise.
 	 * @throws OHServiceException
 	 */
-	@GetMapping(value = "/discharges", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/admissions/discharges", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Page<AdmissionDTO>> getDischarges(
 					@RequestParam(name = "dischargerange") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @ArraySchema(schema = @Schema(implementation = String.class)) LocalDateTime[] dischargeRange,
 					@RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -347,7 +347,7 @@ public class AdmissionController {
 	 * @return {@code true} if the record has been set to discharge.
 	 * @throws OHServiceException
 	 */
-	@PostMapping(value = "/admissions/discharge", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/admissions/discharge", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> dischargePatient(@RequestParam("patientCode") int patientCode,
 					@Valid @RequestBody AdmissionDTO currentAdmissionDTO) throws OHServiceException {
 
