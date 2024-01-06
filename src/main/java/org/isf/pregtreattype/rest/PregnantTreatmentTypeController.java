@@ -101,7 +101,7 @@ public class PregnantTreatmentTypeController {
 		if (isUpdatedPregnantTreatmentType == null) {
 			throw new OHAPIException(new OHExceptionMessage("Pregnant Treatment Type not updated."));
 		}
-		return ResponseEntity.ok(mapper.map2DTO(isUpdatedPregnantTreatmentType));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(isUpdatedPregnantTreatmentType));
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class PregnantTreatmentTypeController {
 		if (pregnantTreatmentTypeDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(pregnantTreatmentTypeDTOs);
 		} else {
-			return ResponseEntity.ok(pregnantTreatmentTypeDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(pregnantTreatmentTypeDTOs);
 		}
 	}
 
@@ -139,13 +139,13 @@ public class PregnantTreatmentTypeController {
 					pregTreatTypeManager.deletePregnantTreatmentType(pregTreatTypeFounds.get(0));
 				} catch (OHServiceException serviceException) {
 					LOGGER.info("Delete PregnantTreatment Type code: {} failed.", code);
-					return ResponseEntity.ok(false);
+					return ResponseEntity.status(HttpStatus.OK).body(false);
 				}
 			}
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 }

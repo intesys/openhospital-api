@@ -102,7 +102,7 @@ public class PatVacController {
 		PatientVaccine updatedPatientVaccine;
 		try {
 			updatedPatientVaccine = patVacManager.updatePatientVaccine(mapper.map2Model(patientVaccineDTO));
-			return ResponseEntity.ok(mapper.map2DTO(updatedPatientVaccine));
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedPatientVaccine));
 		} catch (OHServiceException serviceException) {
 			LOGGER.error("Patient vaccine not updated.");
 			throw new OHAPIException(new OHExceptionMessage("Patient vaccine not updated."));
@@ -125,7 +125,7 @@ public class PatVacController {
 		if (patientVaccineDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(patientVaccineDTOs);
 		} else {
-			return ResponseEntity.ok(patientVaccineDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(patientVaccineDTOs);
 		}
 	}
 	
@@ -144,7 +144,7 @@ public class PatVacController {
 		if (patientVaccineDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(patientVaccineDTOs);
 		} else {
-			return ResponseEntity.ok(patientVaccineDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(patientVaccineDTOs);
 		}
 	}
 	
@@ -157,7 +157,7 @@ public class PatVacController {
 	public ResponseEntity<Integer> getProgYear(@PathVariable int year) throws OHServiceException {
 		LOGGER.info("Get progressive number within specified year");
 		int yProg = patVacManager.getProgYear(year);
-		return ResponseEntity.ok(yProg);
+		return ResponseEntity.status(HttpStatus.OK).body(yProg);
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class PatVacController {
 		patVac.setCode(code);
 		try {
 			patVacManager.deletePatientVaccine(patVac);
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Patient vaccine not deleted."));
 		}

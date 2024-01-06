@@ -79,7 +79,7 @@ public class WardController {
         if (listWard.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
-            return ResponseEntity.ok(listWard);
+            return ResponseEntity.status(HttpStatus.OK).body(listWard);
         }
     }
 
@@ -97,7 +97,7 @@ public class WardController {
         if (listWard.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
-            return ResponseEntity.ok(listWard);
+            return ResponseEntity.status(HttpStatus.OK).body(listWard);
         }
     }
 
@@ -116,7 +116,7 @@ public class WardController {
         if (numberOfPatients == -1) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } else {
-            return ResponseEntity.ok(numberOfPatients);
+            return ResponseEntity.status(HttpStatus.OK).body(numberOfPatients);
         }
     }
 
@@ -153,7 +153,7 @@ public class WardController {
         if (wardUpdated == null) {
             throw new OHAPIException(new OHExceptionMessage("Ward not updated."));
         }
-        return ResponseEntity.ok(mapper.map2DTO(wardUpdated));
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(wardUpdated));
 
     }
 
@@ -174,7 +174,7 @@ public class WardController {
             } catch (OHServiceException serviceException) {
                 throw new OHAPIException(new OHExceptionMessage("Ward not deleted."));
             }
-            return ResponseEntity.ok(true);
+            return ResponseEntity.status(HttpStatus.OK).body(true);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
@@ -190,7 +190,7 @@ public class WardController {
     public ResponseEntity<Boolean> checkWardCode(@PathVariable(value = "code") String code) throws OHServiceException {
 	    LOGGER.info("Check ward code: {}", code);
         boolean check = wardManager.isCodePresent(code);
-        return ResponseEntity.ok(check);
+        return ResponseEntity.status(HttpStatus.OK).body(check);
     }
 
     /**
@@ -205,7 +205,7 @@ public class WardController {
     public ResponseEntity<Boolean> checkWardMaternityCode(@PathVariable Boolean createIfNotExist) throws OHServiceException {
         LOGGER.info("Check ward maternity code");
         boolean check = wardManager.maternityControl(createIfNotExist);
-        return ResponseEntity.ok(check);
+        return ResponseEntity.status(HttpStatus.OK).body(check);
     }
 
 }

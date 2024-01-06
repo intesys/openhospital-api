@@ -80,7 +80,7 @@ public class VaccineController {
         if (listVaccines.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(listVaccines);
         } else {
-            return ResponseEntity.ok(listVaccines);
+            return ResponseEntity.status(HttpStatus.OK).body(listVaccines);
         }
     }
 
@@ -99,7 +99,7 @@ public class VaccineController {
         if (listVaccines.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(listVaccines);
         } else {
-            return ResponseEntity.ok(listVaccines);
+            return ResponseEntity.status(HttpStatus.OK).body(listVaccines);
         }
     }
 
@@ -140,7 +140,7 @@ public class VaccineController {
         } catch (OHServiceException serviceException) {
             throw new OHAPIException(new OHExceptionMessage("Vaccine not updated."));
         }
-        return ResponseEntity.ok(mapper.map2DTO(updatedVaccine));
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedVaccine));
     }
 
     /**
@@ -160,7 +160,7 @@ public class VaccineController {
            } catch (OHServiceException serviceException) {
                 throw new OHAPIException(new OHExceptionMessage("Vaccine not deleted."));
            }
-           return ResponseEntity.ok(true);
+           return ResponseEntity.status(HttpStatus.OK).body(true);
         }
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
@@ -176,6 +176,6 @@ public class VaccineController {
     public ResponseEntity<Boolean> checkVaccineCode(@PathVariable String code) throws OHServiceException {
 	    LOGGER.info("Check vaccine code: {}", code);
         boolean check = vaccineManager.isCodePresent(code);
-        return ResponseEntity.ok(check);
+        return ResponseEntity.status(HttpStatus.OK).body(check);
     }
 }

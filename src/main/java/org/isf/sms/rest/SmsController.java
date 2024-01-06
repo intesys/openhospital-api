@@ -83,7 +83,7 @@ public class SmsController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedSmsList);
 		} else {
 			LOGGER.info("Found {} sms", mappedSmsList.size());
-			return ResponseEntity.ok(mappedSmsList);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedSmsList);
 		}
 	}
 	
@@ -98,7 +98,7 @@ public class SmsController {
 			@RequestBody @Valid SmsDTO smsDTO,
 			@RequestParam(defaultValue="false") boolean split) throws OHServiceException {
 		smsManager.saveOrUpdate(smsMapper.map2Model(smsDTO), split);
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.CREATED).body(true);
 	}
 	
 	/**
@@ -114,6 +114,6 @@ public class SmsController {
 			throw new OHAPIException(new OHExceptionMessage("Some Sms are not found."));
 		}
 		smsManager.delete(smsList);
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 }

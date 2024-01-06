@@ -85,7 +85,7 @@ public class VisitsController {
         if (listVisit.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } else {
-            return ResponseEntity.ok(listVisit);
+            return ResponseEntity.status(HttpStatus.OK).body(listVisit);
         }
     }
 
@@ -136,7 +136,7 @@ public class VisitsController {
         if (!areDeleted) {
             throw new OHAPIException(new OHExceptionMessage("Visits not deleted."));
         }
-        return ResponseEntity.ok(true);
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
     
     /**

@@ -103,7 +103,7 @@ public class PriceListController {
 		PriceList priceList = mapper.map2Model(priceListDTO);
 		try {
 			PriceList updatedPriceList = priceListManager.updateList(priceList);
-			return ResponseEntity.ok(mapper.map2DTO(updatedPriceList));
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedPriceList));
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Price list not updated."));
 		}
@@ -122,7 +122,7 @@ public class PriceListController {
 		if (priceListDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(priceListDTOs);
 		} else {
-			return ResponseEntity.ok(priceListDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(priceListDTOs);
 		}
 	}
 	
@@ -139,7 +139,7 @@ public class PriceListController {
 		if (priceListDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(priceListDTOs);
 		} else {
-			return ResponseEntity.ok(priceListDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(priceListDTOs);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class PriceListController {
 		}
 		try {
 			priceListManager.deleteList(priceListFounds.get(0));
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Price list not deleted."));
 		}
@@ -180,7 +180,7 @@ public class PriceListController {
 		}
 		try {
 			priceListManager.copyList(priceListFounds.get(0));
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Price list not duplicated."));
 		}
@@ -201,7 +201,7 @@ public class PriceListController {
 		}
 		try {
 			priceListManager.copyList(priceListFounds.get(0), factor, step);
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Price list not duplicated."));
 		}

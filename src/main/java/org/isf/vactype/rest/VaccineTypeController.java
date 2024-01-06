@@ -80,7 +80,7 @@ public class VaccineTypeController {
         if (listVaccines.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(listVaccines);
         } else {
-            return ResponseEntity.ok(listVaccines);
+            return ResponseEntity.status(HttpStatus.OK).body(listVaccines);
         }
     }
 
@@ -122,7 +122,7 @@ public class VaccineTypeController {
         } catch (OHServiceException serviceException) {
             throw new OHAPIException(new OHExceptionMessage("Vaccine Type not updated."));
         }
-        return ResponseEntity.ok(mapper.map2DTO(updatedVaccineType));
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedVaccineType));
 
     }
 
@@ -143,7 +143,7 @@ public class VaccineTypeController {
             } catch (OHServiceException serviceException) {
                 throw new OHAPIException(new OHExceptionMessage("Vaccine Type not deleted."));
             }
-            return ResponseEntity.ok(true);
+            return ResponseEntity.status(HttpStatus.OK).body(true);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
@@ -159,6 +159,6 @@ public class VaccineTypeController {
     public ResponseEntity<Boolean> checkVaccineTypeCode(@PathVariable String code) throws OHServiceException {
 	    LOGGER.info("Check vaccine type code: {}", code);
         boolean check = vaccineTypeManager.isCodePresent(code);
-        return ResponseEntity.ok(check);
+        return ResponseEntity.status(HttpStatus.OK).body(check);
     }
 }

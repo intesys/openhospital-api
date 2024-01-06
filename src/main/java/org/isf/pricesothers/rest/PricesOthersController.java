@@ -103,7 +103,7 @@ public class PricesOthersController {
 		PricesOthers isUpdatedPricesOthers;
 		try {
 			isUpdatedPricesOthers = pricesOthersManager.updateOther(pricesOthers);
-			return ResponseEntity.ok(mapper.map2DTO(isUpdatedPricesOthers));
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(isUpdatedPricesOthers));
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Prices Others not updated."));
 		}
@@ -122,7 +122,7 @@ public class PricesOthersController {
 		if (pricesOthersDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(pricesOthersDTOs);
 		} else {
-			return ResponseEntity.ok(pricesOthersDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(pricesOthersDTOs);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class PricesOthersController {
 		}
 		try {
 			pricesOthersManager.deleteOther(pricesOthersFounds.get(0));
-			return ResponseEntity.ok(true);
+			return ResponseEntity.status(HttpStatus.OK).body(true);
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Prices Others not deleted."));
 		}

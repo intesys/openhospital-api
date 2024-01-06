@@ -121,7 +121,7 @@ public class TherapyController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Therapies not deleted."));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class TherapyController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedMeds);
 		} else {
 			LOGGER.info("Found {} medicals", mappedMeds.size());
-			return ResponseEntity.ok(mappedMeds);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedMeds);
 		}
 	}
 	
@@ -157,7 +157,7 @@ public class TherapyController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedThRows);
 		} else {
 			LOGGER.info("Found {} therapies", mappedThRows.size());
-			return ResponseEntity.ok(mappedThRows);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedThRows);
 		}
 	}
 	
@@ -176,7 +176,7 @@ public class TherapyController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mappedTherapies);
 		} else {
 			LOGGER.info("Found {} therapies", mappedTherapies.size());
-			return ResponseEntity.ok(mappedTherapies);
+			return ResponseEntity.status(HttpStatus.OK).body(mappedTherapies);
 		}
 	}
 	
@@ -190,6 +190,6 @@ public class TherapyController {
 	public ResponseEntity<TherapyDTO> getTherapy(@RequestBody @Valid TherapyRowDTO thRowDTO) throws OHServiceException {
 		TherapyRow thRow = therapyRowMapper.map2Model(thRowDTO);
 		TherapyDTO mappedTherapy = therapyMapper.map2DTO(manager.createTherapy(thRow));
-		return ResponseEntity.ok(mappedTherapy);
+		return ResponseEntity.status(HttpStatus.OK).body(mappedTherapy);
 	}
 }

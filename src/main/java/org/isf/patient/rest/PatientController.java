@@ -142,7 +142,7 @@ public class PatientController {
 			throw new OHAPIException(new OHExceptionMessage("Patient not updated."));
 		}
 		PatientDTO patientDTO = patientMapper.map2DTO(patient);
-		return ResponseEntity.ok(patientDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(patientDTO);
 	}
 
 	@GetMapping(value = "/patients", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -158,7 +158,7 @@ public class PatientController {
 		List<PatientDTO> patientsDTO = patientMapper.map2DTOList(patients.getData());
 		patientPageableDTO.setData(patientsDTO);
 		patientPageableDTO.setPageInfo(patientMapper.setParameterPageInfo(patients.getPageInfo()));
-		return ResponseEntity.ok(patientPageableDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(patientPageableDTO);
 	}
 
 	@GetMapping(value = "/patients/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -174,7 +174,7 @@ public class PatientController {
 		LOGGER.debug("Admission retrieved: {}.", admission);
 		Boolean status = admission != null;
 		PatientDTO patientDTO = patientMapper.map2DTOWS(patient, status);
-		return ResponseEntity.ok(patientDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(patientDTO);
 	}
 
 	@GetMapping(value = "/patients/search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -215,7 +215,7 @@ public class PatientController {
 			Boolean status = admission != null;
 			return patientMapper.map2DTOWS(patient, status);
 		}).collect(Collectors.toList());
-		return ResponseEntity.ok(patientListDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(patientListDTO);
 	}
 
 	@GetMapping(value = "/patients/all", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -226,14 +226,14 @@ public class PatientController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 		PatientDTO patientDTO = patientMapper.map2DTO(patient);
-		return ResponseEntity.ok(patientDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(patientDTO);
 	}
 
 	@GetMapping(value = "/patients/nextcode", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Integer> getPatientNextCode() throws OHServiceException {
 		LOGGER.info("Get patient next code.");
 		int nextCode = patientManager.getNextPatientCode();
-		return ResponseEntity.ok(nextCode);
+		return ResponseEntity.status(HttpStatus.OK).body(nextCode);
 	}
 
 	@DeleteMapping(value = "/patients/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -249,7 +249,7 @@ public class PatientController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Patient not deleted."));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 	@GetMapping(value = "/patients/merge", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -265,12 +265,12 @@ public class PatientController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Patients not merged."));
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 	@GetMapping(value = "/patients/cities", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<String>> getPatientCities() throws OHServiceException {
 		LOGGER.info("Get all cities of the patients.");
-		return ResponseEntity.ok(patientManager.getCities());
+		return ResponseEntity.status(HttpStatus.OK).body(patientManager.getCities());
 	}
 }

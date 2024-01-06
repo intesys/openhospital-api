@@ -79,7 +79,7 @@ public class PermissionController {
 		if (dtos.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(dtos);
 		} else {
-			return ResponseEntity.status(HttpStatus.CREATED).body(dtos);
+			return ResponseEntity.status(HttpStatus.OK).body(dtos);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class PermissionController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 		List<PermissionDTO> dtos = permissionMapper.map2DTOList(permissions);
-		return ResponseEntity.status(HttpStatus.CREATED).body(dtos);
+		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
 
 	@GetMapping(value = "/permissions/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -102,7 +102,7 @@ public class PermissionController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 		PermissionDTO dtos = permissionMapper.map2DTO(permission);
-		return ResponseEntity.status(HttpStatus.CREATED).body(dtos);
+		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
 
 	@GetMapping(value = "/permissions/name/{name:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -113,7 +113,7 @@ public class PermissionController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
 		PermissionDTO dtos = permissionMapper.map2DTO(permission);
-		return ResponseEntity.status(HttpStatus.CREATED).body(dtos);
+		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
 
 	@PostMapping(value = "/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
