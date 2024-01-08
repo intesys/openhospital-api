@@ -1,6 +1,6 @@
 /*
  * Open Hospital (www.open-hospital.org)
- * Copyright © 2006-2023 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
+ * Copyright © 2006-2024 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
  *
  * Open Hospital is a free and open source software for healthcare data management.
  *
@@ -82,7 +82,7 @@ public class TherapyController {
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/therapies", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<TherapyRowDTO> newTherapy(@RequestBody TherapyRowDTO thRowDTO) throws OHServiceException {
+	public ResponseEntity<TherapyRowDTO> newTherapy(@Valid @RequestBody TherapyRowDTO thRowDTO) throws OHServiceException {
 		if (thRowDTO.getPatID() == null) {
 			throw new OHAPIException(new OHExceptionMessage("Patient not found."));
 		}
@@ -98,7 +98,7 @@ public class TherapyController {
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/therapies/replace", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<TherapyRow> replaceTherapies(@RequestBody @Valid List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
+	public ResponseEntity<TherapyRow> replaceTherapies(@Valid @RequestBody List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
 		ArrayList<TherapyRow> therapies = (ArrayList<TherapyRow>)therapyRowMapper.map2ModelList(thRowDTOs);
 		TherapyRow done = manager.newTherapy(therapies.get(0));
 		if (done != null) {
@@ -131,7 +131,7 @@ public class TherapyController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/therapies/meds-out-of-stock", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<MedicalDTO>> getMedicalsOutOfStock(@RequestBody List<TherapyDTO> therapyDTOs) throws OHServiceException {
+	public ResponseEntity<List<MedicalDTO>> getMedicalsOutOfStock(@Valid @RequestBody List<TherapyDTO> therapyDTOs) throws OHServiceException {
 		List<Therapy> therapyRows = therapyMapper.map2ModelList(therapyDTOs);
 		List<Medical> meds = manager.getMedicalsOutOfStock(therapyRows);
 		List<MedicalDTO> mappedMeds = medicalMapper.map2DTOList(meds);
@@ -168,7 +168,7 @@ public class TherapyController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/therapies/from-rows", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<TherapyDTO>> getTherapies(@RequestBody @Valid List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
+	public ResponseEntity<List<TherapyDTO>> getTherapies(@Valid @RequestBody List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
 		List<TherapyRow> thRows = therapyRowMapper.map2ModelList(thRowDTOs);
 		List<Therapy> therapies = manager.getTherapies(thRows);
 		List<TherapyDTO> mappedTherapies = therapies != null? therapyMapper.map2DTOList(therapies) : null;
@@ -187,7 +187,7 @@ public class TherapyController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/therapies/from-row", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<TherapyDTO> getTherapy(@RequestBody @Valid TherapyRowDTO thRowDTO) throws OHServiceException {
+	public ResponseEntity<TherapyDTO> getTherapy(@Valid @RequestBody TherapyRowDTO thRowDTO) throws OHServiceException {
 		TherapyRow thRow = therapyRowMapper.map2Model(thRowDTO);
 		TherapyDTO mappedTherapy = therapyMapper.map2DTO(manager.createTherapy(thRow));
 		return ResponseEntity.status(HttpStatus.OK).body(mappedTherapy);

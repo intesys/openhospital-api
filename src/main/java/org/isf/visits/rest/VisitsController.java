@@ -1,6 +1,6 @@
 /*
  * Open Hospital (www.open-hospital.org)
- * Copyright © 2006-2023 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
+ * Copyright © 2006-2024 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
  *
  * Open Hospital is a free and open source software for healthcare data management.
  *
@@ -23,6 +23,8 @@ package org.isf.visits.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
@@ -97,7 +99,7 @@ public class VisitsController {
      * @throws OHServiceException
      */
     @PostMapping(value = "/visit", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VisitDTO> newVisit(@RequestBody VisitDTO newVisit) throws OHServiceException {
+    public ResponseEntity<VisitDTO> newVisit(@Valid @RequestBody VisitDTO newVisit) throws OHServiceException {
 	    LOGGER.info("Create Visit: {}", newVisit);
 	    Visit visitD = mapper.map2Model(newVisit);
         Visit visit = visitManager.newVisit(visitD);
@@ -112,7 +114,7 @@ public class VisitsController {
      * @throws OHServiceException
      */
     @PostMapping(value = "/visits", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> newVisits(@RequestBody List<VisitDTO> newVisits) throws OHServiceException {
+    public ResponseEntity<Boolean> newVisits(@Valid @RequestBody List<VisitDTO> newVisits) throws OHServiceException {
         LOGGER.info("Create Visits");
         List<Visit> listVisits = mapper.map2ModelList(newVisits);
         boolean areCreated = visitManager.newVisits(listVisits);
@@ -147,7 +149,7 @@ public class VisitsController {
      * @throws OHServiceException
      */
     @PutMapping(value = "/visit/{visitID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VisitDTO> updateVisit(@PathVariable("visitID") int visitID, @RequestBody VisitDTO updateVisit) throws OHServiceException {
+    public ResponseEntity<VisitDTO> updateVisit(@PathVariable("visitID") int visitID, @Valid @RequestBody VisitDTO updateVisit) throws OHServiceException {
         LOGGER.info("Create Visits");
         Visit visit = visitManager.findVisit(visitID);
         if (visit == null) {

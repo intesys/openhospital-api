@@ -1,6 +1,6 @@
 /*
  * Open Hospital (www.open-hospital.org)
- * Copyright © 2006-2023 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
+ * Copyright © 2006-2024 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
  *
  * Open Hospital is a free and open source software for healthcare data management.
  *
@@ -22,6 +22,8 @@
 package org.isf.vaccine.rest;
 
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHDataIntegrityViolationException;
@@ -111,7 +113,7 @@ public class VaccineController {
      * @throws OHServiceException
      */
     @PostMapping(value = "/vaccines", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VaccineDTO> newVaccine(@RequestBody VaccineDTO newVaccine) throws OHServiceException {
+    public ResponseEntity<VaccineDTO> newVaccine(@Valid @RequestBody VaccineDTO newVaccine) throws OHServiceException {
         LOGGER.info("Create vaccine: {}", newVaccine);
         Vaccine isCreatedVaccine;
         try {
@@ -132,7 +134,7 @@ public class VaccineController {
      * @throws OHServiceException
      */
     @PutMapping(value = "/vaccines", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VaccineDTO> updateVaccine(@RequestBody VaccineDTO updateVaccine) throws OHServiceException {
+    public ResponseEntity<VaccineDTO> updateVaccine(@Valid @RequestBody VaccineDTO updateVaccine) throws OHServiceException {
         LOGGER.info("Update vaccine: {}", updateVaccine);
         Vaccine updatedVaccine;
         try {

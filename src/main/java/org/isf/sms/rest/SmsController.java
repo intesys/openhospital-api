@@ -1,6 +1,6 @@
 /*
  * Open Hospital (www.open-hospital.org)
- * Copyright © 2006-2023 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
+ * Copyright © 2006-2024 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
  *
  * Open Hospital is a free and open source software for healthcare data management.
  *
@@ -95,7 +95,7 @@ public class SmsController {
 	 */
 	@PostMapping(value = "/sms", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> saveSms(
-			@RequestBody @Valid SmsDTO smsDTO,
+			@Valid @RequestBody SmsDTO smsDTO,
 			@RequestParam(defaultValue="false") boolean split) throws OHServiceException {
 		smsManager.saveOrUpdate(smsMapper.map2Model(smsDTO), split);
 		return ResponseEntity.status(HttpStatus.CREATED).body(true);
@@ -108,7 +108,7 @@ public class SmsController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/sms/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> deleteSms(@RequestBody @Valid List<SmsDTO> smsDTOList) throws OHServiceException {
+	public ResponseEntity<Boolean> deleteSms(@Valid @RequestBody List<SmsDTO> smsDTOList) throws OHServiceException {
 		List<Sms> smsList = smsMapper.map2ModelList(smsDTOList);
 		if (smsList.stream().anyMatch(sms -> sms.getSmsId() <= 0)) {
 			throw new OHAPIException(new OHExceptionMessage("Some Sms are not found."));

@@ -1,6 +1,6 @@
 /*
  * Open Hospital (www.open-hospital.org)
- * Copyright © 2006-2023 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
+ * Copyright © 2006-2024 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
  *
  * Open Hospital is a free and open source software for healthcare data management.
  *
@@ -22,6 +22,8 @@
 package org.isf.vactype.rest;
 
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHDataIntegrityViolationException;
@@ -92,7 +94,7 @@ public class VaccineTypeController {
      * @throws OHServiceException
      */
     @PostMapping(value = "/vaccinetype", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VaccineTypeDTO> newVaccineType(@RequestBody VaccineTypeDTO newVaccineType) throws OHServiceException {
+    public ResponseEntity<VaccineTypeDTO> newVaccineType(@Valid @RequestBody VaccineTypeDTO newVaccineType) throws OHServiceException {
         LOGGER.info("Create vaccine type: {}", newVaccineType);
         VaccineType newVaccineTYpe;
         try {
@@ -114,7 +116,7 @@ public class VaccineTypeController {
      * @throws OHServiceException
      */
     @PutMapping(value = "/vaccinetype", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VaccineTypeDTO> updateVaccineType(@RequestBody VaccineTypeDTO updateVaccineType) throws OHServiceException {
+    public ResponseEntity<VaccineTypeDTO> updateVaccineType(@Valid @RequestBody VaccineTypeDTO updateVaccineType) throws OHServiceException {
         LOGGER.info("Update vaccine type: {}", updateVaccineType);
         VaccineType updatedVaccineType;
         try {

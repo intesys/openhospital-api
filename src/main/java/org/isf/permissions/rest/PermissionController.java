@@ -1,6 +1,6 @@
 /*
  * Open Hospital (www.open-hospital.org)
- * Copyright © 2006-2023 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
+ * Copyright © 2006-2024 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
  *
  * Open Hospital is a free and open source software for healthcare data management.
  *
@@ -22,6 +22,8 @@
 package org.isf.permissions.rest;
 
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.isf.menu.manager.UserGroupManager;
 import org.isf.menu.model.UserGroup;
@@ -117,7 +119,7 @@ public class PermissionController {
 	}
 
 	@PostMapping(value = "/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PermissionDTO> insertPermission(@RequestBody PermissionDTO permissionDTO) throws OHServiceException {
+	public ResponseEntity<PermissionDTO> insertPermission(@Valid @RequestBody PermissionDTO permissionDTO) throws OHServiceException {
 		LOGGER.info("Insert permission({}).", permissionDTO);
 		Permission model = permissionMapper.map2Model(permissionDTO);
 		List<UserGroup> userGroups = userGroupManager.findByIdIn(permissionDTO.getUserGroupIds());
@@ -129,7 +131,7 @@ public class PermissionController {
 	}
 
 	@PutMapping(value = "/permissions/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PermissionDTO> updatePermission(@PathVariable int id, @RequestBody PermissionDTO permissionDTO) throws OHServiceException {
+	public ResponseEntity<PermissionDTO> updatePermission(@PathVariable int id, @Valid @RequestBody PermissionDTO permissionDTO) throws OHServiceException {
 		LOGGER.info("Update permission id: {}.", id);
 		permissionDTO.setId(id);
 

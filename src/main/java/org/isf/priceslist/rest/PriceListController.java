@@ -1,6 +1,6 @@
 /*
  * Open Hospital (www.open-hospital.org)
- * Copyright © 2006-2023 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
+ * Copyright © 2006-2024 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
  *
  * Open Hospital is a free and open source software for healthcare data management.
  *
@@ -23,6 +23,8 @@ package org.isf.priceslist.rest;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.isf.priceslist.dto.PriceDTO;
 import org.isf.priceslist.dto.PriceListDTO;
@@ -68,9 +70,10 @@ public class PriceListController {
 	@Autowired
 	protected PriceMapper priceMapper;
 
-	public PriceListController(PriceListManager priceListManager, PriceListMapper priceListmapper) {
+	public PriceListController(PriceListManager priceListManager, PriceListMapper priceListmapper, PriceMapper priceMapper) {
 		this.priceListManager = priceListManager;
 		this.mapper = priceListmapper;
+		this.priceMapper = priceMapper;
 	}
 
 	/**
@@ -80,7 +83,7 @@ public class PriceListController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/pricelists", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<PriceListDTO> newPriceList(@RequestBody PriceListDTO priceListDTO) throws OHServiceException {
+	ResponseEntity<PriceListDTO> newPriceList(@Valid @RequestBody PriceListDTO priceListDTO) throws OHServiceException {
 		LOGGER.info("Create price list {}.", priceListDTO.getCode());
 		try {
 			PriceList createdPriceList = priceListManager.newList(mapper.map2Model(priceListDTO));
@@ -97,7 +100,7 @@ public class PriceListController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/pricelists/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<PriceListDTO> updatePriceLists(@PathVariable Integer id, @RequestBody PriceListDTO priceListDTO)
+	ResponseEntity<PriceListDTO> updatePriceLists(@PathVariable Integer id, @Valid @RequestBody PriceListDTO priceListDTO)
 			throws OHServiceException {
 		LOGGER.info("Update pricelists code: {}.", priceListDTO.getCode());
 		PriceList priceList = mapper.map2Model(priceListDTO);

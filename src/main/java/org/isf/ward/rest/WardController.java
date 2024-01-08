@@ -1,6 +1,6 @@
 /*
  * Open Hospital (www.open-hospital.org)
- * Copyright © 2006-2023 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
+ * Copyright © 2006-2024 Informatici Senza Frontiere (info@informaticisenzafrontiere.org)
  *
  * Open Hospital is a free and open source software for healthcare data management.
  *
@@ -89,7 +89,7 @@ public class WardController {
      * @return NO_CONTENT if there aren't wards, {@code List<WardDTO>} otherwise
      * @throws OHServiceException
      */
-    @GetMapping(value = "/wardsNoMaternity", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/wards/noMaternity", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<WardDTO>> getWardsNoMaternity() throws OHServiceException {
         LOGGER.info("Get wards no maternity");
         List<Ward> wards = wardManager.getWardsNoMaternity();
