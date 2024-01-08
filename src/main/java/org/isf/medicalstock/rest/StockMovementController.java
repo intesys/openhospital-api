@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.isf.medicals.manager.MedicalBrowsingManager;
 import org.isf.medicals.model.Medical;
 import org.isf.medicalstock.dto.LotDTO;
@@ -82,7 +84,7 @@ public class StockMovementController {
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/stockmovements/charge", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> newMultipleChargingMovements(@RequestBody List<MovementDTO> movementDTOs, 
+	public ResponseEntity<Boolean> newMultipleChargingMovements(@Valid @RequestBody List<MovementDTO> movementDTOs, 
 			@RequestParam(name="ref", required=true) String referenceNumber) throws OHServiceException {
 		List<Movement> movements = new ArrayList<>(movMapper.map2ModelList(movementDTOs));
 		movInsertingManager.newMultipleChargingMovements(movements, referenceNumber);
@@ -99,7 +101,7 @@ public class StockMovementController {
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/stockmovements/discharge", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> newMultipleDischargingMovements(@RequestBody List<MovementDTO> movementDTOs, 
+	public ResponseEntity<Boolean> newMultipleDischargingMovements(@Valid @RequestBody List<MovementDTO> movementDTOs, 
 			@RequestParam(name="ref", required=true) String referenceNumber) throws OHServiceException {
 		List<Movement> movements = new ArrayList<>(movMapper.map2ModelList(movementDTOs));
 		movInsertingManager.newMultipleDischargingMovements(movements, referenceNumber);

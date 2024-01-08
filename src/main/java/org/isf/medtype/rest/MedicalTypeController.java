@@ -89,7 +89,7 @@ public class MedicalTypeController {
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/medicaltypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MedicalTypeDTO> createMedicalType(@RequestBody @Valid MedicalTypeDTO medicalTypeDTO) throws OHServiceException {
+	public ResponseEntity<MedicalTypeDTO> createMedicalType(@Valid @RequestBody MedicalTypeDTO medicalTypeDTO) throws OHServiceException {
 		MedicalType isCreatedMedicalType = medicalTypeBrowserManager.newMedicalType(medicalTypeMapper.map2Model(medicalTypeDTO));
 		if (isCreatedMedicalType == null) {
             throw new OHAPIException(new OHExceptionMessage("Medical type not created."));
@@ -104,7 +104,7 @@ public class MedicalTypeController {
 	 * @throws OHServiceException 
 	 */
 	@PutMapping(value = "/medicaltypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MedicalTypeDTO> updateMedicalType(@RequestBody @Valid MedicalTypeDTO medicalTypeDTO) throws OHServiceException {
+	public ResponseEntity<MedicalTypeDTO> updateMedicalType(@Valid @RequestBody MedicalTypeDTO medicalTypeDTO) throws OHServiceException {
 		MedicalType medicalType = medicalTypeMapper.map2Model(medicalTypeDTO);
 		if (!medicalTypeBrowserManager.isCodePresent(medicalType.getCode())) {
 			throw new OHAPIException(new OHExceptionMessage("Medical type not found."));

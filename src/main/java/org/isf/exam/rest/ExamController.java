@@ -24,6 +24,8 @@ package org.isf.exam.rest;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.isf.exa.manager.ExamBrowsingManager;
 import org.isf.exa.model.Exam;
 import org.isf.exam.dto.ExamDTO;
@@ -68,7 +70,7 @@ public class ExamController {
     }
 
     @PostMapping(value = "/exams", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExamDTO> newExam(@RequestBody ExamDTO newExam) throws OHServiceException {
+    public ResponseEntity<ExamDTO> newExam(@Valid @RequestBody ExamDTO newExam) throws OHServiceException {
         ExamType examType = examTypeBrowserManager.getExamType().stream().filter(et -> newExam.getExamtype().getCode().equals(et.getCode())).findFirst().orElse(null);
 
         if (examType == null) {
@@ -86,7 +88,7 @@ public class ExamController {
     }
 
     @PutMapping(value = "/exams/{code:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExamDTO> updateExams(@PathVariable String code, @RequestBody ExamDTO updateExam) throws OHServiceException {
+    public ResponseEntity<ExamDTO> updateExams(@PathVariable String code, @Valid @RequestBody ExamDTO updateExam) throws OHServiceException {
 
         if (!updateExam.getCode().equals(code)) {
             throw new OHAPIException(new OHExceptionMessage("Exam code mismatch."));

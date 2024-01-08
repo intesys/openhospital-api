@@ -24,6 +24,8 @@ package org.isf.operation.rest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.isf.admission.manager.AdmissionBrowserManager;
 import org.isf.admission.model.Admission;
 import org.isf.opd.dto.OpdDTO;
@@ -100,7 +102,7 @@ public class OperationController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/operations", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<OperationDTO> newOperation(@RequestBody OperationDTO operationDTO) throws OHServiceException {
+	ResponseEntity<OperationDTO> newOperation(@Valid @RequestBody OperationDTO operationDTO) throws OHServiceException {
 		String code = operationDTO.getCode();
 		LOGGER.info("Create operation {}.", code);
 		if (operationManager.descriptionControl(operationDTO.getDescription(), operationDTO.getType().getCode())) {
@@ -120,7 +122,7 @@ public class OperationController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/operations/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<OperationDTO> updateOperation(@PathVariable String code, @RequestBody OperationDTO operationDTO)
+	ResponseEntity<OperationDTO> updateOperation(@PathVariable String code, @Valid @RequestBody OperationDTO operationDTO)
 			throws OHServiceException {
 		LOGGER.info("Update operations code: {}.", operationDTO.getCode());
 		Operation operation = mapper.map2Model(operationDTO);
@@ -214,7 +216,7 @@ public class OperationController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/operations/rows", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<OperationRowDTO> newOperationRow(@RequestBody OperationRowDTO operationRowDTO) throws OHServiceException {
+	ResponseEntity<OperationRowDTO> newOperationRow(@Valid @RequestBody OperationRowDTO operationRowDTO) throws OHServiceException {
 		int code = operationRowDTO.getAdmission().getId();
 		LOGGER.info("Create operation: {}.", code);
 		if (operationRowDTO.getAdmission() == null && operationRowDTO.getOpd() == null) {
@@ -244,7 +246,7 @@ public class OperationController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/operations/rows", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<Integer> updateOperationRow(@RequestBody OperationRowDTO operationRowDTO) throws OHServiceException {
+	ResponseEntity<Integer> updateOperationRow(@Valid @RequestBody OperationRowDTO operationRowDTO) throws OHServiceException {
 		LOGGER.info("Update operations row code: {}.", operationRowDTO.getId());
 		if (operationRowDTO.getAdmission() == null && operationRowDTO.getOpd() == null) {
 			throw new OHAPIException(new OHExceptionMessage("At least one field between admission and Opd is required."));
@@ -307,7 +309,7 @@ public class OperationController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/operations/rows/search/opd", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<OperationRowDTO>> getOperationRowsByOpd(@RequestBody OpdDTO opdDTO) throws OHServiceException {
+	public ResponseEntity<List<OperationRowDTO>> getOperationRowsByOpd(@Valid @RequestBody OpdDTO opdDTO) throws OHServiceException {
 		LOGGER.info("Get operations row for provided opd.");
 		List<OperationRow> operationRows = operationRowManager.getOperationRowByOpd(opdMapper.map2Model(opdDTO));
 		List<OperationRowDTO> operationRowDTOs = operationRows.stream().map(operation -> opRowMapper.map2DTO(operation)).collect(Collectors.toList());

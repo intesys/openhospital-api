@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.isf.distype.manager.DiseaseTypeBrowserManager;
 import org.isf.generaldata.MessageBundle;
 import org.isf.opd.dto.OpdDTO;
@@ -141,7 +143,7 @@ public class OpdController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/opds/rows", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<OpdWithOperationRowDTO> newOpdWithOperationRow(@RequestBody OpdWithOperationRowDTO opdWithOperationRowDTO) throws OHServiceException {
+	ResponseEntity<OpdWithOperationRowDTO> newOpdWithOperationRow(@Valid @RequestBody OpdWithOperationRowDTO opdWithOperationRowDTO) throws OHServiceException {
 		int code = opdWithOperationRowDTO.getOpdDTO().getCode();
 		LOGGER.info("store Out patient {}", code);
 		OpdWithOperationRowDTO opdWithOperatioRow = new OpdWithOperationRowDTO();
@@ -179,7 +181,7 @@ public class OpdController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/opds/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<OpdDTO> updateOpd(@PathVariable("code") int code, @RequestBody OpdDTO opdDTO)
+	ResponseEntity<OpdDTO> updateOpd(@PathVariable("code") int code, @Valid @RequestBody OpdDTO opdDTO)
 			throws OHServiceException {
 		LOGGER.info("Update opds code: {}", opdDTO.getCode());
 		if (opdManager.getOpdById(code).isEmpty()) {
@@ -212,7 +214,7 @@ public class OpdController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/opds/rows/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<OpdWithOperationRowDTO> updateOpdWithOperationRow(@PathVariable("code") int code, @RequestBody OpdWithOperationRowDTO opdWithOperationRowDTO)
+	ResponseEntity<OpdWithOperationRowDTO> updateOpdWithOperationRow(@PathVariable("code") int code, @Valid @RequestBody OpdWithOperationRowDTO opdWithOperationRowDTO)
 			throws OHServiceException {
 		LOGGER.info("Update opds code: {}", code);
 		OpdWithOperationRowDTO opdWithOperatioRow = new OpdWithOperationRowDTO();

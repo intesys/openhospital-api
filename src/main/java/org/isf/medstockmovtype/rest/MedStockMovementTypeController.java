@@ -103,7 +103,7 @@ public class MedStockMovementTypeController {
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/medstockmovementtype", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MovementTypeDTO> newMedicalDsrStockMovementType(@RequestBody @Valid MovementTypeDTO medicalDsrStockMovementType) throws OHServiceException {
+	public ResponseEntity<MovementTypeDTO> newMedicalDsrStockMovementType(@Valid @RequestBody MovementTypeDTO medicalDsrStockMovementType) throws OHServiceException {
 		try {
 			MovementType isCreatedMovementType = manager.newMedicalDsrStockMovementType(mapper.map2Model(medicalDsrStockMovementType));
 			return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map2DTO(isCreatedMovementType));
@@ -119,7 +119,7 @@ public class MedStockMovementTypeController {
 	 * @throws OHServiceException 
 	 */
 	@PutMapping(value = "/medstockmovementtype", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MovementTypeDTO> updateMedicalDsrStockMovementType(@RequestBody @Valid MovementTypeDTO medicalDsrStockMovementTypeDTO) throws OHServiceException {
+	public ResponseEntity<MovementTypeDTO> updateMedicalDsrStockMovementType(@Valid @RequestBody MovementTypeDTO medicalDsrStockMovementTypeDTO) throws OHServiceException {
 		MovementType medicalDsrStockMovementType = mapper.map2Model(medicalDsrStockMovementTypeDTO);
 		if (!manager.isCodePresent(medicalDsrStockMovementType.getCode())) {
 			throw new OHAPIException(new OHExceptionMessage("Movement type not found."));

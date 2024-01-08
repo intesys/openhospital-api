@@ -23,6 +23,8 @@ package org.isf.exam.rest;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.isf.exa.manager.ExamBrowsingManager;
 import org.isf.exa.manager.ExamRowBrowsingManager;
 import org.isf.exa.model.Exam;
@@ -68,7 +70,7 @@ public class ExamRowController {
     }
 
     @PostMapping(value = "/examrows", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExamRowDTO> newExamRow(@RequestBody ExamRowDTO examRowDTO) throws OHServiceException {
+    public ResponseEntity<ExamRowDTO> newExamRow(@Valid @RequestBody ExamRowDTO examRowDTO) throws OHServiceException {
         Exam exam = examManager.getExams().stream().filter(e -> examRowDTO.getExam().getCode().equals(e.getCode())).findFirst().orElse(null);
 
         if (exam == null) {

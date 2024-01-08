@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.isf.admission.manager.AdmissionBrowserManager;
 import org.isf.admission.model.Admission;
 import org.isf.patconsensus.manager.PatientConsensusBrowserManager;
@@ -98,7 +100,7 @@ public class PatientController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/patients", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<PatientDTO> newPatient(@RequestBody PatientDTO newPatient) throws OHServiceException {
+	ResponseEntity<PatientDTO> newPatient(@Valid @RequestBody PatientDTO newPatient) throws OHServiceException {
 		String name = StringUtils.hasLength(newPatient.getName()) ? newPatient.getFirstName() + ' ' + newPatient.getSecondName() : newPatient.getName();
 		LOGGER.info("Create patient '{}'.", name);
 
@@ -117,7 +119,7 @@ public class PatientController {
 	}
 
 	@PutMapping(value = "/patients/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<PatientDTO> updatePatient(@PathVariable int code, @RequestBody PatientDTO updatePatient) throws OHServiceException {
+	ResponseEntity<PatientDTO> updatePatient(@PathVariable int code, @Valid @RequestBody PatientDTO updatePatient) throws OHServiceException {
 		LOGGER.info("Update patient code: '{}'.", code);
 		if (!updatePatient.getCode().equals(code)) {
 			throw new OHAPIException(new OHExceptionMessage("Patient code mismatch."));

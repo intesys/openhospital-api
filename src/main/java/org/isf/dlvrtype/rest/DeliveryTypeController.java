@@ -24,6 +24,8 @@ package org.isf.dlvrtype.rest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.isf.dlvrtype.dto.DeliveryTypeDTO;
 import org.isf.dlvrtype.manager.DeliveryTypeBrowserManager;
 import org.isf.dlvrtype.mapper.DeliveryTypeMapper;
@@ -73,7 +75,7 @@ public class DeliveryTypeController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/deliverytypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<DeliveryTypeDTO> newDeliveryType(@RequestBody DeliveryTypeDTO dlvrTypeDTO) throws OHServiceException {
+	ResponseEntity<DeliveryTypeDTO> newDeliveryType(@Valid @RequestBody DeliveryTypeDTO dlvrTypeDTO) throws OHServiceException {
 		String code = dlvrTypeDTO.getCode();
 		LOGGER.info("Create Delivery Type {}", code);
 		dlvrtypeManager.newDeliveryType(deliveryTypeMapper.map2Model(dlvrTypeDTO));
@@ -96,7 +98,7 @@ public class DeliveryTypeController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/deliverytypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<DeliveryTypeDTO> updateDeliveryTypes(@RequestBody DeliveryTypeDTO dlvrTypeDTO) throws OHServiceException {
+	ResponseEntity<DeliveryTypeDTO> updateDeliveryTypes(@Valid @RequestBody DeliveryTypeDTO dlvrTypeDTO) throws OHServiceException {
 		LOGGER.info("Update Delivery Type code: {}", dlvrTypeDTO.getCode());
 		DeliveryType dlvrType = deliveryTypeMapper.map2Model(dlvrTypeDTO);
 		if (!dlvrtypeManager.isCodePresent(dlvrType.getCode())) {
@@ -107,7 +109,7 @@ public class DeliveryTypeController {
 		} catch (OHServiceException serviceException) {
 			throw new OHAPIException(new OHExceptionMessage("Delivery Type is not updated."));
 		}
-		return ResponseEntity.ok(deliveryTypeMapper.map2DTO(dlvrType));
+		return ResponseEntity.status(HttpStatus.OK).body(deliveryTypeMapper.map2DTO(dlvrType));
 	}
 
 	/**
@@ -123,7 +125,7 @@ public class DeliveryTypeController {
 		if (dlvrTypeDTOs.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(dlvrTypeDTOs);
 		} else {
-			return ResponseEntity.ok(dlvrTypeDTOs);
+			return ResponseEntity.status(HttpStatus.OK).body(dlvrTypeDTOs);
 		}
 	}
 
@@ -146,7 +148,7 @@ public class DeliveryTypeController {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
 }

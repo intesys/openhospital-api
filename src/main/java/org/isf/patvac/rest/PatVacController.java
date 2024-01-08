@@ -24,6 +24,8 @@ package org.isf.patvac.rest;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.isf.patvac.dto.PatientVaccineDTO;
 import org.isf.patvac.manager.PatVacManager;
 import org.isf.patvac.mapper.PatVacMapper;
@@ -74,7 +76,7 @@ public class PatVacController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/patientvaccines", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<PatientVaccineDTO> newPatientVaccine(@RequestBody PatientVaccineDTO patientVaccineDTO) throws OHServiceException {
+	ResponseEntity<PatientVaccineDTO> newPatientVaccine(@Valid @RequestBody PatientVaccineDTO patientVaccineDTO) throws OHServiceException {
 		int code = patientVaccineDTO.getCode();
 		LOGGER.info("Create patient vaccine {}", code);
 		PatientVaccine newPatientVaccine;
@@ -94,7 +96,7 @@ public class PatVacController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/patientvaccines/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<PatientVaccineDTO> updatePatientVaccinet(@PathVariable Integer code, @RequestBody PatientVaccineDTO patientVaccineDTO)
+	ResponseEntity<PatientVaccineDTO> updatePatientVaccinet(@PathVariable Integer code, @Valid @RequestBody PatientVaccineDTO patientVaccineDTO)
 			throws OHServiceException {
 		LOGGER.info("Update patientvaccines code: {}", patientVaccineDTO.getCode());
 		PatientVaccine patvac = mapper.map2Model(patientVaccineDTO);

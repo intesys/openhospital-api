@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.isf.exa.manager.ExamBrowsingManager;
 import org.isf.exa.model.Exam;
 import org.isf.lab.dto.LabWithRowsDTO;
@@ -123,7 +125,7 @@ public class LaboratoryController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/laboratories", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> newLaboratory(@RequestBody LabWithRowsDTO labWithRowsDTO) throws OHServiceException {
+	public ResponseEntity<Boolean> newLaboratory(@Valid @RequestBody LabWithRowsDTO labWithRowsDTO) throws OHServiceException {
 		LOGGER.info("store exam with result");
 		LaboratoryDTO laboratoryDTO = labWithRowsDTO.getLaboratoryDTO();
 		List<String> labRow = labWithRowsDTO.getLaboratoryRowList();
@@ -165,7 +167,7 @@ public class LaboratoryController {
 	 * @author Arnaud
 	 */
 	@PostMapping(value = "/laboratories/examRequest", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> newExamRequest(@RequestBody LaboratoryDTO laboratoryDTO) throws OHServiceException {
+	public ResponseEntity<Boolean> newExamRequest(@Valid @RequestBody LaboratoryDTO laboratoryDTO) throws OHServiceException {
 		LOGGER.info("store exam request");
 
 		Patient patient = patientBrowserManager.getPatientById(laboratoryDTO.getPatientCode());
@@ -213,7 +215,7 @@ public class LaboratoryController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/laboratories/insertList", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> newLaboratory2(@RequestBody List<LabWithRowsDTO> labsWithRows)
+	public ResponseEntity<Boolean> newLaboratory2(@Valid @RequestBody List<LabWithRowsDTO> labsWithRows)
 					throws OHServiceException {
 		LOGGER.info("store List of Exam with result");
 		List<Laboratory> labsToInsert = new ArrayList<>();
@@ -267,7 +269,7 @@ public class LaboratoryController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/laboratories/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> updateLaboratory(@PathVariable Integer code,
+	public ResponseEntity<Boolean> updateLaboratory(@Valid @PathVariable Integer code,
 					@RequestBody LabWithRowsDTO labWithRowsDTO) throws OHServiceException {
 		LOGGER.info("Update labWithRows code: {}", code);
 		LaboratoryDTO laboratoryDTO = labWithRowsDTO.getLaboratoryDTO();

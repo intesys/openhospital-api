@@ -166,7 +166,7 @@ public class MedicalController {
 	 */
 	@PostMapping(value = "/medicals", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MedicalDTO> newMedical(
-			@RequestBody MedicalDTO medicalDTO,
+			@Valid @RequestBody MedicalDTO medicalDTO,
 			@RequestParam(name="ignore_similar", defaultValue="false") boolean ignoreSimilar) throws OHServiceException {
 		LOGGER.info("Creating a new medical ...");
 		Medical createdMedical;
@@ -189,7 +189,7 @@ public class MedicalController {
 	 */
 	@PutMapping(value = "/medicals", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MedicalDTO> updateMedical(
-			@RequestBody @Valid MedicalDTO medicalDTO,
+			@Valid @RequestBody MedicalDTO medicalDTO,
 			@RequestParam(name="ignore_similar", defaultValue="false") boolean ignoreSimilar) throws OHServiceException {
 		LOGGER.info("Updating a medical ...");
 		Medical updatedMedical;

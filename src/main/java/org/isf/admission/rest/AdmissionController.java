@@ -547,7 +547,7 @@ public class AdmissionController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/admissions", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<AdmissionDTO> updateAdmissions(@RequestBody AdmissionDTO updateAdmissionDTO) throws OHServiceException {
+	ResponseEntity<AdmissionDTO> updateAdmissions(@Valid @RequestBody AdmissionDTO updateAdmissionDTO) throws OHServiceException {
 
 		Admission old = admissionManager.getAdmission(updateAdmissionDTO.getId());
 		if (old == null) {

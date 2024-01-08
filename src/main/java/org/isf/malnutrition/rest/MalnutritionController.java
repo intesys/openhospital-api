@@ -72,7 +72,7 @@ public class MalnutritionController {
 	 * @throws OHServiceException 
 	 */
 	@PostMapping(value = "/malnutritions", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MalnutritionDTO> newMalnutrition(@RequestBody @Valid MalnutritionDTO malnutritionDTO) throws OHServiceException{
+	public ResponseEntity<MalnutritionDTO> newMalnutrition(@Valid @RequestBody MalnutritionDTO malnutritionDTO) throws OHServiceException{
 		LOGGER.info("Creating a new malnutrition ...");
 		Malnutrition isCreatedMalnutrition = manager.newMalnutrition(mapper.map2Model(malnutritionDTO));
 		if (isCreatedMalnutrition == null) {
@@ -129,7 +129,7 @@ public class MalnutritionController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/malnutritions", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MalnutritionDTO> updateMalnutrition(@RequestBody @Valid MalnutritionDTO malnutritionDTO) throws OHServiceException {
+	public ResponseEntity<MalnutritionDTO> updateMalnutrition(@Valid @RequestBody MalnutritionDTO malnutritionDTO) throws OHServiceException {
 		Malnutrition updatedMalnutrition = manager.updateMalnutrition(mapper.map2Model(malnutritionDTO));
 		return ResponseEntity.status(HttpStatus.OK).body(mapper.map2DTO(updatedMalnutrition));
 	}

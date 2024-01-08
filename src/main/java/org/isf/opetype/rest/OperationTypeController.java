@@ -24,6 +24,8 @@ package org.isf.opetype.rest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.isf.opetype.dto.OperationTypeDTO;
 import org.isf.opetype.manager.OperationTypeBrowserManager;
 import org.isf.opetype.mapper.OperationTypeMapper;
@@ -73,7 +75,7 @@ public class OperationTypeController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/operationtypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<OperationTypeDTO> newOperationType(@RequestBody OperationTypeDTO operationTypeDTO) throws OHServiceException {
+	ResponseEntity<OperationTypeDTO> newOperationType(@Valid @RequestBody OperationTypeDTO operationTypeDTO) throws OHServiceException {
 		String code = operationTypeDTO.getCode();
 		LOGGER.info("Create Operation Type {}", code);
 		OperationType newOperationType;
@@ -92,7 +94,7 @@ public class OperationTypeController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/operationtypes/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<OperationTypeDTO> updateOperationTypes(@PathVariable String code, @RequestBody OperationTypeDTO operationTypeDTO)
+	ResponseEntity<OperationTypeDTO> updateOperationTypes(@PathVariable String code, @Valid @RequestBody OperationTypeDTO operationTypeDTO)
 			throws OHServiceException {
 		LOGGER.info("Update operationtypes code: {}", operationTypeDTO.getCode());
 		OperationType opeType = mapper.map2Model(operationTypeDTO);

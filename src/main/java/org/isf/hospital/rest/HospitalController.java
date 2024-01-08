@@ -21,6 +21,8 @@
  */
 package org.isf.hospital.rest;
 
+import javax.validation.Valid;
+
 import org.isf.hospital.dto.HospitalDTO;
 import org.isf.hospital.manager.HospitalBrowsingManager;
 import org.isf.hospital.mapper.HospitalMapper;
@@ -58,7 +60,7 @@ public class HospitalController {
     }
 
     @PutMapping(value = "/hospitals/{code:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HospitalDTO> updateHospital(@PathVariable String code, @RequestBody HospitalDTO hospitalDTO) throws OHServiceException {
+    public ResponseEntity<HospitalDTO> updateHospital(@PathVariable String code, @Valid @RequestBody HospitalDTO hospitalDTO) throws OHServiceException {
 
         if (!hospitalDTO.getCode().equals(code)) {
             throw new OHAPIException(new OHExceptionMessage("Hospital code mismatch."));

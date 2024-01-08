@@ -23,6 +23,8 @@ package org.isf.patconsensus.rest;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.isf.patconsensus.dto.PatientConsensusDTO;
 import org.isf.patconsensus.manager.PatientConsensusBrowserManager;
 import org.isf.patconsensus.mapper.PatientConsensusMapper;
@@ -70,7 +72,7 @@ public class PatientConsensusController {
 	}
 
 	@PutMapping(value = "/patientConsensus/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<PatientConsensusDTO> updatePatientConsensus(@PathVariable Integer patientId, @RequestBody PatientConsensusDTO patientConsensus)
+	ResponseEntity<PatientConsensusDTO> updatePatientConsensus(@PathVariable Integer patientId, @Valid @RequestBody PatientConsensusDTO patientConsensus)
 					throws OHServiceException {
 		LOGGER.info("Update patient consensus by id: {}", patientId);
 		if (!patientId.equals(patientConsensus.getPatientId())) {

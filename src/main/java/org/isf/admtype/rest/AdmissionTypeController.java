@@ -24,6 +24,8 @@ package org.isf.admtype.rest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.isf.admtype.dto.AdmissionTypeDTO;
 import org.isf.admtype.manager.AdmissionTypeBrowserManager;
 import org.isf.admtype.mapper.AdmissionTypeMapper;
@@ -73,7 +75,7 @@ public class AdmissionTypeController {
 	 * @throws OHServiceException
 	 */
 	@PostMapping(value = "/admissiontypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<AdmissionTypeDTO> newAdmissionType(@RequestBody AdmissionTypeDTO admissionTypeDTO) throws OHServiceException {
+	ResponseEntity<AdmissionTypeDTO> newAdmissionType(@Valid @RequestBody AdmissionTypeDTO admissionTypeDTO) throws OHServiceException {
 		String code = admissionTypeDTO.getCode();
 		LOGGER.info("Create Admission Type {}", code);
 		AdmissionType newAdmissionType = admtManager.newAdmissionType(mapper.map2Model(admissionTypeDTO));
@@ -90,7 +92,7 @@ public class AdmissionTypeController {
 	 * @throws OHServiceException
 	 */
 	@PutMapping(value = "/admissiontypes", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<AdmissionTypeDTO> updateAdmissionTypes(@RequestBody AdmissionTypeDTO admissionTypeDTO)
+	ResponseEntity<AdmissionTypeDTO> updateAdmissionTypes(@Valid @RequestBody AdmissionTypeDTO admissionTypeDTO)
 			throws OHServiceException {
 		LOGGER.info("Update admissiontypes code: {}", admissionTypeDTO.getCode());
 		AdmissionType admt = mapper.map2Model(admissionTypeDTO);

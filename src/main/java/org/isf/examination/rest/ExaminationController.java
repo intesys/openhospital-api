@@ -24,6 +24,8 @@ package org.isf.examination.rest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.isf.examination.dto.PatientExaminationDTO;
 import org.isf.examination.manager.ExaminationBrowserManager;
 import org.isf.examination.mapper.PatientExaminationMapper;
@@ -80,7 +82,7 @@ public class ExaminationController {
 	}
 
 	@PostMapping(value = "/examinations", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> newPatientExamination(@RequestBody PatientExaminationDTO newPatientExamination) throws OHServiceException {
+	public ResponseEntity<Boolean> newPatientExamination(@Valid @RequestBody PatientExaminationDTO newPatientExamination) throws OHServiceException {
 		Patient patient = patientBrowserManager.getPatientById(newPatientExamination.getPatientCode());
 		if (patient == null) {
 			throw new OHAPIException(new OHExceptionMessage("Patient does not exist."));
@@ -95,7 +97,7 @@ public class ExaminationController {
 	}
 
 	@PutMapping(value = "/examinations/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> updateExamination(@PathVariable Integer id, @RequestBody PatientExaminationDTO dto) throws OHServiceException {
+	public ResponseEntity<Boolean> updateExamination(@PathVariable Integer id, @Valid @RequestBody PatientExaminationDTO dto) throws OHServiceException {
 		if (dto.getPex_ID() != id) {
 			throw new OHAPIException(new OHExceptionMessage("Patient examination id mismatch."));
 		}
